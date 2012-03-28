@@ -19,6 +19,7 @@ namespace Tower_Defense
         public World()
         {
             Map = new Map();
+            
         }
 
         public void Update()
