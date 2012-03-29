@@ -29,6 +29,8 @@ namespace Tower_Defense
         public Game Game { get; set; }
         public static Brush EmptyTileBrush;
         public static SolidColorBrush solidColorBrush;
+        public static SolidColorBrush MonsterBrush;
+        public static SolidColorBrush TowerBrush;
         public static Dictionary<int, Bitmap> LandBitmaps = new Dictionary<int, Bitmap>();
         public static Dictionary<int, Bitmap> StaticBitmaps = new Dictionary<int, Bitmap>();
         RenderTarget d2dRenderTarget;
@@ -37,13 +39,14 @@ namespace Tower_Defense
         int charposx = 1424, charposy = 2549;
         int _drawXoffset = -200;
         int _drawYoffset = 400;
-        SharpDX.Direct2D1.Factory d2dFactory;
+        public SharpDX.Direct2D1.Factory d2dFactory;
         SharpDX.DirectWrite.Factory fontFactory;
         Device1 device;
         SwapChain swapChain;
         Factory factory;
         Texture2D backBuffer;
         RenderTargetView renderView;
+        public System.Drawing.Rectangle ViewPort;
         private void SetupDX()
         {
             var desc = new SwapChainDescription()
@@ -83,12 +86,13 @@ namespace Tower_Defense
 
             EmptyTileBrush = new SolidColorBrush(d2dRenderTarget, Colors.Aquamarine);
             solidColorBrush = new SolidColorBrush(d2dRenderTarget, Colors.White);
-
+            MonsterBrush = new SolidColorBrush(d2dRenderTarget, Colors.Wheat);
+            TowerBrush = new SolidColorBrush(d2dRenderTarget, Colors.Purple);
         }
         public void Show2()
         {
             this.Size = new System.Drawing.Size(1440, 900);
-            var viewport = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
+            ViewPort = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
             SetupDX();
 
             Stopwatch stopwatch = new Stopwatch();
@@ -110,14 +114,17 @@ namespace Tower_Defense
                     case GameState.InGame:
                         foreach (var x in Game.World.Map.Sprites)
                         {
-                            if(Contains(viewport,x))
+                            if (Contains(ViewPort, x))
                                 x.Draw(d2dRenderTarget);
                         }
-                        foreach (var o in Game.World.DrawableObjects) // TODO THREAD SAFE
-                        {
-                            if (Contains(viewport, o))
-                           o.Draw(d2dRenderTarget);
-                        }
+
+                            foreach (var o in Game.World.DrawableObjects.ToArray()) // TODO THREAD SAFE
+                            {
+                                if (Contains(ViewPort, o))
+                                    o.Draw(d2dRenderTarget);
+                            }
+
+                       
                         break;
                     case GameState.MainMenu:
                         MainMenu.Draw(d2dRenderTarget, d2dFactory, fontFactory);

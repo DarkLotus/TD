@@ -15,7 +15,7 @@ namespace Tower_Defense
     {
         public GameState GameState;// // 00 MainMenu, 01 Pause, 02 Ingame
         public World World;
-        public const double UpdateInterval = 50; // Milliseconds
+        public const double UpdateInterval = 100; // Milliseconds
         public bool Debug = true;
         GameForm Gameform;
         public Game()
@@ -28,7 +28,7 @@ namespace Tower_Defense
         /// </summary>
         internal void Start(object gf)
         {
-            //World = new Tower_Defense.World();
+            
             Gameform = (GameForm)gf;
             GameState = Tower_Defense.GameState.MainMenu;
             Gameform.MouseClick += Gameform_MouseClick;
@@ -44,17 +44,19 @@ namespace Tower_Defense
         {
             Stopwatch s = new Stopwatch();
             s.Start();
+            Stopwatch TotalTimer = new Stopwatch();
+            TotalTimer.Start();
             while (true)
             {
                 if (GameState == Tower_Defense.GameState.InGame)
-                    World.Update();
+                    World.Update(TotalTimer.Elapsed.TotalMilliseconds);
                 if (GameState == Tower_Defense.GameState.Exit)
                     break;
                 HandleUserInput();
 
                 if (s.Elapsed.TotalMilliseconds < UpdateInterval)
                     Thread.Sleep((int)(UpdateInterval - s.Elapsed.TotalMilliseconds));
-            
+                s.Restart();
             }
             
 
@@ -84,7 +86,23 @@ namespace Tower_Defense
 
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)
         {
-            throw new NotImplementedException();
+            if(!Contains(Gameform.ViewPort,click.Location))
+                return;
+            var total = ((click.X / this.World.Map.Tilesize) * this.World.Map.Width) + (click.Y / this.World.Map.Tilesize);
+            var tile = World.Map.Sprites[total];
+            if (tile.Type == Map.MapTileType.EmptyTile)
+            {
+                World.Map.Sprites[total].Type = Map.MapTileType.TowerHere;
+                World.DrawableObjects.Add(new Towers.BasicTower(tile.WorldX, tile.WorldY));
+            }
+            
+        }
+
+        private bool Contains(System.Drawing.Rectangle rect, System.Drawing.Point point)
+        {
+            if (rect.Top < point.Y && rect.Bottom > point.Y && rect.Left < point.X && rect.Right > point.X)
+                return true;
+            return false;
         }
 
         private void handleMenuInputPauseMenuInput(System.Windows.Forms.MouseEventArgs click)
@@ -97,7 +115,7 @@ namespace Tower_Defense
                if (Contains(MainMenu.Buttons[0].button, click.Location))
                {
                     // new game
-                   this.World = new World();
+                   this.World = new World(Gameform);
                    this.GameState = Tower_Defense.GameState.InGame;
                }
                if (Contains(MainMenu.Buttons[1].button, click.Location))

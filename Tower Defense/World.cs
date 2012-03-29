@@ -12,25 +12,44 @@ namespace Tower_Defense
     {
         public List<DrawnObject> DrawableObjects = new List<DrawnObject>();
         public Map Map;
-        
+        public GameForm Gameform;
+        // need a player object
+        public int Lives = 20;
+
+        List<DrawnObject> MobsToSpawn = new List<DrawnObject>();
+
         /// <summary>
         /// Called when New Game is clicked
         /// </summary>
-        public World()
+        public World(GameForm gf)
         {
+            Gameform = gf;
             Map = new Map();
-            
+            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
+            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
+            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
+            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
         }
 
-        public void Update()
+        double spawntimer = 0;
+
+        public void Update(double curTime)
         {
+            if (curTime > spawntimer && MobsToSpawn.Count > 0)
+            {
+                DrawableObjects.Add(MobsToSpawn.First());
+                MobsToSpawn.RemoveAt(0);
+                spawntimer = curTime + 1000;
+            }
+               
+
             List<DrawnObject> _deleteme = new List<DrawnObject>();
                 foreach (var o in DrawableObjects)
                 {
                     if (o.DeleteMe)
                         _deleteme.Add(o);
                     else
-                        o.Update();
+                        o.Update(this,curTime);
                 }
                 lock (DrawableObjects)
                 {
