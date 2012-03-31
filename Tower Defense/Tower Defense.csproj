@@ -72,11 +72,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DrawnObject.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Debugger.Designer.cs">
+      <DependentUpon>Debugger.cs</DependentUpon>
     </Compile>
     <Compile Include="Game.cs" />
     <Compile Include="GameForm.cs">
@@ -93,6 +93,9 @@
     <Compile Include="Tower.cs" />
     <Compile Include="Towers\BasicTower.cs" />
     <Compile Include="World.cs" />
+    <EmbeddedResource Include="Debugger.resx">
+      <DependentUpon>Debugger.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="GameForm.resx">
       <DependentUpon>GameForm.cs</DependentUpon>
     </EmbeddedResource>

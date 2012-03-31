@@ -88,7 +88,23 @@ namespace Tower_Defense
         {
             if(!Contains(Gameform.ViewPort,click.Location))
                 return;
-            var total = ((click.X / this.World.Map.Tilesize) * this.World.Map.Width) + (click.Y / this.World.Map.Tilesize);
+            foreach (var o in this.World.DrawableObjects)
+                if (Contains(o.ScreenSprite.GetBounds(), click.Location))
+                    return;
+
+            foreach (var m in this.World.Map.Sprites)
+                if (Contains(m.ScreenSprite, click.Location))
+                {
+                    m.Type = Map.MapTileType.TowerHere;
+                    World.DrawableObjects.Add(new Towers.BasicTower(m.WorldX, m.WorldY));
+                }
+            return;
+            var x = click.X - this.Gameform.ViewPort.Left;
+            var y = click.Y - this.Gameform.ViewPort.Top;
+            x = x / this.World.Map.Width;
+            y = y / this.World.Map.Height;
+            var total = (((click.X - this.Gameform.ViewPort.Left) * this.World.Map.Tilesize) / this.World.Map.Width) + ((click.Y - this.Gameform.ViewPort.Top) / this.World.Map.Tilesize);
+            total = x + (y * this.World.Map.Height);
             var tile = World.Map.Sprites[total];
             if (tile.Type == Map.MapTileType.EmptyTile)
             {

@@ -10,7 +10,9 @@ namespace Tower_Defense
     {
         internal float _velocity;
         internal float _hits;
+        internal float _baseHits;
         List<Algorithms.PathFinderNode> path;
+        internal float _size { get { return Width - ((_baseHits - _hits)/2); } }
         public Monster(Map map, int width = 0, int height = 0)
             : base(map.Start.X + (float)(Helper.random.NextDouble()), map.Start.Y, width, height)
         {
@@ -22,7 +24,7 @@ namespace Tower_Defense
         {
             if (DeleteMe)
                 return;
-            if (this._hits <= 0)
+            if (this._hits <= 0f)
                 this.DeleteMe = true;
             if (path.Count > 0)
             {

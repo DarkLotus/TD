@@ -17,6 +17,7 @@ namespace Tower_Defense
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
             Game game = new Game();
             GameForm gf;
             gf = new GameForm(game);

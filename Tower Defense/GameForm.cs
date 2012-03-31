@@ -89,8 +89,11 @@ namespace Tower_Defense
             MonsterBrush = new SolidColorBrush(d2dRenderTarget, Colors.Wheat);
             TowerBrush = new SolidColorBrush(d2dRenderTarget, Colors.Purple);
         }
+        public Debugger Debugger = new Debugger();
         public void Show2()
         {
+            
+            Debugger.Show();
             this.Size = new System.Drawing.Size(1440, 900);
             ViewPort = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
             SetupDX();

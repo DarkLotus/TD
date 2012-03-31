@@ -16,7 +16,7 @@ namespace Tower_Defense.Towers
         public BasicTower(int x, int y)
             : base(x, y, 30, 30)
         {
-            _damage = 10f;
+            _damage = 1f;
             _fireRateMS = 1000;
             _range = 25f;
             
@@ -34,6 +34,8 @@ namespace Tower_Defense.Towers
                     Monster target = (Monster)world.DrawableObjects.First(x => x.Type == ObjectType.Monster && Helper.GetDistance(x.WorldX, x.WorldY, this.WorldX, this.WorldY) < _range);
                     if (target != null)
                     {
+                        
+                        var debug = Helper.GetDistance(target.WorldX, target.WorldY, this.WorldX, this.WorldY);
                         target.DoDamage(_damage);
                         _fireTimer = curTime + _fireRateMS;
                     }
