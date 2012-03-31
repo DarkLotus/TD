@@ -114,7 +114,7 @@ namespace Tower_Defense
                     case GameState.InGame:
                         foreach (var x in Game.World.Map.Sprites)
                         {
-                            if (Contains(ViewPort, x))
+                            if (Contains(ViewPort, x.ScreenSprite))
                                 x.Draw(d2dRenderTarget);
                         }
 
@@ -148,7 +148,7 @@ namespace Tower_Defense
                    d2dRenderTarget.DrawText("MX " + mousex + " MY " + mousey, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(0, 25, 500, 225), solidColorBrush);
                 
                 d2dRenderTarget.EndDraw();
-                swapChain.Present(0, PresentFlags.None);
+                swapChain.Present(1, PresentFlags.None);
                 //if (stopwatch.Elapsed.Ticks < 16600000)
                  //   Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
                 fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);
@@ -162,6 +162,13 @@ namespace Tower_Defense
             device.Dispose();
             swapChain.Dispose();
             factory.Dispose();
+        }
+
+        private bool Contains(System.Drawing.Rectangle ViewPort, RectangleF rectangleF)
+        {
+            if (ViewPort.Contains((int)rectangleF.Left,(int)rectangleF.Right))
+                return true;
+            return false;
         }
 
         private bool Contains(System.Drawing.Rectangle rect, DrawnObject point)

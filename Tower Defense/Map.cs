@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 using Algorithms;
+using System.Xml;
+using System.IO;
+
 namespace Tower_Defense
 {
     public class Map
@@ -20,8 +23,8 @@ namespace Tower_Defense
         public List<PathFinderNode> Path { get { if (_path == null) { _path = buildPath(); } return _path.ToList(); } }
         public Map()
         {
-            Width = 32; Height = 32;
-            Sprites = BuildDummyMap();
+            Width = 16; Height = 16;
+            Sprites = LoadMap("SS");
             grid = BuildNavMesh();
         }
 
@@ -41,7 +44,7 @@ namespace Tower_Defense
         {
             var grid = new byte[Width, Height];
             for (int i = 0; i < Sprites.Length; i++)
-                grid[i / Height, i % Width] = (byte)(Sprites[i].Type & MapTileType.Path);
+                grid[i % Height, i / Width] = (byte)(Sprites[i].Type & MapTileType.Path);
             return grid;
         }
         /// <summary>
@@ -95,7 +98,39 @@ namespace Tower_Defense
         
         }
 
- 
+        public MapTile[] LoadMap(string MapName)
+        {
+            string mapdata = "";
+            MapTile[] tiles = new MapTile[Width * Height];
+            XmlReader xr = XmlReader.Create(File.Open("Maps\\map.tmx", FileMode.Open));
+            while (xr.Read())
+            {
+            if(xr.Name == "data")
+            {
+                xr.Read();
+                mapdata = xr.Value.ToString();
+                break;
+            }
+            
+            }
+            string[] values = mapdata.Split(new string[] {","},StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i].Contains("\n"))
+                    values[i] = values[i].Replace("\n", "");
+                var tiletype = Convert.ToInt16(values[i]);
+                tiletype--;
+                if (tiletype < 10)
+                    tiles[i] = new MapTile(i % Width, i / Height, (MapTileType)tiletype);
+                if((MapTileType)tiletype == MapTileType.Start)
+                    this.Start = new System.Drawing.Point(i % Width, i / Height);
+                if ((MapTileType)tiletype == MapTileType.Dest)
+                    this.Dest = new System.Drawing.Point(i % Width, i / Height);
+            }
+            return tiles;
+            
+        }
+       
 
         public class MapTile
         {
