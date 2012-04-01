@@ -11,34 +11,31 @@ namespace Tower_Defense
     public class World
     {
         public List<DrawnObject> DrawableObjects = new List<DrawnObject>();
-        public Map Map;
+        public Level Map;
         public GameForm Gameform;
         // need a player object
         public int Lives = 20;
 
         List<DrawnObject> MobsToSpawn = new List<DrawnObject>();
-
+        internal Objects.ParticleManager ParticleMan = new Objects.ParticleManager();
         /// <summary>
         /// Called when New Game is clicked
         /// </summary>
         public World(GameForm gf)
         {
             Gameform = gf;
-            Map = new Map();
+            Map = new Level();
             MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
-            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
-            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
-            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
+
         }
 
         double spawntimer = 0;
 
         public void Update(double curTime)
         {
-            if (curTime > spawntimer && MobsToSpawn.Count > 0)
+            if (curTime > spawntimer)
             {
-                DrawableObjects.Add(MobsToSpawn.First());
-                MobsToSpawn.RemoveAt(0);
+                DrawableObjects.Add(new Monsters.Runner(Gameform.d2dFactory, Map));
                 spawntimer = curTime + 1000;
             }
                
@@ -51,11 +48,11 @@ namespace Tower_Defense
                     else
                         o.Update(this,curTime);
                 }
-                lock (DrawableObjects)
-                {
+
                     foreach (var o in _deleteme)
                         DrawableObjects.Remove(o);
-                }               
+
+                ParticleMan.Update(curTime);
                
             }
         

@@ -13,7 +13,7 @@ namespace Tower_Defense
         internal float _baseHits;
         List<Algorithms.PathFinderNode> path;
         internal float _size { get { return Width - ((_baseHits - _hits)/2); } }
-        public Monster(Map map, int width = 0, int height = 0)
+        public Monster(Level map, int width = 0, int height = 0)
             : base(map.Start.X + (float)(Helper.random.NextDouble()), map.Start.Y, width, height)
         {
             Type = ObjectType.Monster;
@@ -24,8 +24,12 @@ namespace Tower_Defense
         {
             if (DeleteMe)
                 return;
-            if (this._hits <= 0f)
-                this.DeleteMe = true;
+            if (this._hits <= 0f) 
+            {
+                world.ParticleMan.CreateExplosion(ViewX, ViewY);
+                this.DeleteMe = true; 
+            }
+                
             if (path.Count > 0)
             {
                 Move();
@@ -38,6 +42,7 @@ namespace Tower_Defense
         public void DoDamage(float damage)
         {
             _hits -= damage;
+              
         }
         private void Move()
         {

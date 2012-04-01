@@ -9,7 +9,7 @@ namespace Tower_Defense.Monsters
 {
     internal class Runner : Monster
     {
-        internal Runner(SharpDX.Direct2D1.Factory d2dfactory, Map map)
+        internal Runner(SharpDX.Direct2D1.Factory d2dfactory, Level map)
             : base(map, 15, 15)
         {
             this._velocity = 0.1f;

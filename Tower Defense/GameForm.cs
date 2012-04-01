@@ -115,7 +115,7 @@ namespace Tower_Defense
                 switch (Game.GameState)
                 {
                     case GameState.InGame:
-                        foreach (var x in Game.World.Map.Sprites)
+                        foreach (var x in Game.World.Map.Map)
                         {
                             if (Contains(ViewPort, x.ScreenSprite))
                                 x.Draw(d2dRenderTarget);
@@ -126,6 +126,7 @@ namespace Tower_Defense
                                 if (Contains(ViewPort, o))
                                     o.Draw(d2dRenderTarget);
                             }
+                            Game.World.ParticleMan.Draw(d2dRenderTarget);
 
                        
                         break;
@@ -133,7 +134,7 @@ namespace Tower_Defense
                         MainMenu.Draw(d2dRenderTarget, d2dFactory, fontFactory);
                         break;
                     case GameState.InGamePause:
-                        foreach (var x in Game.World.Map.Sprites)
+                        foreach (var x in Game.World.Map.Map)
                         {
                            x.Draw(d2dRenderTarget);
                         }
@@ -145,8 +146,9 @@ namespace Tower_Defense
                         break;
 
                 }
+                frame++;
                if(Game.Debug)           
-                d2dRenderTarget.DrawText("FPS: " + fps + "Framecount:" + frame++, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new SharpDX.RectangleF(0, 0, 500, 25), solidColorBrush);
+                d2dRenderTarget.DrawText("FPS: " + fps + "UPS:" + Game.UpdateTime, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new SharpDX.RectangleF(0, 0, 500, 25), solidColorBrush);
                if (Game.Debug)
                    d2dRenderTarget.DrawText("MX " + mousex + " MY " + mousey, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(0, 25, 500, 225), solidColorBrush);
                 
@@ -181,7 +183,7 @@ namespace Tower_Defense
             return false;
         }
 
-        private bool Contains(System.Drawing.Rectangle rect, Map.MapTile point)
+        private bool Contains(System.Drawing.Rectangle rect, Level.MapTile point)
         {
             if (rect.Top < point.ScreenSprite.Top && rect.Bottom > point.ScreenSprite.Bottom && rect.Left < point.ScreenSprite.Left && rect.Right > point.ScreenSprite.Right)
                 return true;

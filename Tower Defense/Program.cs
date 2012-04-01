@@ -22,12 +22,15 @@ namespace Tower_Defense
             GameForm gf;
             gf = new GameForm(game);
             Thread t = new Thread(new ParameterizedThreadStart(game.Start));
+            t.Name = "GameLoop";
             t.IsBackground = true;
             t.Start(gf);
-                   
-            gf.Show2();
-            if (t.ThreadState == ThreadState.Running)
-                t.Abort();
+
+            Thread tt = new Thread(new ThreadStart(gf.Show2));
+            tt.Start();
+            //gf.Show2();
+            //if (t.ThreadState == ThreadState.Running)
+             //   t.Abort();
 
             //Application.Run(new GameForm());
         }

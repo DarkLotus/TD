@@ -18,6 +18,7 @@ namespace Tower_Defense
         public const double UpdateInterval = 100; // Milliseconds
         public bool Debug = true;
         GameForm Gameform;
+        public int UpdateTime = 0;
         public Game()
         {
             
@@ -53,9 +54,9 @@ namespace Tower_Defense
                 if (GameState == Tower_Defense.GameState.Exit)
                     break;
                 HandleUserInput();
-
+                UpdateTime = (int)(s.Elapsed.Milliseconds);
                 if (s.Elapsed.TotalMilliseconds < UpdateInterval)
-                    Thread.Sleep((int)(UpdateInterval - s.Elapsed.TotalMilliseconds));
+                    Thread.Sleep((int)(UpdateInterval - s.Elapsed.Milliseconds));
                 s.Restart();
             }
             
@@ -92,10 +93,10 @@ namespace Tower_Defense
                 if (Contains(o.ScreenSprite.GetBounds(), click.Location))
                     return;
 
-            foreach (var m in this.World.Map.Sprites)
+            foreach (var m in this.World.Map.Map)
                 if (Contains(m.ScreenSprite, click.Location))
                 {
-                    m.Type = Map.MapTileType.TowerHere;
+                    m.Type = Level.MapTileType.TowerHere;
                     World.DrawableObjects.Add(new Towers.BasicTower(m.WorldX, m.WorldY));
                 }
             return;
@@ -105,10 +106,10 @@ namespace Tower_Defense
             y = y / this.World.Map.Height;
             var total = (((click.X - this.Gameform.ViewPort.Left) * this.World.Map.Tilesize) / this.World.Map.Width) + ((click.Y - this.Gameform.ViewPort.Top) / this.World.Map.Tilesize);
             total = x + (y * this.World.Map.Height);
-            var tile = World.Map.Sprites[total];
-            if (tile.Type == Map.MapTileType.EmptyTile)
+            var tile = World.Map.Map[total];
+            if (tile.Type == Level.MapTileType.EmptyTile)
             {
-                World.Map.Sprites[total].Type = Map.MapTileType.TowerHere;
+                World.Map.Map[total].Type = Level.MapTileType.TowerHere;
                 World.DrawableObjects.Add(new Towers.BasicTower(tile.WorldX, tile.WorldY));
             }
             
