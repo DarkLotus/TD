@@ -36,7 +36,7 @@ namespace Tower_Defense
             if (curTime > spawntimer)
             {
                 DrawableObjects.Add(new Monsters.Runner(Gameform.d2dFactory, Map));
-                spawntimer = curTime + 1000;
+                spawntimer = curTime + 250;
             }
                
 

@@ -28,22 +28,20 @@ namespace Tower_Defense.Objects
                     _delme.Add(p);
             }
 
-                foreach (var p in _delme)
-                    Particles.Remove(p);
 
                 if (_delme.Count > 0)
-                    lock (DrawnParticles)
+                    lock (Particles)
                         foreach (var p in _delme)
-                            DrawnParticles.Remove(p);
+                            Particles.Remove(p);
         }
 
         public void CreateExplosion(int x, int y)
         {
             for (int i = 0; i < 50; i++)
             {
-                Particles.Add(new Particle(x, y, new Vector2(4 * ((float)getrandFloat() - 0.5f), 4 * ((float)getrandFloat() - 0.5f)), 1000 + rand.Next(5000)));
+                Particles.Add(new Particle(x, y, new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f)), 1000 + rand.Next(5000)));
             }
-            DrawnParticles = Particles;
+
         }
 
         private float getrandFloat()
@@ -56,14 +54,16 @@ namespace Tower_Defense.Objects
             if (DrawnParticles == null)
                 return;
             GameForm.solidColorBrush.Color = Colors.AliceBlue;
-            for (int i = 0; i < DrawnParticles.Count; i++)
+            for (int i = 0; i < Particles.Count; i++)
             {
-                DrawnParticles[i].Draw(d2dRenderTarget);
+                Particles[i].Draw(d2dRenderTarget);
             }
                 
             
         }
 
+
+        public int ParticleCount { get { return DrawnParticles.Count; } }
     }
 
     internal class Particle

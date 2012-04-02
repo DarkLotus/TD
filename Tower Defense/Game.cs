@@ -15,7 +15,7 @@ namespace Tower_Defense
     {
         public GameState GameState;// // 00 MainMenu, 01 Pause, 02 Ingame
         public World World;
-        public const double UpdateInterval = 100; // Milliseconds
+        public const double UpdateInterval = 50; // Milliseconds
         public bool Debug = true;
         GameForm Gameform;
         public int UpdateTime = 0;
