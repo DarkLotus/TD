@@ -39,9 +39,18 @@ namespace Tower_Defense.Objects
         {
             for (int i = 0; i < 50; i++)
             {
-                Particles.Add(new Particle(x, y, new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f)), 1000 + rand.Next(5000)));
+                Particles.Add(new Particle(x, y, new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f)), 1000 + rand.Next(5000)) { Color = Colors.WhiteSmoke });
             }
 
+        }
+        public void CreateBullet(Tower t, Monster m)
+        {
+            var vec = new Vector2(m.ViewX - t.ViewX, m.ViewY - t.ViewY);
+            vec.Normalize();
+            vec += vec;
+
+
+        Particles.Add(new Particle(t.ViewX,t.ViewY,vec,500){ Color = Colors.Blue});
         }
 
         private float getrandFloat()
@@ -69,14 +78,18 @@ namespace Tower_Defense.Objects
     internal class Particle
     {
         int X, Y;
+        public Color4 Color;
         DrawingPointF Location;
         Vector2 Location2, Velocity;
         int LifeSpanMS;
         public bool DeleteMe = false;
         private double tickToDieAt;
+        SharpDX.Direct2D1.Ellipse el;
         internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget) 
         {
-            d2dRenderTarget.FillEllipse(new SharpDX.Direct2D1.Ellipse(Location, 1, 1), GameForm.solidColorBrush);
+            if (Color != null)
+                GameForm.solidColorBrush.Color = Color;
+            d2dRenderTarget.FillEllipse(el, GameForm.solidColorBrush);
         }
         internal void Update(double curMS) 
         {
@@ -85,7 +98,7 @@ namespace Tower_Defense.Objects
             Location2 += Velocity;
             Location.X = Location2.X;
             Location.Y = Location2.Y;
-
+            el.Point = Location;
             if (curMS > tickToDieAt)
                 this.DeleteMe = true;
         }
@@ -95,6 +108,7 @@ namespace Tower_Defense.Objects
             Location2 = new Vector2(x, y);
             LifeSpanMS = lifeSpan;
             Velocity = velocity;
+            el = new SharpDX.Direct2D1.Ellipse(Location, 1, 1);
 
         }
     }

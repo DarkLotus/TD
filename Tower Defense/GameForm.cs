@@ -93,7 +93,7 @@ namespace Tower_Defense
         public void Show2()
         {
             
-            //Debugger.Show();
+            Debugger.Show();
             this.Size = new System.Drawing.Size(1440, 900);
             ViewPort = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
             SetupDX();
@@ -127,7 +127,8 @@ namespace Tower_Defense
                                     o.Draw(d2dRenderTarget);
                             }
                             Game.World.ParticleMan.Draw(d2dRenderTarget);
-
+                            solidColorBrush.Color = Colors.White;
+                            d2dRenderTarget.DrawText("Score: " + Game.World.Player.Score + " Lives Left: " + Game.World.Player.Lives, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(this.Width /2, 0, this.Width, 225), solidColorBrush);
                        
                         break;
                     case GameState.MainMenu:
@@ -142,7 +143,9 @@ namespace Tower_Defense
                         {
                            o.Draw(d2dRenderTarget);
                         }
+                        d2dRenderTarget.DrawText("Score: " + Game.World.Player.Score + " Lives Left: " + Game.World.Player.Lives, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(this.Width / 2, 0, this.Width, 225), solidColorBrush);
                         PauseMenu.Draw(d2dFactory, fontFactory);
+
                         break;
 
                 }
@@ -151,9 +154,9 @@ namespace Tower_Defense
                 d2dRenderTarget.DrawText("FPS: " + fps + "UPS:" + Game.UpdateTime, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new SharpDX.RectangleF(0, 0, 500, 25), solidColorBrush);
                if (Game.Debug)
                    d2dRenderTarget.DrawText("MX " + mousex + " MY " + mousey, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(0, 25, 500, 225), solidColorBrush);
-                
+               
                 d2dRenderTarget.EndDraw();
-                swapChain.Present(1, PresentFlags.None);
+                swapChain.Present(0, PresentFlags.None);
                 //if (stopwatch.Elapsed.Ticks < 16600000)
                  //   Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
                 fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);

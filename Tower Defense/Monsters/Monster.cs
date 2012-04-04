@@ -11,6 +11,7 @@ namespace Tower_Defense
         internal float _velocity;
         internal float _hits;
         internal float _baseHits;
+        internal int ScoreValue;
         List<Algorithms.PathFinderNode> path;
         internal float _size { get { return Width - ((_baseHits - _hits)/2); } }
         public Monster(Level map, int width = 0, int height = 0)
@@ -19,7 +20,7 @@ namespace Tower_Defense
             Type = ObjectType.Monster;
             path = map.Path;
         }
-
+        double _lastMove = 0;
         public override void Update(World world, double curTime)
         {
             if (DeleteMe)
@@ -27,15 +28,23 @@ namespace Tower_Defense
             if (this._hits <= 0f) 
             {
                 world.ParticleMan.CreateExplosion(ViewX, ViewY);
+                world.Player.Score += this.ScoreValue;
                 this.DeleteMe = true; 
             }
-                
-            if (path.Count > 0)
+
+            if (path.Count > 0)// && curTime > _lastMove)
             {
-                Move();
+                var towers = world.DrawableObjects.FindAll(t => t.Type == ObjectType.Tower);
+
+                Move(_velocity);
+                _lastMove = curTime + 100;
             }
             else
+            {
+                world.Player.Lives--;
                 this.DeleteMe = true;
+            }
+                
             base.Update(world,curTime);
         }
 
@@ -44,7 +53,7 @@ namespace Tower_Defense
             _hits -= damage;
               
         }
-        private void Move()
+        private void Move(float _velocity)
         {
             var nextpath = path.Last();
             if (this.WorldX < nextpath.X)

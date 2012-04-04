@@ -8,17 +8,18 @@ using SharpDX.Direct2D1;
 
 namespace Tower_Defense.Towers
 {
-    public class BasicTower : Tower
+    public class SlowingTower : Tower
     {
         private float _damage;
         private float _range;
         private int _fireRateMS;
-        public BasicTower(int x, int y)
+        public SlowingTower(int x, int y)
             : base(x, y, 24, 24)
         {
             _damage = 5f;
             _fireRateMS = 300;
             _range = 2f;
+            
         }
 
         double _fireTimer = 0;

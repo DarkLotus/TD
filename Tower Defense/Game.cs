@@ -15,7 +15,7 @@ namespace Tower_Defense
     {
         public GameState GameState;// // 00 MainMenu, 01 Pause, 02 Ingame
         public World World;
-        public const double UpdateInterval = 50; // Milliseconds
+        public const double UpdateInterval = 25; // Milliseconds
         public bool Debug = true;
         GameForm Gameform;
         public int UpdateTime = 0;
@@ -55,6 +55,8 @@ namespace Tower_Defense
                     break;
                 HandleUserInput();
                 UpdateTime = (int)(s.Elapsed.Milliseconds);
+                if (UpdateTime > UpdateInterval)
+                    Gameform.Debugger.Debug("GameLoop took " + UpdateTime + "ms");
                 if (s.Elapsed.TotalMilliseconds < UpdateInterval)
                     Thread.Sleep((int)(UpdateInterval - s.Elapsed.Milliseconds));
                 s.Restart();

@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Tower_Defense
 {
-    class Player
+    public class Player
     {
+        public int Score = 0;
+        public int Lives = 20;
+        //current score?
+        // hold level here?
+
+        public Player()
+        { }
+
     }
 }

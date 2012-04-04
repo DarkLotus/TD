@@ -168,6 +168,9 @@ namespace Tower_Defense
                     case MapTileType.EmptyTile:
                         d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
                         break;
+                    case MapTileType.TowerHere:
+                        d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
+                        break;
                     default:
                         var rect = new RectangleF(ViewX + 0.2f, ViewY + 0.2f, ViewX + TileSize - 0.2f, ViewY + TileSize - 0.2f);
                         d2dRenderTarget.FillRectangle(rect, new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget,Colors.Red));

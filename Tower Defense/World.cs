@@ -12,6 +12,7 @@ namespace Tower_Defense
     {
         public List<DrawnObject> DrawableObjects = new List<DrawnObject>();
         public Level Map;
+        public Player Player;
         public GameForm Gameform;
         // need a player object
         public int Lives = 20;
@@ -23,6 +24,7 @@ namespace Tower_Defense
         /// </summary>
         public World(GameForm gf)
         {
+            Player = new Tower_Defense.Player();
             Gameform = gf;
             Map = new Level();
             MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));

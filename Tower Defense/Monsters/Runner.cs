@@ -15,6 +15,7 @@ namespace Tower_Defense.Monsters
             this._velocity = 0.1f;
             this._hits = 50f;
             this._baseHits = 50f;
+            this.ScoreValue = 10;
             this.ScreenSprite = new RectangleGeometry(d2dfactory,new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height));
         }
 
