@@ -24,7 +24,7 @@ namespace Tower_Defense
 
         public void Debug(string s)
         {
-            msgs.Add(s);
+            //msgs.Add(s);
         }
         private void PumpLog()
         {
