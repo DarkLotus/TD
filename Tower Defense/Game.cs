@@ -95,8 +95,8 @@ namespace Tower_Defense
             while (Clicks.Count > 0)
             {
                 var click = Clicks[0]; Clicks.RemoveAt(0);
-                if (click.Button != System.Windows.Forms.MouseButtons.Left)
-                    continue;
+                /*if (click.Button != System.Windows.Forms.MouseButtons.Left)
+                    continue;*/
                 switch(GameState)
                 {
                     case Tower_Defense.GameState.MainMenu:
@@ -124,7 +124,10 @@ namespace Tower_Defense
                 if (Contains(m.ScreenSprite, click.Location))
                 {
                     m.Type = Level.MapTileType.TowerHere;
+                    if(click.Button == System.Windows.Forms.MouseButtons.Left)
                     World.DrawableObjects.Add(new Towers.BasicTower(m.WorldX, m.WorldY));
+                    else if(click.Button == System.Windows.Forms.MouseButtons.Right)
+                        World.DrawableObjects.Add(new Towers.SlowingTower(m.WorldX, m.WorldY));
                 }
             return;
             var x = click.X - this.Gameform.ViewPort.Left;

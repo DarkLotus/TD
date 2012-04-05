@@ -56,7 +56,7 @@ namespace Tower_Defense.Objects
         {
             for (int i = 0; i < 50; i++)
             {
-                Particles.Add(new Particle(x, y, new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f)), 1000 + rand.Next(5000)) { Color = Colors.WhiteSmoke });
+                Particles.Add(new Particle(x, y, new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f)), 500 + rand.Next(3000)) { Color = Colors.WhiteSmoke });
             }
 
         }

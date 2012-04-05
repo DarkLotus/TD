@@ -29,10 +29,11 @@ namespace Tower_Defense.Monsters
         internal Runner(SharpDX.Direct2D1.Factory d2dfactory, Level map)
             : base(map, 15, 15)
         {
-            this._velocity = 0.1f;
+            this._baseVelocity = 0.1f;
             this._hits = 50f;
             this._baseHits = 50f;
             this.ScoreValue = 10;
+            this.color = Colors.SpringGreen;
             this.ScreenSprite = new RectangleGeometry(d2dfactory,new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height));
         }
 

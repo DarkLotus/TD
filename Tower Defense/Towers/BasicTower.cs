@@ -30,12 +30,14 @@ namespace Tower_Defense.Towers
         private float _damage;
         private float _range;
         private int _fireRateMS;
+        private Color4 color;
         public BasicTower(int x, int y)
             : base(x, y, 24, 24)
         {
             _damage = 5f;
             _fireRateMS = 300;
             _range = 2f;
+            color = Colors.Red;
         }
 
         double _fireTimer = 0;
@@ -69,6 +71,7 @@ namespace Tower_Defense.Towers
         private Monster Target;
         public override void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
         {
+            GameForm.TowerBrush.Color = color;
             if (ScreenSprite != null)
             d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.TowerBrush);
             //if(Fired && Target != null)

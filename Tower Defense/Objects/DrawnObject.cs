@@ -42,6 +42,7 @@ namespace Tower_Defense
         public int ViewY { get { return (int)(WorldY * 40); ; } }
         public byte ViewZ;
         public bool DeleteMe = false;
+        internal SharpDX.Color4 color;
         public DrawnObject(float worldX,float worldY, int width = 0,int height = 0)
         {
             //this.TextureIndex = TextureIndex;
@@ -56,12 +57,14 @@ namespace Tower_Defense
         }
         public virtual void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
         {
+            if(this.color != null)
+            GameForm.solidColorBrush.Color = this.color;
         if(ScreenSprite != null)
         {  
-            if (this.GetType() == typeof(Tower))
-                d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.TowerBrush);
+            if (this.Type == ObjectType.Tower)
+                d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.solidColorBrush);
             else
-                d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.MonsterBrush);
+                d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.solidColorBrush);
         }
             
         }

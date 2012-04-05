@@ -25,11 +25,14 @@ namespace Tower_Defense
 {
     internal class Monster : DrawnObject
     {
-        internal float _velocity;
+        internal float _velocity { get { return this._baseVelocity - _velModifier; } }
+        internal float _velModifier;
+        internal float _baseVelocity;
         internal float _hits;
         internal float _baseHits;
         internal int ScoreValue;
         List<Algorithms.PathFinderNode> path;
+        
         internal float _size { get { return Width - ((_baseHits - _hits)/2); } }
         public Monster(Level map, int width = 0, int height = 0)
             : base(map.Start.X + (float)(Helper.random.NextDouble()), map.Start.Y, width, height)
@@ -69,6 +72,12 @@ namespace Tower_Defense
         {
             _hits -= damage;
               
+        }
+
+        public void SlowMe(float value)
+        {
+            _velModifier = value;
+            this.color.Blue += 50;
         }
         private void Move(float _velocity)
         {
