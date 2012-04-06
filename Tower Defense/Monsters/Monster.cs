@@ -41,6 +41,7 @@ namespace Tower_Defense
             path = map.Path;
         }
         double _lastMove = 0;
+        double _slowEffect = 0;
         public override void Update(World world, double curTime)
         {
             if (DeleteMe)
@@ -52,17 +53,21 @@ namespace Tower_Defense
                 this.DeleteMe = true; 
             }
 
-            if (path.Count > 0)// && curTime > _lastMove)
+            if (path.Count > 0 && curTime > _lastMove)
             {
-                var towers = world.DrawableObjects.FindAll(t => t.Type == ObjectType.Tower);
-
                 Move(_velocity);
-                _lastMove = curTime + 100;
+                _lastMove = curTime + 30;
             }
             else
             {
                 world.Player.Lives--;
                 this.DeleteMe = true;
+            }
+            if (_slowEffect < curTime && _slowEffect != 0)
+            {
+                this.color.Blue -= 50;
+                this._velModifier = 0;
+                this._slowEffect = 0;
             }
                 
             base.Update(world,curTime);
@@ -73,10 +78,15 @@ namespace Tower_Defense
             _hits -= damage;
               
         }
-
-        public void SlowMe(float value)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="SlowVal"> FP value to slow unit down by</param>
+        /// <param name="DurationMS">Curtime+wanted delay</param>
+        public void SlowMe(float SlowVal,double DurationMS)
         {
-            _velModifier = value;
+            _slowEffect = DurationMS;
+            _velModifier = SlowVal;
             this.color.Blue += 50;
         }
         private void Move(float _velocity)

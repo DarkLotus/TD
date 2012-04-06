@@ -30,7 +30,9 @@ namespace Tower_Defense.Towers
         private float _damage;
         private float _range;
         private int _fireRateMS;
-        private Color4 color;
+
+        private double SlowDurationMS = 4000;
+        private float SlowEffect = 0.08f;
         public SlowingTower(int x, int y)
             : base(x, y, 24, 24)
         {
@@ -57,7 +59,7 @@ namespace Tower_Defense.Towers
                         Target = target;
                         var debug = Helper.GetDistance(target.WorldX, target.WorldY, this.WorldX, this.WorldY);
                         target.DoDamage(_damage);
-                        target.SlowMe(0.08f);
+                        target.SlowMe(SlowEffect, curTime + SlowDurationMS);
                         world.ParticleMan.CreateBullet(this, target);
                         _fireTimer = curTime + _fireRateMS;
                     }

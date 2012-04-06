@@ -50,12 +50,16 @@ namespace Tower_Defense
 
         double spawntimer = 0;
 
+        double initalTimeBetweenMobs = 1000;
         public void Update(double curTime)
         {
             if (curTime > spawntimer)
             {
                 DrawableObjects.Add(new Monsters.Runner(Gameform.d2dFactory, Map));
-                spawntimer = curTime + 250;
+                spawntimer = curTime + initalTimeBetweenMobs;
+                initalTimeBetweenMobs -= 10;
+                if (initalTimeBetweenMobs < 20)
+                    spawntimer = curTime + 10000;
             }
                
 

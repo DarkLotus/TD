@@ -94,7 +94,6 @@ namespace Tower_Defense.Objects
 
     internal class Particle
     {
-        int X, Y;
         public Color4 Color;
         DrawingPointF Location;
         Vector2 Location2, Velocity;
