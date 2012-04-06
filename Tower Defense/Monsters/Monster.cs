@@ -56,7 +56,7 @@ namespace Tower_Defense
             if (path.Count > 0 && curTime > _lastMove)
             {
                 Move(_velocity);
-                _lastMove = curTime + 30;
+                //_lastMove = curTime + 30;
             }
             else
             {

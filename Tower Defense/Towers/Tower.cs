@@ -25,6 +25,13 @@ namespace Tower_Defense
 {
     public class Tower : DrawnObject
     {
+        internal float _damage;
+        internal float _range;
+        internal int _fireRateMS;
+        internal bool Fired = false;
+        internal double _fireTimer = 0;
+
+        internal Monster Target;
         public Tower(int worldX, int worldY, int width = 0, int height = 0)
             : base(worldX, worldY,width,height)
         {

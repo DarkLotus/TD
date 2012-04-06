@@ -35,7 +35,6 @@ using PixelFormat = SharpDX.Direct2D1.PixelFormat;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using System.Threading;
-using OpenUO.Ultima;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
@@ -121,7 +120,7 @@ namespace Tower_Defense
             var fps = 0;
             var frame = 0;
            // this.KeyDown += myform_KeyDown;
-           this.MouseMove += myform_MouseMove;
+
             int oldx = 0, oldy = 0;
            RenderLoop.Run(this, () =>
             {
@@ -213,78 +212,12 @@ namespace Tower_Defense
 
 
         private int mousex, mousey;
-        void myform_MouseMove(object sender, MouseEventArgs e)
-        {
-            mousex = e.X;
-            mousey = e.Y;
-        }
-        int[,] __tiles = new int[41, 41];
-        ArtworkFactory<System.Drawing.Bitmap> texfactory = new OpenUO.Ultima.ArtworkFactory<System.Drawing.Bitmap>(OpenUO.Ultima.InstallationLocator.Locate().First());
-        OpenUO.Ultima.Map map = new OpenUO.Ultima.Maps(OpenUO.Ultima.InstallationLocator.Locate().First()).Felucca;
+       
         private Game g;
 
 
-        private int[,] GetDrawableTiles(int X, int Y)
-        {
+       
 
-            MemoryStream st = new MemoryStream();
-            int a = 0, m = 0;
-            for (int x = X - 20; x <= X + 20; x++)
-            {
-                for (int y = Y + 20; y >= Y - 20; y--)
-                {
-                    var tile = map.Tiles.GetLandTile(x, y);
-                    if (!LandBitmaps.ContainsKey(tile.Id))
-                    {
-                        var texture = texfactory.GetLand(tile.Id);
-                        texture.MakeTransparent(System.Drawing.Color.Black);
-                        texture.Save(st, ImageFormat.Png);
-                        LandBitmaps.Add(tile.Id, LoadFromFile(d2dRenderTarget, st));
-
-                    }
-                    __tiles[a, m] = tile.Id;
-
-                    st = new MemoryStream();
-                    m++;
-                }
-                m = 0;
-                a++;
-            }
-            return __tiles;
-        }
-
-
-        private int[,] GetDrawableStatics(int X, int Y)
-        {
-            //ushort[,] __tiles = new ushort[41, 41];
-            MemoryStream st = new MemoryStream();
-            int a = 0, m = 0;
-            for (int x = X - 20; x <= X + 20; x++)
-            {
-                for (int y = Y + 20; y >= Y - 20; y--)
-                {
-                    var tile = map.Tiles.GetStaticTiles(x, y);
-                    foreach (var t in tile)
-                    {
-                        if (!StaticBitmaps.ContainsKey(t.Id))
-                        {
-
-                            var texture = texfactory.GetStatic(t.Id);
-                            texture.MakeTransparent(System.Drawing.Color.Black);
-                            texture.Save(st, ImageFormat.Png);
-                            StaticBitmaps.Add(t.Id, LoadFromFile(d2dRenderTarget, st));
-                            st = new MemoryStream();
-                        }
-                        __tiles[a, m] = t.Id;
-                    }
-
-                    m++;
-                }
-                m = 0;
-                a++;
-            }
-            return __tiles;
-        }
         void myform_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.W)

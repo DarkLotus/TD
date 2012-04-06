@@ -27,10 +27,7 @@ namespace Tower_Defense.Towers
 {
     public class BasicTower : Tower
     {
-        private float _damage;
-        private float _range;
-        private int _fireRateMS;
-        private Color4 color;
+
         public BasicTower(int x, int y)
             : base(x, y, 24, 24)
         {
@@ -40,7 +37,7 @@ namespace Tower_Defense.Towers
             color = Colors.Red;
         }
 
-        double _fireTimer = 0;
+
         public override void Update(World world, double curTime)
         {
             if(ScreenSprite == null)
@@ -67,7 +64,7 @@ namespace Tower_Defense.Towers
             base.Update(world,curTime);
 
         }
-        private bool Fired = false;
+
         private Monster Target;
         public override void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
         {

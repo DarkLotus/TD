@@ -27,9 +27,6 @@ namespace Tower_Defense.Towers
 {
     public class SlowingTower : Tower
     {
-        private float _damage;
-        private float _range;
-        private int _fireRateMS;
 
         private double SlowDurationMS = 4000;
         private float SlowEffect = 0.08f;
@@ -43,7 +40,6 @@ namespace Tower_Defense.Towers
             
         }
 
-        double _fireTimer = 0;
         public override void Update(World world, double curTime)
         {
             if(ScreenSprite == null)
@@ -71,8 +67,7 @@ namespace Tower_Defense.Towers
             base.Update(world,curTime);
 
         }
-        private bool Fired = false;
-        private Monster Target;
+        
         public override void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
         {
             GameForm.TowerBrush.Color = color;
