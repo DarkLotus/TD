@@ -56,7 +56,19 @@ namespace Tower_Defense.Objects
         {
             for (int i = 0; i < 50; i++)
             {
-                Particles.Add(new Particle(x, y, new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f)), 500 + rand.Next(3000)) { Color = Colors.WhiteSmoke });
+                var v = new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f));
+                Particles.Add(new Particle(x, y,v , 500 + rand.Next(2000)) { Color = Colors.WhiteSmoke });
+            }
+
+        }
+
+        public void CreatePulse(int x, int y)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                var v = new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f));
+                v.Normalize();
+                Particles.Add(new Particle(x+ rand.Next(2), y, v, 2000) { Color = Colors.LightBlue });
             }
 
         }
@@ -124,6 +136,7 @@ namespace Tower_Defense.Objects
             Location2 = new Vector2(x, y);
             LifeSpanMS = lifeSpan;
             Velocity = velocity;
+
             el = new SharpDX.Direct2D1.Ellipse(Location, 1, 1);
 
         }

@@ -248,7 +248,7 @@ namespace Tower_Defense
         public GameForm()
             : base("test")
         {
-            this.Show2();
+            //this.Show2();
         }
 
         public GameForm(Game g)

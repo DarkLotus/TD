@@ -34,7 +34,7 @@ namespace Tower_Defense.Towers
             : base(x, y, 24, 24)
         {
             _damage = 1f;
-            _fireRateMS = 200;
+            _fireRateMS = 1500;
             _range = 3f;
             color = Colors.LightBlue;
             
@@ -48,18 +48,29 @@ namespace Tower_Defense.Towers
             {
                 try
                 {
-                    Monster target = (Monster)world.DrawableObjects.First(x => x.Type == ObjectType.Monster && Helper.GetDistance(x.WorldX, x.WorldY, this.WorldX, this.WorldY) < _range);
-                    if (target != null)
+                    var monsters = world.DrawableObjects.FindAll(a => a.Type == ObjectType.Monster && Helper.GetDistance(a.WorldX, a.WorldY, this.WorldX, this.WorldY) < _range);
+                    if (monsters.Count > 0)
                     {
                         Fired = true;
-                        Target = target;
-                        var debug = Helper.GetDistance(target.WorldX, target.WorldY, this.WorldX, this.WorldY);
-                        target.DoDamage(_damage);
-                        target.SlowMe(SlowEffect, curTime + SlowDurationMS);
-                        world.ParticleMan.CreateBullet(this, target);
-                        _fireTimer = curTime + _fireRateMS;
+                        foreach (var target in monsters)
+                        {
+                            if (target != null)
+                            {
+                                
+                                Target = (Monster)target;
+                                //var debug = Helper.GetDistance(target.WorldX, target.WorldY, this.WorldX, this.WorldY);
+                                Target.DoDamage(_damage);
+                                Target.SlowMe(SlowEffect, curTime + SlowDurationMS);
+
+                                _fireTimer = curTime + _fireRateMS;
+                            }
+                            
+                        }
+                        world.ParticleMan.CreatePulse(this.ViewX + Width/2, this.ViewY + Height/2);
                     }
                     Fired = false;
+                    //Monster target = (Monster)world.DrawableObjects.First(x => x.Type == ObjectType.Monster && Helper.GetDistance(x.WorldX, x.WorldY, this.WorldX, this.WorldY) < _range);
+
                     
                 }
                 catch { }

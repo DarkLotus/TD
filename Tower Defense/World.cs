@@ -43,7 +43,7 @@ namespace Tower_Defense
         {
             Player = new Tower_Defense.Player();
             Gameform = gf;
-            Map = new Level();
+            Map = new Level("map");
             MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
 
         }

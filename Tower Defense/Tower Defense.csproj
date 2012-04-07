@@ -83,7 +83,7 @@
     </Compile>
     <Compile Include="Helper.cs" />
     <Compile Include="MainMenu.cs" />
-    <Compile Include="Map.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="Monsters\Monster.cs" />
     <Compile Include="Monsters\Runner.cs" />
     <Compile Include="Objects\ParticleManager.cs" />

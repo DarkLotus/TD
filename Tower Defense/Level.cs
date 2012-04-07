@@ -37,25 +37,27 @@ namespace Tower_Defense
         public System.Drawing.Point Dest;
         public List<PathFinderNode> Path { get { if (_path == null) { _path = buildPath(); } return _path.ToList(); } }
 
-        internal Queue<Monster[]> Waves = new Queue<Monster[]>();
+        internal Queue<Queue<Monster>> Waves = new Queue<Queue<Monster>>();
         
         byte[,] grid;
         private List<PathFinderNode> _path;
 
         //TODO Level(string levelname)
         // Load all variables from Level file.
-        public Level()
+        public Level(string levelname)
         {
             Width = 16; Height = 16;
-            Map = LoadMap("levelname+tmx");
+            Map = LoadMap(levelname + ".tmx");
             grid = BuildNavMesh();
-            //Waves = LoadWaves("SS");
+           // Waves = LoadWaves(levelname + ".xml");
         }
 
-        private Queue<Monster[]> LoadWaves(string p)
+        private Queue<Queue<Monster>> LoadWaves(string p)
         {
             throw new NotImplementedException();
         }
+
+   
 
 
 
