@@ -32,16 +32,27 @@ namespace Tower_Defense
         internal float _baseHits;
         internal int ScoreValue;
         List<Algorithms.PathFinderNode> path;
-        
-        internal float _size { get { return Width - ((_baseHits - _hits)/2); } }
+        internal Level Map;
+        internal float _size 
+        { 
+            get 
+            {
+                float x = _hits / _baseHits; // = .50
+                return (Width *x); 
+            } 
+        }
         public Monster(Level map, int width = 0, int height = 0)
             : base(map.Start.X + (float)(Helper.random.NextDouble()), map.Start.Y, width, height)
         {
             Type = ObjectType.Monster;
             path = map.Path;
+            Map = map;
         }
         double _lastMove = 0;
         double _slowEffect = 0;
+        public virtual Monster Clone()
+        { return new Monster(Map, Width, Height); }
+
         public override void Update(World world, double curTime)
         {
             if (DeleteMe)
@@ -56,9 +67,9 @@ namespace Tower_Defense
             if (path.Count > 0 && curTime > _lastMove)
             {
                 Move(_velocity);
-                //_lastMove = curTime + 30;
+                _lastMove = curTime + 30;
             }
-            else
+            else if(path.Count == 0)
             {
                 world.Player.Lives--;
                 this.DeleteMe = true;

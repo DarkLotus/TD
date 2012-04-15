@@ -34,7 +34,7 @@ namespace Tower_Defense
         // need a player object
         public int Lives = 20;
 
-        List<DrawnObject> MobsToSpawn = new List<DrawnObject>();
+        //List<DrawnObject> MobsToSpawn = new List<DrawnObject>();
         internal Objects.ParticleManager ParticleMan = new Objects.ParticleManager();
         /// <summary>
         /// Called when New Game is clicked
@@ -44,22 +44,33 @@ namespace Tower_Defense
             Player = new Tower_Defense.Player();
             Gameform = gf;
             Map = new Level("map");
-            MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
+            //MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
 
         }
 
         double spawntimer = 0;
 
-        double initalTimeBetweenMobs = 1000;
+        double initalTimeBetweenMobs = 500;
+        Queue<Monster> CurrentWave = new Queue<Monster>();
+        public int Wave = 0;
+        public int MobsRemaining { get { return CurrentWave.Count; } }
         public void Update(double curTime)
         {
             if (curTime > spawntimer)
             {
-                DrawableObjects.Add(new Monsters.Runner(Gameform.d2dFactory, Map));
-                spawntimer = curTime + initalTimeBetweenMobs;
-                initalTimeBetweenMobs -= 10;
-                if (initalTimeBetweenMobs < 20)
-                    spawntimer = curTime + 10000;
+                //DrawableObjects.Add(new Monsters.Runner(Gameform.d2dFactory, Map));
+                if (CurrentWave.Count == 0)
+                {
+                    if (Map.Waves.Count > 0)
+                    {
+                        CurrentWave = Map.Waves.Dequeue();
+                        Wave++;
+                    }
+                }
+                if(CurrentWave.Count > 0)
+                DrawableObjects.Add(CurrentWave.Dequeue());
+                spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(500);
+
             }
                
 

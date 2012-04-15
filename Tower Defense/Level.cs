@@ -27,6 +27,13 @@ using System.IO;
 
 namespace Tower_Defense
 {
+    public class LevelDefinition
+    {
+        public int WavesCount;
+        public double DelayBetweenWavesMS;
+
+    }
+
     public class Level
     {
         public MapTile[] Map;
@@ -49,16 +56,26 @@ namespace Tower_Defense
             Width = 16; Height = 16;
             Map = LoadMap(levelname + ".tmx");
             grid = BuildNavMesh();
-           // Waves = LoadWaves(levelname + ".xml");
+            Waves = LoadWaves(levelname + ".xml");
         }
 
         private Queue<Queue<Monster>> LoadWaves(string p)
         {
-            throw new NotImplementedException();
+            Queue<Queue<Monster>> waves = new Queue<Queue<Monster>>();
+            waves.Enqueue(makeawave(new Monsters.Runner(this)));
+            waves.Enqueue(makeawave(new Monsters.Tank(this)));
+            return waves;
         }
 
-   
 
+        private Queue<Monster> makeawave(Monster type)
+        {
+
+            Queue<Monster> mobs = new Queue<Monster>();
+            for (int i = 0; i < 20; i++)
+                mobs.Enqueue(type.Clone());
+            return mobs;
+        }
 
 
 

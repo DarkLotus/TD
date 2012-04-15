@@ -30,7 +30,7 @@ namespace Tower_Defense
         static MainMenu()
         {
             Buttons[0] = new Button("New Game", 400, 400);
-            Buttons[1] = new Button("Exit", 400, 440);
+            Buttons[1] = new Button("Exit", 400, 460);
         }
         internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget,SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
         {
@@ -41,10 +41,32 @@ namespace Tower_Defense
 
     public static class PauseMenu
     {
-
-        internal static void Draw(SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        public static Button[] Buttons = new Button[2];
+        static PauseMenu()
         {
+            Buttons[0] = new Button("Continue", 400, 400);
+            Buttons[1] = new Button("Exit", 400, 460);
+        }
+        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget, SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        {
+            foreach (var b in Buttons)
+                b.Draw(d2dRenderTarget, d2dFactory, fontFactory);
+        }
+    }
 
+    public static class LevelSelect
+    {
+        public static Button[] Buttons = new Button[2];
+        static LevelSelect()
+        {
+            //TODO Parse list of levels, add buttons for each level.
+            Buttons[0] = new Button("Continue", 400, 400);
+            Buttons[1] = new Button("Exit", 400, 460);
+        }
+        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget, SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        {
+            foreach (var b in Buttons)
+                b.Draw(d2dRenderTarget, d2dFactory, fontFactory);
         }
     }
 
@@ -58,7 +80,7 @@ namespace Tower_Defense
             this.Text = Text;
             this.ScreenX = X;
             this.ScreenY = Y;
-            this.button = new RectangleF(X, Y, X + 100, Y + 40);
+            this.button = new RectangleF(X, Y, X + 200, Y + 60);
         }
 
         internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget,SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)

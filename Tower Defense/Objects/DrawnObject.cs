@@ -62,9 +62,9 @@ namespace Tower_Defense
         if(ScreenSprite != null)
         {  
             if (this.Type == ObjectType.Tower)
-                d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.solidColorBrush);
+                d2dRenderTarget.FillGeometry(ScreenSprite, GameForm.solidColorBrush);
             else
-                d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.solidColorBrush);
+                d2dRenderTarget.FillGeometry(ScreenSprite, GameForm.solidColorBrush);
         }
             
         }

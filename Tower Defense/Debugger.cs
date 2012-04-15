@@ -18,7 +18,7 @@ namespace Tower_Defense
             InitializeComponent();
             Thread t = new Thread(new ThreadStart(PumpLog));
             t.IsBackground = true;
-            t.Start();
+            //t.Start();
         }
         private List<string> msgs = new List<string>();
 
@@ -32,13 +32,37 @@ namespace Tower_Defense
         {
             if(msgs.Count > 0)
             {
-                foreach (var s in msgs)
-                    this.textBox1.Text += s;
                 lock (msgs)
-                    msgs.Clear();
+                {
+                    for (int i = msgs.Count - 1; i > 0; i--)
+                    {
+                        SetText(msgs[i]);
+                        msgs.RemoveAt(i);
+                    }
+                }
+
             }
-            Thread.Sleep(5);
+            Thread.Sleep(1);
         }
         }
+
+        delegate void SetTextCallback(string text);
+        private void SetText(string text)
+        {
+            // InvokeRequired required compares the thread ID of the
+            // calling thread to the thread ID of the creating thread.
+            // If these threads are different, it returns true.
+            text = this.textBox1.Text + "\\n" + text;
+            if (this.textBox1.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SetText);
+                this.Invoke(d, new object[] { text });
+            }
+            else
+            {
+                this.textBox1.Text = text;
+            }
+        }
+
     }
 }

@@ -32,7 +32,7 @@ namespace Tower_Defense
     {
         public GameState GameState;// // 00 MainMenu, 01 Pause, 02 Ingame
         public World World;
-        public const double UpdateInterval = 25; // Milliseconds
+        public const double UpdateInterval = 33; // Milliseconds
         public bool Debug = true;
         GameForm Gameform;
         public int UpdateTime = 0;
@@ -50,8 +50,16 @@ namespace Tower_Defense
             Gameform = (GameForm)gf;
             GameState = Tower_Defense.GameState.MainMenu;
             Gameform.MouseClick += Gameform_MouseClick;
+            Gameform.KeyUp += Gameform_KeyUp;
             Update();
         }
+
+        void Gameform_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            Keys.Add(e);
+        }
+
+        private List<System.Windows.Forms.KeyEventArgs> Keys = new List<System.Windows.Forms.KeyEventArgs>();
         private List<System.Windows.Forms.MouseEventArgs> Clicks = new List<System.Windows.Forms.MouseEventArgs>();
         void Gameform_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
@@ -69,6 +77,9 @@ namespace Tower_Defense
                 if (GameState == Tower_Defense.GameState.InGame)
                 {
                     World.Update(TotalTimer.Elapsed.TotalMilliseconds);
+                    if (Gameform.Buffer.Count < 3)
+                        Gameform.Buffer.Enqueue(World.DrawableObjects.ToArray());
+                    //Gameform.Buffer.Enqueue(World.DrawableObjects.ToArray());
                     if (World.Player.Lives <= 0)
                     {
                         GameState = Tower_Defense.GameState.MainMenu;
@@ -79,6 +90,9 @@ namespace Tower_Defense
                     break;
                 
                 HandleUserInput();
+
+               
+
                 UpdateTime = (int)(s.Elapsed.Milliseconds);
                 if (UpdateTime > UpdateInterval)
                     Gameform.Debugger.Debug("GameLoop took " + UpdateTime + "ms");
@@ -108,6 +122,26 @@ namespace Tower_Defense
                     case Tower_Defense.GameState.InGame:
                         handleInGameInput(click);
                         break;
+                }
+            }
+            while (Keys.Count > 0)
+            {
+                var key = Keys[0]; Keys.RemoveAt(0);
+                switch (GameState)
+                {
+                    case Tower_Defense.GameState.InGame:
+                        if (key.KeyData == System.Windows.Forms.Keys.Escape)
+                            GameState = Tower_Defense.GameState.InGamePause;
+                        break;
+                    case Tower_Defense.GameState.InGamePause:
+                        if (key.KeyData == System.Windows.Forms.Keys.Escape)
+                            GameState = Tower_Defense.GameState.InGame;
+                        break;
+                    case Tower_Defense.GameState.MainMenu:
+                        if (key.KeyData == System.Windows.Forms.Keys.Escape)
+                            GameState = Tower_Defense.GameState.Exit;
+                        break;
+                
                 }
             }
         }
@@ -154,7 +188,17 @@ namespace Tower_Defense
 
         private void handleMenuInputPauseMenuInput(System.Windows.Forms.MouseEventArgs click)
         {
-            throw new NotImplementedException();
+            if (Contains(MainMenu.Buttons[0].button, click.Location))
+            {
+                // continue
+                
+                this.GameState = Tower_Defense.GameState.InGame;
+            }
+            if (Contains(MainMenu.Buttons[1].button, click.Location))
+            {
+                // exit
+                this.GameState = Tower_Defense.GameState.MainMenu;
+            }
         }
 
         private void handleMenuInput(System.Windows.Forms.MouseEventArgs click)
