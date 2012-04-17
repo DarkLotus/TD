@@ -49,7 +49,7 @@ namespace Tower_Defense
         public static SolidColorBrush TowerBrush;
         public static Dictionary<int, Bitmap> LandBitmaps = new Dictionary<int, Bitmap>();
         public static Dictionary<int, Bitmap> StaticBitmaps = new Dictionary<int, Bitmap>();
-        RenderTarget d2dRenderTarget;
+        public RenderTarget d2dRenderTarget;
         int[,] StaticsToDraw = new int[41, 41];
         int[,] TilesToDraw = new int[41, 41];
         int charposx = 1424, charposy = 2549;
@@ -107,15 +107,25 @@ namespace Tower_Defense
         }
         public Debugger Debugger = new Debugger();
 
+        public Dictionary<short, Bitmap> MapTiles = new Dictionary<short, Bitmap>();
+        private void LoadTexs()
+        {
+            MapTiles.Add(0,LoadFromFile(d2dRenderTarget,File.OpenRead("Art\\Grass.jpg")));
+            MapTiles.Add(1, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\Soil.jpg")));
+        }
+
         public System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]> Buffer = new System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]>();
         DrawnObject[] _buffer;
         public void Show2()
         {
-            
             Debugger.Show();
             this.Size = new System.Drawing.Size(1440, 900);
             ViewPort = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
             SetupDX();
+            LoadTexs();
+
+
+
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -146,7 +156,7 @@ namespace Tower_Defense
                             foreach (var x in Game.World.Map.Map)
                             {
                                 if (Contains(ViewPort, x.ScreenSprite))
-                                    x.Draw(d2dRenderTarget);
+                                    x.Draw(this);
                             }
 
                             if (Buffer.TryDequeue(out _buffer))
@@ -184,7 +194,7 @@ namespace Tower_Defense
                         case GameState.InGamePause:
                             foreach (var x in Game.World.Map.Map)
                             {
-                                x.Draw(d2dRenderTarget);
+                                x.Draw(this);
                             }
                             foreach (var o in Game.World.DrawableObjects) // TODO THREAD SAFE
                             {
