@@ -53,8 +53,8 @@ namespace Tower_Defense
         int[,] StaticsToDraw = new int[41, 41];
         int[,] TilesToDraw = new int[41, 41];
         int charposx = 1424, charposy = 2549;
-        int _drawXoffset = -200;
-        int _drawYoffset = 400;
+        public int _drawXoffset = 0;
+        public int _drawYoffset = 20;
         public SharpDX.Direct2D1.Factory d2dFactory;
         SharpDX.DirectWrite.Factory fontFactory;
         Device1 device;
@@ -108,10 +108,13 @@ namespace Tower_Defense
         public Debugger Debugger = new Debugger();
 
         public Dictionary<short, Bitmap> MapTiles = new Dictionary<short, Bitmap>();
+        public Dictionary<short, AnimatedTexture> MonsterModels = new Dictionary<short, AnimatedTexture>();
         private void LoadTexs()
         {
             MapTiles.Add(0,LoadFromFile(d2dRenderTarget,File.OpenRead("Art\\Grass.jpg")));
             MapTiles.Add(1, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\Soil.jpg")));
+            MapTiles.Add(99, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower-isometric.png")));
+            MonsterModels.Add(0, new AnimatedTexture("imp", 127, 95, 15, device, d2dRenderTarget));
         }
 
         public System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]> Buffer = new System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]>();
@@ -164,7 +167,7 @@ namespace Tower_Defense
                                 foreach (var vv in _buffer)
                                 {
                                     if (Contains(ViewPort, vv))
-                                        vv.Draw(d2dRenderTarget);
+                                        vv.Draw(this);
                                 }
                             }
                             /*else
@@ -198,7 +201,7 @@ namespace Tower_Defense
                             }
                             foreach (var o in Game.World.DrawableObjects) // TODO THREAD SAFE
                             {
-                                o.Draw(d2dRenderTarget);
+                                o.Draw(this);
                             }
                             d2dRenderTarget.DrawText("Score: " + Game.World.Player.Score + " Lives Left: " + Game.World.Player.Lives + " Wave #" + Game.World.Wave + "MobsLeft: " + Game.World.MobsRemaining, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(this.Width / 2, 0, this.Width, 225), solidColorBrush);
                             PauseMenu.Draw(d2dRenderTarget, d2dFactory, fontFactory);
@@ -255,9 +258,6 @@ namespace Tower_Defense
 
 
 
-        private int mousex, mousey;
-       
-        private Game g;
 
 
        

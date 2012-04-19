@@ -32,7 +32,7 @@ namespace Tower_Defense
     {
         public GameState GameState;// // 00 MainMenu, 01 Pause, 02 Ingame
         public World World;
-        public const double UpdateInterval = 33; // Milliseconds
+        public const double UpdateInterval = 16; // Milliseconds
         public bool Debug = true;
         GameForm Gameform;
         public int UpdateTime = 0;
@@ -151,7 +151,7 @@ namespace Tower_Defense
             if(!Contains(Gameform.ViewPort,click.Location))
                 return;
             foreach (var o in this.World.DrawableObjects)
-                if (Contains(o.ScreenSprite.GetBounds(), click.Location))
+                if (Contains(o.ScreenSprite, click.Location))
                     return;
 
             foreach (var m in this.World.Map.Map)
