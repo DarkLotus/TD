@@ -116,6 +116,9 @@ namespace Tower_Defense
                     case Tower_Defense.GameState.MainMenu:
                         handleMenuInput(click);
                         break;
+                    case Tower_Defense.GameState.LevelSelect:
+                        handleMenuInput(click);
+                        break;
                     case Tower_Defense.GameState.InGamePause:
                         handleMenuInputPauseMenuInput(click);
                         break;
@@ -203,17 +206,33 @@ namespace Tower_Defense
 
         private void handleMenuInput(System.Windows.Forms.MouseEventArgs click)
         {
-               if (Contains(MainMenu.Buttons[0].button, click.Location))
+            switch (GameState)
+            {
+                case Tower_Defense.GameState.MainMenu:
+                    if (Contains(MainMenu.Buttons[0].button, click.Location))
                {
                     // new game
-                   this.World = new World(Gameform);
-                   this.GameState = Tower_Defense.GameState.InGame;
+                   //this.World = new World(Gameform);
+                   this.GameState = Tower_Defense.GameState.LevelSelect;
                }
                if (Contains(MainMenu.Buttons[1].button, click.Location))
                {
                    // exit
                    this.GameState = Tower_Defense.GameState.Exit;
                }
+                    break;
+                case Tower_Defense.GameState.LevelSelect:
+                    foreach (var b in LevelSelect.Buttons)
+                    {
+                        if (Contains(b.button, click.Location))
+                        {
+                            this.World = new World(Gameform, b.Text);
+                            this.GameState = Tower_Defense.GameState.InGame;
+                        }
+                    }
+                    break;
+            }
+               
         }
 
         private bool Contains(RectangleF rect, System.Drawing.Point point)
@@ -234,7 +253,8 @@ namespace Tower_Defense
         InGamePause = 0x01,
         InGame = 0x02,
         EndGame = 0x03,
-        Exit = 0x04
+        Exit = 0x04,
+        LevelSelect = 0x05
     
     }
 }

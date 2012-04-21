@@ -91,11 +91,9 @@ namespace Tower_Defense
             if (curTime > nextanim)
             {
                 framenum++;
-                if (framenum >= (Direction + 1) * 5)
-                    framenum = (byte)(Direction * 5);
-                nextanim = curTime + MoveDelay * 3;
-                if (_slowEffect != 0)
-                    nextanim += MoveDelay * 2;
+                if (framenum >= (Direction + 1) * 19)
+                    framenum = (byte)(Direction * 19);
+                nextanim = curTime + 50;
             }
             
             base.Update(world,curTime);

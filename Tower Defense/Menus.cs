@@ -32,10 +32,10 @@ namespace Tower_Defense
             Buttons[0] = new Button("New Game", 400, 400);
             Buttons[1] = new Button("Exit", 400, 460);
         }
-        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget,SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        internal static void Draw(GameForm gf)
         {
             foreach (var b in Buttons)
-                b.Draw(d2dRenderTarget,d2dFactory, fontFactory);
+                b.Draw(gf);
         }
     }
 
@@ -47,35 +47,34 @@ namespace Tower_Defense
             Buttons[0] = new Button("Continue", 400, 400);
             Buttons[1] = new Button("Exit", 400, 460);
         }
-        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget, SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        internal static void Draw(GameForm gf)
         {
             foreach (var b in Buttons)
-                b.Draw(d2dRenderTarget, d2dFactory, fontFactory);
+                b.Draw(gf);
         }
     }
 
     public static class LevelSelect
     {
-        public static Button[] Buttons = new Button[2];
+        public static Button[] Buttons = new Button[1];
         static LevelSelect()
         {
             //TODO Parse list of levels, add buttons for each level.
-            Buttons[0] = new Button("Continue", 400, 400);
-            Buttons[1] = new Button("Exit", 400, 460);
+            Buttons[0] = new Button("DemoLevel", 400, 400);
         }
-        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget, SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        internal static void Draw(GameForm gf)
         {
             foreach (var b in Buttons)
-                b.Draw(d2dRenderTarget, d2dFactory, fontFactory);
+                b.Draw(gf);
         }
     }
 
-    public class Button
+    public class Button : DrawnObject
     {
-        string Text;
+        public string Text;
         int ScreenX, ScreenY;
         public RectangleF button;
-        public Button(string Text,int X, int Y)
+        public Button(string Text,int X, int Y) :base(50,0,0,200,60)
         {
             this.Text = Text;
             this.ScreenX = X;
@@ -83,12 +82,13 @@ namespace Tower_Defense
             this.button = new RectangleF(X, Y, X + 200, Y + 60);
         }
 
-        internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget,SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+
+        public override void Draw(GameForm gf)
         {
             GameForm.solidColorBrush.Color = Colors.Blue;
-            d2dRenderTarget.DrawRectangle(button, GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawRectangle(button, GameForm.solidColorBrush);
             GameForm.solidColorBrush.Color = Colors.Red;
-            d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 20.0f), button,GameForm.solidColorBrush);           
+            gf.d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 20.0f), button, GameForm.solidColorBrush);      
         }
     }
 }

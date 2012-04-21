@@ -83,7 +83,7 @@ namespace Tower_Defense
         {
             string mapdata = "";
             MapTile[] tiles = new MapTile[Width * Height];
-            XmlReader xr = XmlReader.Create(File.Open("Maps\\map.tmx", FileMode.Open));
+            XmlReader xr = XmlReader.Create(File.Open("Maps\\" + MapName, FileMode.Open));
             while (xr.Read())
             {
             if(xr.Name == "data")

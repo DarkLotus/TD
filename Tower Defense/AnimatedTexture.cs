@@ -17,10 +17,11 @@ namespace Tower_Defense
         public RectangleF DrawRegion;
         // TODO Add load from sprite sheet.
         private short spriteX, spriteY, count;
+        int width;
         public AnimatedTexture(string texturename, short spriteX,short spriteY,short count,Device device, RenderTarget d2dRender)
         {
             Texture = GameForm.LoadFromFile(d2dRender,File.OpenRead("art\\" + texturename + ".png"));
-            var xcnt = Texture.Size.Width / spriteX;
+            width = (int)Texture.Size.Width / spriteX;
             DrawRegion = new RectangleF(0, 0, spriteX, spriteY);
             this.count = count;
             this.spriteY = spriteY;
@@ -32,8 +33,8 @@ namespace Tower_Defense
                 return false;
             else
             {
-                var x = (FrameNum % 3) * spriteX;
-                var y = (FrameNum / 3) * spriteY;
+                var x = (FrameNum % width) * spriteX;
+                var y = (FrameNum / width) * spriteY;
                 this.DrawRegion = new RectangleF(x,y,x+spriteX,y+spriteY);
             }
             return true;

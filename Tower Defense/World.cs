@@ -39,11 +39,11 @@ namespace Tower_Defense
         /// <summary>
         /// Called when New Game is clicked
         /// </summary>
-        public World(GameForm gf)
+        public World(GameForm gf,string mapname)
         {
             Player = new Tower_Defense.Player();
             Gameform = gf;
-            Map = new Level("map");
+            Map = new Level(mapname);
             //MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
 
         }
