@@ -37,8 +37,8 @@ namespace Tower_Defense
         public short TextureIndex;
         public int Width;
         public int Height;
-        public int ViewX { get { return (int)(WorldX * 40); } } // TODO convert world to view world * TileSize
-        public int ViewY { get { return (int)(WorldY * 40); ; } }
+        public int ViewX { get { return (int)(WorldX * 40) + GameForm.ViewPort.Left; } } // TODO convert world to view world * TileSize
+        public int ViewY { get { return (int)(WorldY * 40) + GameForm.ViewPort.Top; } }
         public byte ViewZ;
         public bool DeleteMe = false;
         internal SharpDX.Color4 color;

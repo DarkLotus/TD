@@ -29,11 +29,12 @@ namespace Tower_Defense
         public static Button[] Buttons = new Button[2];
         static MainMenu()
         {
-            Buttons[0] = new Button("New Game", 400, 400);
-            Buttons[1] = new Button("Exit", 400, 460);
+            Buttons[0] = new Button("New Game", 0, 3);
+            Buttons[1] = new Button("Exit", 0, 2);
         }
         internal static void Draw(GameForm gf)
         {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
                 b.Draw(gf);
         }
@@ -60,7 +61,22 @@ namespace Tower_Defense
         static LevelSelect()
         {
             //TODO Parse list of levels, add buttons for each level.
-            Buttons[0] = new Button("DemoLevel", 400, 400);
+            Buttons[0] = new Button("DemoLevel", 0, 3);
+        }
+        internal static void Draw(GameForm gf)
+        {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
+            foreach (var b in Buttons)
+                b.Draw(gf);
+        }
+    }
+
+    public static class BuildMenu
+    {
+        public static Button[] Buttons = new Button[4];
+        static BuildMenu()
+        {
+        
         }
         internal static void Draw(GameForm gf)
         {
@@ -69,26 +85,65 @@ namespace Tower_Defense
         }
     }
 
-    public class Button : DrawnObject
+    public static class UpgradeMenu
+    {
+        public static Button[] Buttons = new Button[1];
+        static UpgradeMenu()
+        {
+
+        }
+        internal static void Draw(GameForm gf)
+        {
+            foreach (var b in Buttons)
+                b.Draw(gf);
+        }
+    }
+
+    public class Button
     {
         public string Text;
         int ScreenX, ScreenY;
         public RectangleF button;
-        public Button(string Text,int X, int Y) :base(50,0,0,200,60)
+        int Width = 0;
+        public RectangleF textbox { get 
+        {
+            if (box.Left == 0)
+                box = new RectangleF(ScreenX + Width / 5, ScreenY + 20, ScreenX + Width, ScreenY + 80);
+            return box;
+        
+        } }
+        private RectangleF box;
+        public Button(string Text,int X, int Y) //:base(50,0,0,200,60)
         {
             this.Text = Text;
             this.ScreenX = X;
             this.ScreenY = Y;
-            this.button = new RectangleF(X, Y, X + 200, Y + 60);
+            Width = 200;
+            this.button = new RectangleF(X, Y, X + 200, Y + 80);
+        }
+        public Button(string Text, int X, int Y,int width,int height)
+            //: base(50, 0, 0, width, height)
+        {
+            this.Text = Text;
+            this.ScreenX = X;
+            this.ScreenY = Y;
+            Width = width;
+            this.button = new RectangleF(X, Y, X + width, Y + height);
         }
 
-
-        public override void Draw(GameForm gf)
+        public void Draw(GameForm gf)
         {
-            GameForm.solidColorBrush.Color = Colors.Blue;
-            gf.d2dRenderTarget.DrawRectangle(button, GameForm.solidColorBrush);
+            //GameForm.solidColorBrush.Color = Colors.Blue;
+            //gf.d2dRenderTarget.DrawRectangle(button, GameForm.solidColorBrush);
+            if (ScreenX == 0)
+            {
+                ScreenX = (gf.Width / 2) - 160;
+                ScreenY = (int)(gf.Height / 1.5) - (ScreenY * 80);
+                this.button = new RectangleF(ScreenX, ScreenY, ScreenX + 320, ScreenY + 80);
+            }
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[50], this.button, 1f, BitmapInterpolationMode.Linear);
             GameForm.solidColorBrush.Color = Colors.Red;
-            gf.d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 20.0f), button, GameForm.solidColorBrush);      
+            gf.d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 20.0f), textbox, GameForm.solidColorBrush);      
         }
     }
 }

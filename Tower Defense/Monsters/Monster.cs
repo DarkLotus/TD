@@ -43,7 +43,7 @@ namespace Tower_Defense
         }
         AnimatedTexture tex;
         public Monster(short TextureIndex,Level map, int width = 0, int height = 0)
-            : base(TextureIndex,map.Start.X + (float)(Helper.random.NextDouble()), map.Start.Y, width, height)
+            : base(TextureIndex,map.Start.X/*(float)(Helper.random.NextDouble())*/, map.Start.Y, width, height)
         {
             
             Type = ObjectType.Monster;
@@ -133,7 +133,7 @@ namespace Tower_Defense
                 WorldX += _velocity;
                 Direction = 2;
             }
-            else if (this.WorldX > nextpath.X + 1)
+            else if (this.WorldX > nextpath.X)
             {
                 WorldX -= _velocity;
                 Direction = 1;
@@ -145,6 +145,26 @@ namespace Tower_Defense
             }
             else if (this.WorldY > nextpath.Y + 1)
                 WorldY -= _velocity;
+
+            
+            /*if (this.WorldX < nextpath.X)
+            {
+                WorldX += _velocity;
+                Direction = 2;
+            }
+            else if (this.WorldX > nextpath.X + 1)
+            {
+                WorldX -= _velocity;
+                Direction = 1;
+            }
+            else if (this.WorldY < nextpath.Y)
+            {
+                WorldY += _velocity;
+                Direction = 0;
+            }
+            else if (this.WorldY > nextpath.Y + 1)
+                WorldY -= _velocity;*/
+
             if (GetDistance(WorldX, WorldY, nextpath.X, nextpath.Y) < 0.5f)
                 path.RemoveAt(path.Count - 1);
             else if(new System.Drawing.Rectangle(nextpath.X,nextpath.Y,1,1).Contains((int)WorldX,(int)WorldY))

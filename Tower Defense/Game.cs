@@ -79,7 +79,6 @@ namespace Tower_Defense
                     World.Update(TotalTimer.Elapsed.TotalMilliseconds);
                     if (Gameform.Buffer.Count < 3)
                         Gameform.Buffer.Enqueue(World.DrawableObjects.ToArray());
-                    //Gameform.Buffer.Enqueue(World.DrawableObjects.ToArray());
                     if (World.Player.Lives <= 0)
                     {
                         GameState = Tower_Defense.GameState.MainMenu;
@@ -151,7 +150,30 @@ namespace Tower_Defense
 
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)
         {
-            if(!Contains(Gameform.ViewPort,click.Location))
+            foreach (var z in this.World.UIElements)
+            {
+                if (Contains(z.button, click.Location))
+                {
+                    if (z.Text == "Pause Game")
+                    {
+                        this.GameState = Tower_Defense.GameState.InGamePause;
+                        break;
+                    }
+                    if (z.Text == "Next Wave")
+                    {
+                        this.World.NextWave();
+                        break;
+                    }
+                    if (z.Text == "Exit")
+                    {
+                        GameState = Tower_Defense.GameState.MainMenu;
+                        World = null;
+                        break;
+                    }
+                }
+            }
+
+            if (!Contains(GameForm.ViewPort, click.Location))
                 return;
             foreach (var o in this.World.DrawableObjects)
                 if (Contains(o.ScreenSprite, click.Location))
@@ -167,11 +189,11 @@ namespace Tower_Defense
                         World.DrawableObjects.Add(new Towers.SlowingTower(m.WorldX, m.WorldY));
                 }
             return;
-            var x = click.X - this.Gameform.ViewPort.Left;
-            var y = click.Y - this.Gameform.ViewPort.Top;
+            var x = click.X - GameForm.ViewPort.Left;
+            var y = click.Y - GameForm.ViewPort.Top;
             x = x / this.World.Map.Width;
             y = y / this.World.Map.Height;
-            var total = (((click.X - this.Gameform.ViewPort.Left) * this.World.Map.Tilesize) / this.World.Map.Width) + ((click.Y - this.Gameform.ViewPort.Top) / this.World.Map.Tilesize);
+            var total = (((click.X - GameForm.ViewPort.Left) * this.World.Map.Tilesize) / this.World.Map.Width) + ((click.Y - GameForm.ViewPort.Top) / this.World.Map.Tilesize);
             total = x + (y * this.World.Map.Height);
             var tile = World.Map.Map[total];
             if (tile.Type == Level.MapTileType.EmptyTile)

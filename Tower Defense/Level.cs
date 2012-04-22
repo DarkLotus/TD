@@ -185,15 +185,15 @@ namespace Tower_Defense
             public int WorldX,WorldY;
             public RectangleF ScreenSprite;
             public MapTileType Type;
-            public int ViewX { get { return WorldX * TileSize; } }
-            public int ViewY { get { return WorldY * TileSize; } }
+            public int ViewX { get { return (WorldX * TileSize) + GameForm.ViewPort.Left;  } }
+            public int ViewY { get { return (WorldY * TileSize) + GameForm.ViewPort.Top ; } }
             public DrawingPoint ViewCentre { get { return new DrawingPoint(ViewX + TileSize / 2, ViewY + TileSize / 2); } }
             public MapTile(int worldx,int worldy,MapTileType type)
             {
                 this.WorldX = worldx;
                 this.WorldY = worldy;
                 this.Type = type;
-                this.ScreenSprite = new RectangleF(worldx * TileSize,worldy* TileSize,worldx * TileSize + TileSize,worldy* TileSize + TileSize);
+                this.ScreenSprite = new RectangleF(ViewX, ViewY, ViewX + TileSize, ViewY + TileSize);
             }
 
 

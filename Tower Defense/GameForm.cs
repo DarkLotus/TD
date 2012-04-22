@@ -62,7 +62,7 @@ namespace Tower_Defense
         Factory factory;
         Texture2D backBuffer;
         RenderTargetView renderView;
-        public System.Drawing.Rectangle ViewPort;
+        public static System.Drawing.Rectangle ViewPort;
         private void SetupDX()
         {
             var desc = new SwapChainDescription()
@@ -114,12 +114,81 @@ namespace Tower_Defense
             MapTiles.Add(0,LoadFromFile(d2dRenderTarget,File.OpenRead("Art\\Grass.jpg")));
             MapTiles.Add(1, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\Soil.jpg")));
             MapTiles.Add(99, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower-isometric.png")));
+
+            MapTiles.Add(51, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\bg.png")));
             MapTiles.Add(50, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\blue_button.png")));
             MonsterModels.Add(0, new AnimatedTexture("impnew", 128, 128, 60, device, d2dRenderTarget));
         }
 
         public System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]> Buffer = new System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]>();
         DrawnObject[] _buffer;
+
+
+        public void callback()
+        {
+            if (Game.GameState == GameState.Exit)
+                this.Close();
+            if (Buffer.Count == 0 && Game.GameState == GameState.InGame)
+            {
+                //Debugger.Debug("Buffer empty using Previous draw state");
+                d2dRenderTarget.RestoreDrawingState(myblock);
+            }
+            else
+            {
+                d2dRenderTarget.BeginDraw();
+                d2dRenderTarget.Clear(Colors.Black);
+                switch (Game.GameState)
+                {
+                    case GameState.InGame:
+                        Game.World.Draw(this); // Draw static map/UI
+                        if (Buffer.TryDequeue(out _buffer)) // Get buffer of dynamic objects and draw.
+                        {
+                            foreach (var vv in _buffer)
+                            {
+                                if (Contains(ViewPort, vv))
+                                    vv.Draw(this);
+                            }
+                        }
+                        solidColorBrush.Color = Colors.White;
+
+                        break;
+                    case GameState.MainMenu:
+                        MainMenu.Draw(this);
+                        break;
+                    case GameState.LevelSelect:
+                        LevelSelect.Draw(this);
+                        break;
+                    case GameState.InGamePause:
+                        Game.World.Draw(this); // Draw static map/UI
+                        foreach (var o in Game.World.DrawableObjects) // FIX ME, should be safe though as game is paused.
+                        {
+                            o.Draw(this);
+                        }
+                        PauseMenu.Draw(this);
+
+                        break;
+
+                }
+
+                //frame++;
+                if (Game.Debug)
+                    d2dRenderTarget.DrawText("FPS: " + fps + "UPS:" + Game.UpdateTime, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new SharpDX.RectangleF(0, 0, 500, 25), solidColorBrush);
+                //if (Game.Debug)
+                //    d2dRenderTarget.DrawText("MX " + mousex + " MY " + mousey, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(0, 25, 500, 225), solidColorBrush);
+
+                d2dRenderTarget.EndDraw();
+                d2dRenderTarget.SaveDrawingState(myblock);
+            }
+            swapChain.Present(1, PresentFlags.None);
+            if (stopwatch.Elapsed.Ticks < 16600000)
+                Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
+            fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);
+            stopwatch.Restart();       
+        }
+
+        Stopwatch stopwatch = new Stopwatch();
+        int fps = 0;
+        int frame = 0;
         public void Show2()
         {
             Debugger.Show();
@@ -127,109 +196,8 @@ namespace Tower_Defense
             ViewPort = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
             SetupDX();
             LoadTexs();
-
-
-
-
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            // Main loop
-            var fps = 0;
-            var frame = 0;
-           // this.KeyDown += myform_KeyDown;
-
-            int oldx = 0, oldy = 0;
-            myblock = new DrawingStateBlock(d2dFactory);
-           RenderLoop.Run(this, () =>
-            {
-                if (Game.GameState == GameState.Exit)
-                    this.Close();
-                if (Buffer.Count == 0 && Game.GameState == GameState.InGame)
-                {
-                    //Debugger.Debug("Buffer empty using Previous draw state");
-                    d2dRenderTarget.RestoreDrawingState(myblock);
-                }
-                else
-                {
-
-                    d2dRenderTarget.BeginDraw();
-                    d2dRenderTarget.Clear(Colors.Black);
-                    switch (Game.GameState)
-                    {
-                        case GameState.InGame:
-                            foreach (var x in Game.World.Map.Map)
-                            {
-                                if (Contains(ViewPort, x.ScreenSprite))
-                                    x.Draw(this);
-                            }
-
-                            if (Buffer.TryDequeue(out _buffer))
-                            {
-                                foreach (var vv in _buffer)
-                                {
-                                    if (Contains(ViewPort, vv))
-                                        vv.Draw(this);
-                                }
-                            }
-                            /*else
-                            {
-                                if (_buffer != null)
-                                {
-                                    foreach (var vv in _buffer)
-                                    {
-                                        if (Contains(ViewPort, vv))
-                                            vv.Draw(d2dRenderTarget);
-                                    }
-                                }
-                            }*/
-                            /*foreach (var o in Game.World.DrawableObjects.ToArray()) // TODO THREAD SAFE
-                            {
-                                if (Contains(ViewPort, o))
-                                    o.Draw(d2dRenderTarget);
-                            }*/
-                            Game.World.ParticleMan.Draw(d2dRenderTarget);
-                            solidColorBrush.Color = Colors.White;
-                            d2dRenderTarget.DrawText("Score: " + Game.World.Player.Score + " Lives Left: " + Game.World.Player.Lives + " Wave #" + Game.World.Wave + "MobsLeft: " + Game.World.MobsRemaining, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(this.Width / 2, 0, this.Width, 225), solidColorBrush);
-
-                            break;
-                        case GameState.MainMenu:
-                            MainMenu.Draw(this);
-                            break;
-                        case GameState.LevelSelect:
-                            LevelSelect.Draw(this);
-                            break;
-                        case GameState.InGamePause:
-                            foreach (var x in Game.World.Map.Map)
-                            {
-                                x.Draw(this);
-                            }
-                            foreach (var o in Game.World.DrawableObjects) // TODO THREAD SAFE
-                            {
-                                o.Draw(this);
-                            }
-                            d2dRenderTarget.DrawText("Score: " + Game.World.Player.Score + " Lives Left: " + Game.World.Player.Lives + " Wave #" + Game.World.Wave + "MobsLeft: " + Game.World.MobsRemaining, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(this.Width / 2, 0, this.Width, 225), solidColorBrush);
-                            PauseMenu.Draw(this);
-
-                            break;
-
-                    }
-
-                    frame++;
-                    if (Game.Debug)
-                        d2dRenderTarget.DrawText("FPS: " + fps + "UPS:" + Game.UpdateTime, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new SharpDX.RectangleF(0, 0, 500, 25), solidColorBrush);
-                    if (Game.Debug)
-                        d2dRenderTarget.DrawText("MX " + mousex + " MY " + mousey, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(0, 25, 500, 225), solidColorBrush);
-
-                    d2dRenderTarget.EndDraw();
-                    d2dRenderTarget.SaveDrawingState(myblock);
-                }
-                swapChain.Present(1, PresentFlags.None);
-                if (stopwatch.Elapsed.Ticks < 16600000)
-                    Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
-                fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);
-                stopwatch.Restart();              
-            });
-
+            myblock = new DrawingStateBlock(d2dFactory); stopwatch.Start();
+            RenderLoop.Run(this,new RenderLoop.RenderCallback(callback));
             // Release all resources
             renderView.Dispose();
             backBuffer.Dispose();
@@ -239,21 +207,21 @@ namespace Tower_Defense
             factory.Dispose();
         }
 
-        private bool Contains(System.Drawing.Rectangle ViewPort, RectangleF rectangleF)
+        public static bool Contains(System.Drawing.Rectangle ViewPort, RectangleF rectangleF)
         {
             if (ViewPort.Contains((int)rectangleF.Left,(int)rectangleF.Right))
                 return true;
             return false;
         }
 
-        private bool Contains(System.Drawing.Rectangle rect, DrawnObject point)
+        public static bool Contains(System.Drawing.Rectangle rect, DrawnObject point)
         {
             if (rect.Top < point.ViewY && rect.Bottom > point.ViewY + point.Height && rect.Left < point.ViewX && rect.Right > point.ViewX + point.Width)
                 return true;
             return false;
         }
 
-        private bool Contains(System.Drawing.Rectangle rect, Level.MapTile point)
+        public static bool Contains(System.Drawing.Rectangle rect, Level.MapTile point)
         {
             if (rect.Top < point.ScreenSprite.Top && rect.Bottom > point.ScreenSprite.Bottom && rect.Left < point.ScreenSprite.Left && rect.Right > point.ScreenSprite.Right)
                 return true;
