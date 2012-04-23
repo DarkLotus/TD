@@ -180,8 +180,8 @@ namespace Tower_Defense
                 d2dRenderTarget.SaveDrawingState(myblock);
             }
             swapChain.Present(1, PresentFlags.None);
-            if (stopwatch.Elapsed.Ticks < 16600000)
-                Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
+            //if (stopwatch.Elapsed.Ticks < 16600000)
+            //    Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
             fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);
             stopwatch.Restart();       
         }
@@ -194,6 +194,8 @@ namespace Tower_Defense
             Debugger.Show();
             this.Size = new System.Drawing.Size(1440, 900);
             ViewPort = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
+            BuildMenu.initMenu((int)(this.Width / 1.31),75,this);
+
             SetupDX();
             LoadTexs();
             myblock = new DrawingStateBlock(d2dFactory); stopwatch.Start();
@@ -201,7 +203,7 @@ namespace Tower_Defense
             // Release all resources
             renderView.Dispose();
             backBuffer.Dispose();
-
+            
             device.Dispose();
             swapChain.Dispose();
             factory.Dispose();

@@ -46,9 +46,10 @@ namespace Tower_Defense
             Player = new Tower_Defense.Player();
             Gameform = gf;
             Map = new Level(mapname);
-            UIElements.Add(new Button("Next Wave", gf.Width - 500, 5,150,50));
-            UIElements.Add(new Button("Pause Game", gf.Width - 300, 5,150,50));
-            UIElements.Add(new Button("Exit", gf.Width - 100, 5, 80, 50));
+            UIElements.Add(new Button("Next Wave", gf.Width - 425, 5,150,50));
+            UIElements.Add(new Button("Pause Game", gf.Width - 275, 5,150,50));
+            UIElements.Add(new Button("Exit", gf.Width - 125, 5, 100, 50));
+            
             //MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
 
         }
@@ -71,6 +72,7 @@ namespace Tower_Defense
             {
                     o.Draw(gf);
             }
+            BuildMenu.Draw(gf);
             ParticleMan.Draw(gf.d2dRenderTarget);
             gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2, 0, gf.Width, 225), GameForm.solidColorBrush);
         
