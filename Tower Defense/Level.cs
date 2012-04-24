@@ -83,7 +83,8 @@ namespace Tower_Defense
         {
             string mapdata = "";
             MapTile[] tiles = new MapTile[Width * Height];
-            XmlReader xr = XmlReader.Create(File.Open("Maps\\" + MapName, FileMode.Open));
+            var a = File.Open("Maps\\" + MapName, FileMode.Open);
+            XmlReader xr = XmlReader.Create(a);
             while (xr.Read())
             {
             if(xr.Name == "data")
@@ -108,6 +109,8 @@ namespace Tower_Defense
                 if ((MapTileType)tiletype == MapTileType.Dest)
                     this.Dest = new System.Drawing.Point(i % Width, i / Height);
             }
+            a.Close();
+            
             return tiles;
             
         }

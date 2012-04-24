@@ -30,6 +30,16 @@ namespace Tower_Defense.Towers
 
         private double SlowDurationMS = 4000;
         private float SlowEffect = 0.08f;
+        public SlowingTower()
+            : base(99, 0, 0, 24, 24)
+        {
+            _damage = 3f;
+            _fireRateMS = 2500;
+            _range = 3f;
+            color = Colors.LightBlue;
+
+        }
+
         public SlowingTower(int x, int y)
             : base(99,x, y, 24, 24)
         {

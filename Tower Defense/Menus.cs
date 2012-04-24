@@ -93,10 +93,10 @@ namespace Tower_Defense
             var width = (int)(gf.Width - (gf.Width / 1.3));
 
             X = x; Y = y;
-            Buttons[0] = new TowerBuildButton("Basic Tower", 10,8,"800ms",X, Y,width,height);
-            Buttons[1] = new TowerBuildButton("Cannon Tower", 25, 25, "2000ms", X, Y + height, width, height);
-            Buttons[2] = new TowerBuildButton("Slowing Tower", 50, 3, "1500ms", X, Y + height * 2, width, height);
-            Buttons[3] = new TowerBuildButton("Lightning Tower", 50, 6, "2000ms", X, Y + height * 3, width, height);
+            Buttons[0] = new TowerBuildButton(typeof(Towers.BasicTower),"Basic Tower", 10,8,"800ms",X, Y,width,height);
+            Buttons[1] = new TowerBuildButton(typeof(Towers.BasicTower),"Cannon Tower", 25, 25, "2000ms", X, Y + height, width, height);
+            Buttons[2] = new TowerBuildButton(typeof(Towers.SlowingTower),"Slowing Tower", 50, 3, "1500ms", X, Y + height * 2, width, height);
+            Buttons[3] = new TowerBuildButton(typeof(Towers.BasicTower),"Lightning Tower", 50, 6, "2000ms", X, Y + height * 3, width, height);
         }
 
         internal static void Draw(GameForm gf)
@@ -127,16 +127,17 @@ namespace Tower_Defense
         public int cost { get; set; }
 
         public int dmg { get; set; }
-
+        public Type towerType;
         public string firerate { get; set; }
         public TowerBuildButton(towerdescript t,int x, int y, int width, int height)
             : base("", x, y, width, height)
         { }
 
-        public TowerBuildButton(string name, int cost, int dmg, string firerate, int x, int y, int width, int height)
+        public TowerBuildButton(Type towerType,string name, int cost, int dmg, string firerate, int x, int y, int width, int height)
             : base("", x, y, width, height)
         {
             // TODO: Complete member initialization
+            this.towerType = towerType;
             this.name = name;
             this.cost = cost;
             this.dmg = dmg;
@@ -206,5 +207,7 @@ namespace Tower_Defense
         }
 
         public int Height { get; set; }
+
+       
     }
 }

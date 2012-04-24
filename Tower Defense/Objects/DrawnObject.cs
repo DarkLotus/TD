@@ -33,7 +33,9 @@ namespace Tower_Defense
     public class DrawnObject
     {
         public ObjectType Type;
-        public float WorldX, WorldY;
+        private float wx, wy;
+        public float WorldX { get { return wx; } set { wx = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40); } }
+        public float WorldY { get { return wy; } set { wy = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40); } }
         public short TextureIndex;
         public int Width;
         public int Height;
@@ -42,8 +44,8 @@ namespace Tower_Defense
         public byte ViewZ;
         public bool DeleteMe = false;
         internal SharpDX.Color4 color;
-
-        public RectangleF ScreenSprite;
+        private RectangleF screenspr;
+        public RectangleF ScreenSprite { get { return screenspr;} set { screenspr = value; } }
         public DrawnObject(short TextureIndex,float worldX,float worldY, int width = 0,int height = 0)
         {
             this.TextureIndex = TextureIndex;

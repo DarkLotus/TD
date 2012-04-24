@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
 using SharpDX;
+using System.Reflection;
 namespace Tower_Defense
 {
     /// <summary>
@@ -147,7 +148,7 @@ namespace Tower_Defense
                 }
             }
         }
-
+        Type TowerToBuild = null;
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)
         {
             foreach (var z in this.World.UIElements)
@@ -172,6 +173,14 @@ namespace Tower_Defense
                     }
                 }
             }
+            foreach (TowerBuildButton o in BuildMenu.Buttons)
+            {
+                if(Contains(o.button,click.Location))
+                {
+                    //o.Clicked(this, Gameform);
+                    TowerToBuild = o.towerType;
+                }
+            }
 
             if (!Contains(GameForm.ViewPort, click.Location))
                 return;
@@ -182,11 +191,14 @@ namespace Tower_Defense
             foreach (var m in this.World.Map.Map)
                 if (Contains(m.ScreenSprite, click.Location))
                 {
-                    m.Type = Level.MapTileType.TowerHere;
-                    if(click.Button == System.Windows.Forms.MouseButtons.Left)
-                    World.DrawableObjects.Add(new Towers.BasicTower(m.WorldX, m.WorldY));
-                    else if(click.Button == System.Windows.Forms.MouseButtons.Right)
-                        World.DrawableObjects.Add(new Towers.SlowingTower(m.WorldX, m.WorldY));
+                    if (TowerToBuild != null)
+                    { 
+                        m.Type = Level.MapTileType.TowerHere;
+                        Tower t = (Tower)Assembly.GetAssembly(TowerToBuild).CreateInstance(TowerToBuild.FullName);
+                        t.WorldX = m.WorldX;
+                        t.WorldY = m.WorldY;
+                        World.DrawableObjects.Add(t);
+                    }
                 }
             return;
             var x = click.X - GameForm.ViewPort.Left;
@@ -213,13 +225,13 @@ namespace Tower_Defense
 
         private void handleMenuInputPauseMenuInput(System.Windows.Forms.MouseEventArgs click)
         {
-            if (Contains(MainMenu.Buttons[0].button, click.Location))
+            if (Contains(PauseMenu.Buttons[0].button, click.Location))
             {
                 // continue
                 
                 this.GameState = Tower_Defense.GameState.InGame;
             }
-            if (Contains(MainMenu.Buttons[1].button, click.Location))
+            if (Contains(PauseMenu.Buttons[1].button, click.Location))
             {
                 // exit
                 this.GameState = Tower_Defense.GameState.MainMenu;

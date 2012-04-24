@@ -27,7 +27,14 @@ namespace Tower_Defense.Towers
 {
     public class BasicTower : Tower
     {
-
+        public BasicTower()
+            : base(99, 0, 0, 24, 24)
+        {
+            _damage = 8f;
+            _fireRateMS = 800;
+            _range = 2f;
+            color = Colors.Red;
+        }
         public BasicTower(int x, int y)
             : base(99,x, y, 24, 24)
         {
