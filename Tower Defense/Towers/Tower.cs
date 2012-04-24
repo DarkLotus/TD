@@ -30,13 +30,21 @@ namespace Tower_Defense
         internal int _fireRateMS;
         internal bool Fired = false;
         internal double _fireTimer = 0;
-
+        internal int Level = 1;
         internal Monster Target;
         public Tower(short TextureIndex,int worldX, int worldY, int width = 0, int height = 0)
             : base(TextureIndex,worldX, worldY, width, height)
         {
             Type = ObjectType.Tower;
 
+        }
+
+        internal void LevelUP()
+        {
+            this.Level++;
+            this._damage *= 1.2f;
+            this._range *= 1.2f;
+            this._fireRateMS = (int)(_fireRateMS * 1.2);
         }
     }
 }

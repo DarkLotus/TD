@@ -173,6 +173,22 @@ namespace Tower_Defense
                     }
                 }
             }
+            if (this.World != null)
+            {
+                if (this.World.ShowUpgradeMenu)
+                {
+                    if (Contains(UpgradeMenu.Buttons[0].button, click.Location))
+                    {
+                        UpgradeMenu.Tower.LevelUP();
+                        this.World.ShowUpgradeMenu = false;
+                    }
+                    else
+                    {
+                        this.World.ShowUpgradeMenu = false;
+                        return;
+                    }
+                }
+            }
             foreach (TowerBuildButton o in BuildMenu.Buttons)
             {
                 if(Contains(o.button,click.Location))
@@ -186,7 +202,14 @@ namespace Tower_Defense
                 return;
             foreach (var o in this.World.DrawableObjects)
                 if (Contains(o.ScreenSprite, click.Location))
-                    return;
+                {
+                    if (o.Type == ObjectType.Tower)
+                    {
+                        UpgradeMenu.Update((Tower)o);
+                        this.World.ShowUpgradeMenu = true;
+                    }
+                }
+                    //return;
 
             foreach (var m in this.World.Map.Map)
                 if (Contains(m.ScreenSprite, click.Location))
@@ -198,6 +221,7 @@ namespace Tower_Defense
                         t.WorldX = m.WorldX;
                         t.WorldY = m.WorldY;
                         World.DrawableObjects.Add(t);
+                        TowerToBuild = null;
                     }
                 }
             return;
@@ -277,6 +301,8 @@ namespace Tower_Defense
         }
 
 
+
+        
     }
 
 

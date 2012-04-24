@@ -55,7 +55,7 @@ namespace Tower_Defense
         }
 
         double spawntimer = 0;
-
+        public bool ShowUpgradeMenu { get; set; }
         double initalTimeBetweenMobs = 500;
         Queue<Monster> CurrentWave = new Queue<Monster>();
         public int Wave = 0;
@@ -75,7 +75,8 @@ namespace Tower_Defense
             BuildMenu.Draw(gf);
             ParticleMan.Draw(gf.d2dRenderTarget);
             gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2, 0, gf.Width, 225), GameForm.solidColorBrush);
-        
+            if (this.ShowUpgradeMenu)
+                UpgradeMenu.Draw(gf);
         }
         public void Update(double curTime)
         {

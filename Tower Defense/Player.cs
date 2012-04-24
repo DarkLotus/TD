@@ -10,11 +10,14 @@ namespace Tower_Defense
     {
         public int Score = 0;
         public int Lives = 20;
+        public int Gold = 100;
         //current score?
         // hold level here?
 
         public Player()
         { }
+
+        
 
     }
 }

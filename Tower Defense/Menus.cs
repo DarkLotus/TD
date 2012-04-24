@@ -71,13 +71,7 @@ namespace Tower_Defense
         }
     }
 
-    public class towerdescript
-    {
-        public string Name = "Arrow Tower";
-        public int Price = 10;
-        public int Damage = 8;
-        public string FireRate = "800ms";
-    }
+   
  
     public static class BuildMenu
     {
@@ -96,7 +90,7 @@ namespace Tower_Defense
             Buttons[0] = new TowerBuildButton(typeof(Towers.BasicTower),"Basic Tower", 10,8,"800ms",X, Y,width,height);
             Buttons[1] = new TowerBuildButton(typeof(Towers.BasicTower),"Cannon Tower", 25, 25, "2000ms", X, Y + height, width, height);
             Buttons[2] = new TowerBuildButton(typeof(Towers.SlowingTower),"Slowing Tower", 50, 3, "1500ms", X, Y + height * 2, width, height);
-            Buttons[3] = new TowerBuildButton(typeof(Towers.BasicTower),"Lightning Tower", 50, 6, "2000ms", X, Y + height * 3, width, height);
+            Buttons[3] = new TowerBuildButton(typeof(Towers.LightTower),"Lightning Tower", 50, 6, "2000ms", X, Y + height * 3, width, height);
         }
 
         internal static void Draw(GameForm gf)
@@ -110,14 +104,25 @@ namespace Tower_Defense
     {
         public static int X, Y;
         public static Button[] Buttons = new Button[1];
+        private static RectangleF Location;
+        public static Tower Tower;
         static UpgradeMenu()
         {
-
+            
         }
         internal static void Draw(GameForm gf)
         {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[50], Location, 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
                 b.Draw(gf);
+            gf.d2dRenderTarget.DrawText("Level" + Tower.Level, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 25, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
+        }
+
+        internal static void Update(Tower tower)
+        {
+            Location = new RectangleF(tower.ViewX + 50, tower.ViewY, tower.ViewX + 150, tower.ViewY + 150);
+            Buttons[0] = new Button("Upgrade", (int)(Location.Left + 10), (int)(Location.Top + 50),50,25) { fontsize = 10f};
+            Tower = tower;
         }
     }
     public class TowerBuildButton : Button
@@ -129,9 +134,9 @@ namespace Tower_Defense
         public int dmg { get; set; }
         public Type towerType;
         public string firerate { get; set; }
-        public TowerBuildButton(towerdescript t,int x, int y, int width, int height)
+        /*public TowerBuildButton(int x, int y, int width, int height)
             : base("", x, y, width, height)
-        { }
+        { }*/
 
         public TowerBuildButton(Type towerType,string name, int cost, int dmg, string firerate, int x, int y, int width, int height)
             : base("", x, y, width, height)
@@ -163,6 +168,7 @@ namespace Tower_Defense
         int ScreenX, ScreenY;
         public RectangleF button;
         int Width = 0;
+        public float fontsize = 20f;
         public RectangleF textbox { get 
         {
             if (box.Left == 0)
@@ -203,7 +209,7 @@ namespace Tower_Defense
             }
             gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[50], this.button, 1f, BitmapInterpolationMode.Linear);
             GameForm.solidColorBrush.Color = Colors.Red;
-            gf.d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 20.0f), textbox, GameForm.solidColorBrush);      
+            gf.d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", fontsize), textbox, GameForm.solidColorBrush);      
         }
 
         public int Height { get; set; }

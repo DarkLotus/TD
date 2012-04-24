@@ -31,7 +31,7 @@ namespace Tower_Defense.Towers
         private double SlowDurationMS = 4000;
         private float SlowEffect = 0.08f;
         public SlowingTower()
-            : base(99, 0, 0, 24, 24)
+            : base(101, 0, 0, 24, 24)
         {
             _damage = 3f;
             _fireRateMS = 2500;

@@ -28,7 +28,7 @@ namespace Tower_Defense.Towers
     public class BasicTower : Tower
     {
         public BasicTower()
-            : base(99, 0, 0, 24, 24)
+            : base(100, 0, 0, 24, 24)
         {
             _damage = 8f;
             _fireRateMS = 800;
