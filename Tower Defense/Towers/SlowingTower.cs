@@ -30,8 +30,18 @@ namespace Tower_Defense.Towers
 
         private double SlowDurationMS = 4000;
         private float SlowEffect = 0.08f;
+        public SlowingTower()
+            : base(99, 0, 0, 24, 24)
+        {
+            _damage = 3f;
+            _fireRateMS = 2500;
+            _range = 3f;
+            color = Colors.LightBlue;
+
+        }
+
         public SlowingTower(int x, int y)
-            : base(x, y, 24, 24)
+            : base(99,x, y, 24, 24)
         {
             _damage = 1f;
             _fireRateMS = 1500;
@@ -42,9 +52,7 @@ namespace Tower_Defense.Towers
 
         public override void Update(World world, double curTime)
         {
-            if(ScreenSprite == null)
-                this.ScreenSprite = new RectangleGeometry(world.Gameform.d2dFactory, new RectangleF(ViewX +12, ViewY +12, ViewX + Width, ViewY + Height));
-            if (curTime > _fireTimer)
+                        if (curTime > _fireTimer)
             {
                 try
                 {
@@ -79,16 +87,6 @@ namespace Tower_Defense.Towers
 
         }
         
-        public override void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
-        {
-            GameForm.TowerBrush.Color = color;
-            if (ScreenSprite != null)
-            d2dRenderTarget.DrawGeometry(ScreenSprite, GameForm.TowerBrush);
-            //if(Fired && Target != null)
-            //    d2dRenderTarget.DrawLine(new DrawingPointF(this.ViewX +15,this.ViewY + 15),new DrawingPointF(Target.ViewX + 15,Target.ViewY + 15),GameForm.TowerBrush);
-            //base.Draw(d2dRenderTarget);
-        }
-
-       
+               
     }
 }

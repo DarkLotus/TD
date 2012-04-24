@@ -27,7 +27,7 @@ namespace Tower_Defense.Monsters
     internal class Runner : Monster
     {
         internal Runner( Level map)
-            : base(map, 15, 15)
+            : base(0,map, 64, 48)
         {
             this._baseVelocity = 0.1f;
             this._hits = 50f;
@@ -40,8 +40,7 @@ namespace Tower_Defense.Monsters
         public override void Update(World world, double curTime)
         {
             base.Update(world,curTime);
-            //if (ScreenSprite == null)
-            this.ScreenSprite = new RectangleGeometry(world.Gameform.d2dFactory, new RectangleF(ViewX, ViewY, ViewX + _size, ViewY + _size));
+
         }
         public override Monster Clone()
         {

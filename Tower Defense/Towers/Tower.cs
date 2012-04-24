@@ -32,8 +32,8 @@ namespace Tower_Defense
         internal double _fireTimer = 0;
 
         internal Monster Target;
-        public Tower(int worldX, int worldY, int width = 0, int height = 0)
-            : base(worldX, worldY,width,height)
+        public Tower(short TextureIndex,int worldX, int worldY, int width = 0, int height = 0)
+            : base(TextureIndex,worldX, worldY, width, height)
         {
             Type = ObjectType.Tower;
 

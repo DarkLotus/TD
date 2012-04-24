@@ -33,19 +33,22 @@ namespace Tower_Defense
     public class DrawnObject
     {
         public ObjectType Type;
-        public float WorldX, WorldY;
-        public Geometry ScreenSprite;
-        public int TextureIndex;
+        private float wx, wy;
+        public float WorldX { get { return wx; } set { wx = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40); } }
+        public float WorldY { get { return wy; } set { wy = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40); } }
+        public short TextureIndex;
         public int Width;
         public int Height;
-        public int ViewX { get { return (int)(WorldX * 40); } } // TODO convert world to view world * TileSize
-        public int ViewY { get { return (int)(WorldY * 40); ; } }
+        public int ViewX { get { return (int)(WorldX * 40) + GameForm.ViewPort.Left; } } // TODO convert world to view world * TileSize
+        public int ViewY { get { return (int)(WorldY * 40) + GameForm.ViewPort.Top; } }
         public byte ViewZ;
         public bool DeleteMe = false;
         internal SharpDX.Color4 color;
-        public DrawnObject(float worldX,float worldY, int width = 0,int height = 0)
+        private RectangleF screenspr;
+        public RectangleF ScreenSprite { get { return screenspr;} set { screenspr = value; } }
+        public DrawnObject(short TextureIndex,float worldX,float worldY, int width = 0,int height = 0)
         {
-            //this.TextureIndex = TextureIndex;
+            this.TextureIndex = TextureIndex;
             this.WorldX = worldX;
             this.WorldY = worldY;
             if (width == 0 && height == 0)
@@ -54,19 +57,13 @@ namespace Tower_Defense
                 this.Height = (int)GameForm.StaticBitmaps[TextureIndex].Size.Height;
             }
             else { this.Width = width; this.Height = height; }
-        }
-        public virtual void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
-        {
-            if(this.color != null)
-            GameForm.solidColorBrush.Color = this.color;
-        if(ScreenSprite != null)
-        {  
-            if (this.Type == ObjectType.Tower)
-                d2dRenderTarget.FillGeometry(ScreenSprite, GameForm.solidColorBrush);
-            else
-                d2dRenderTarget.FillGeometry(ScreenSprite, GameForm.solidColorBrush);
+            ScreenSprite = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40);
         }
             
+        
+        public virtual void Draw(GameForm gf)
+        {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[TextureIndex], ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
         }
 
 

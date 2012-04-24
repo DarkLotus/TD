@@ -29,13 +29,14 @@ namespace Tower_Defense
         public static Button[] Buttons = new Button[2];
         static MainMenu()
         {
-            Buttons[0] = new Button("New Game", 400, 400);
-            Buttons[1] = new Button("Exit", 400, 460);
+            Buttons[0] = new Button("New Game", 0, 3);
+            Buttons[1] = new Button("Exit", 0, 2);
         }
-        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget,SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        internal static void Draw(GameForm gf)
         {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
-                b.Draw(d2dRenderTarget,d2dFactory, fontFactory);
+                b.Draw(gf);
         }
     }
 
@@ -47,48 +48,166 @@ namespace Tower_Defense
             Buttons[0] = new Button("Continue", 400, 400);
             Buttons[1] = new Button("Exit", 400, 460);
         }
-        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget, SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        internal static void Draw(GameForm gf)
         {
             foreach (var b in Buttons)
-                b.Draw(d2dRenderTarget, d2dFactory, fontFactory);
+                b.Draw(gf);
         }
     }
 
     public static class LevelSelect
     {
-        public static Button[] Buttons = new Button[2];
+        public static Button[] Buttons = new Button[1];
         static LevelSelect()
         {
             //TODO Parse list of levels, add buttons for each level.
-            Buttons[0] = new Button("Continue", 400, 400);
-            Buttons[1] = new Button("Exit", 400, 460);
+            Buttons[0] = new Button("DemoLevel", 0, 3);
         }
-        internal static void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget, SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        internal static void Draw(GameForm gf)
         {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
-                b.Draw(d2dRenderTarget, d2dFactory, fontFactory);
+                b.Draw(gf);
         }
     }
 
+    public class towerdescript
+    {
+        public string Name = "Arrow Tower";
+        public int Price = 10;
+        public int Damage = 8;
+        public string FireRate = "800ms";
+    }
+ 
+    public static class BuildMenu
+    {
+        public static int X, Y;
+        public static Button[] Buttons = new Button[4];
+        static BuildMenu()
+        {
+
+        }
+        public static void initMenu(int x,int y,GameForm gf)
+        {
+            var height = (int)((gf.Height - 75) / 4.2);
+            var width = (int)(gf.Width - (gf.Width / 1.3));
+
+            X = x; Y = y;
+            Buttons[0] = new TowerBuildButton(typeof(Towers.BasicTower),"Basic Tower", 10,8,"800ms",X, Y,width,height);
+            Buttons[1] = new TowerBuildButton(typeof(Towers.BasicTower),"Cannon Tower", 25, 25, "2000ms", X, Y + height, width, height);
+            Buttons[2] = new TowerBuildButton(typeof(Towers.SlowingTower),"Slowing Tower", 50, 3, "1500ms", X, Y + height * 2, width, height);
+            Buttons[3] = new TowerBuildButton(typeof(Towers.BasicTower),"Lightning Tower", 50, 6, "2000ms", X, Y + height * 3, width, height);
+        }
+
+        internal static void Draw(GameForm gf)
+        {
+            foreach (var b in Buttons)
+                b.Draw(gf);
+        }
+    }
+
+    public static class UpgradeMenu
+    {
+        public static int X, Y;
+        public static Button[] Buttons = new Button[1];
+        static UpgradeMenu()
+        {
+
+        }
+        internal static void Draw(GameForm gf)
+        {
+            foreach (var b in Buttons)
+                b.Draw(gf);
+        }
+    }
+    public class TowerBuildButton : Button
+    {
+        public string name { get; set; }
+
+        public int cost { get; set; }
+
+        public int dmg { get; set; }
+        public Type towerType;
+        public string firerate { get; set; }
+        public TowerBuildButton(towerdescript t,int x, int y, int width, int height)
+            : base("", x, y, width, height)
+        { }
+
+        public TowerBuildButton(Type towerType,string name, int cost, int dmg, string firerate, int x, int y, int width, int height)
+            : base("", x, y, width, height)
+        {
+            // TODO: Complete member initialization
+            this.towerType = towerType;
+            this.name = name;
+            this.cost = cost;
+            this.dmg = dmg;
+            this.firerate = firerate;
+
+        }
+        public override void Draw(GameForm gf)
+        {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[50], this.button, 1f, BitmapInterpolationMode.Linear);
+            GameForm.solidColorBrush.Color = Colors.Red;
+            gf.d2dRenderTarget.DrawText(name, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(this.button.Left + 15, this.button.Top + 10, this.button.Left + 100, this.button.Top + 20), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("$" + cost, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(this.button.Left + 15, this.button.Top + 50, this.button.Left + 100, this.button.Top + 70), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("Damage: " + dmg, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(this.button.Left + 15 + 75, this.button.Top + 50, this.button.Left + 200, this.button.Top + 70), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("FireRate: " + firerate, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(this.button.Left + 15, this.button.Top + 80, this.button.Left + 100, this.button.Top + 100), GameForm.solidColorBrush);
+        }
+
+    }
+
+
     public class Button
     {
-        string Text;
+        public string Text;
         int ScreenX, ScreenY;
         public RectangleF button;
-        public Button(string Text,int X, int Y)
+        int Width = 0;
+        public RectangleF textbox { get 
+        {
+            if (box.Left == 0)
+                box = new RectangleF(ScreenX + (Width * 0.1f), ScreenY + (Height * 0.3f), ScreenX + Width, ScreenY + 60);
+            return box;
+        
+        } }
+        private RectangleF box;
+        public Button(string Text,int X, int Y) //:base(50,0,0,200,60)
         {
             this.Text = Text;
             this.ScreenX = X;
             this.ScreenY = Y;
-            this.button = new RectangleF(X, Y, X + 200, Y + 60);
+            Width = 200;
+            Height = 80;
+            this.button = new RectangleF(X, Y, X + 200, Y + 80);
+        }
+        public Button(string Text, int X, int Y,int width,int height)
+            //: base(50, 0, 0, width, height)
+        {
+            this.Text = Text;
+            this.ScreenX = X;
+            this.ScreenY = Y;
+            Width = width;
+            Height = height;
+            this.button = new RectangleF(X, Y, X + width, Y + height);
         }
 
-        internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget,SharpDX.Direct2D1.Factory d2dFactory, SharpDX.DirectWrite.Factory fontFactory)
+        public virtual void Draw(GameForm gf)
         {
-            GameForm.solidColorBrush.Color = Colors.Blue;
-            d2dRenderTarget.DrawRectangle(button, GameForm.solidColorBrush);
+            //GameForm.solidColorBrush.Color = Colors.Blue;
+            //gf.d2dRenderTarget.DrawRectangle(button, GameForm.solidColorBrush);
+            if (ScreenX == 0)
+            {
+                ScreenX = (gf.Width / 2) - 150;
+                ScreenY = (int)(gf.Height / 1.5) - (ScreenY * 80);
+                this.button = new RectangleF(ScreenX, ScreenY, ScreenX + 320, ScreenY + 80);
+            }
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[50], this.button, 1f, BitmapInterpolationMode.Linear);
             GameForm.solidColorBrush.Color = Colors.Red;
-            d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 20.0f), button,GameForm.solidColorBrush);           
+            gf.d2dRenderTarget.DrawText(Text, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 20.0f), textbox, GameForm.solidColorBrush);      
         }
+
+        public int Height { get; set; }
+
+       
     }
 }

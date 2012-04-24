@@ -83,7 +83,8 @@ namespace Tower_Defense
         {
             string mapdata = "";
             MapTile[] tiles = new MapTile[Width * Height];
-            XmlReader xr = XmlReader.Create(File.Open("Maps\\map.tmx", FileMode.Open));
+            var a = File.Open("Maps\\" + MapName, FileMode.Open);
+            XmlReader xr = XmlReader.Create(a);
             while (xr.Read())
             {
             if(xr.Name == "data")
@@ -108,6 +109,8 @@ namespace Tower_Defense
                 if ((MapTileType)tiletype == MapTileType.Dest)
                     this.Dest = new System.Drawing.Point(i % Width, i / Height);
             }
+            a.Close();
+            
             return tiles;
             
         }
@@ -185,15 +188,15 @@ namespace Tower_Defense
             public int WorldX,WorldY;
             public RectangleF ScreenSprite;
             public MapTileType Type;
-            public int ViewX { get { return WorldX * TileSize; } }
-            public int ViewY { get { return WorldY * TileSize; } }
+            public int ViewX { get { return (WorldX * TileSize) + GameForm.ViewPort.Left;  } }
+            public int ViewY { get { return (WorldY * TileSize) + GameForm.ViewPort.Top ; } }
             public DrawingPoint ViewCentre { get { return new DrawingPoint(ViewX + TileSize / 2, ViewY + TileSize / 2); } }
             public MapTile(int worldx,int worldy,MapTileType type)
             {
                 this.WorldX = worldx;
                 this.WorldY = worldy;
                 this.Type = type;
-                this.ScreenSprite = new RectangleF(worldx * TileSize,worldy* TileSize,worldx * TileSize + TileSize,worldy* TileSize + TileSize);
+                this.ScreenSprite = new RectangleF(ViewX, ViewY, ViewX + TileSize, ViewY + TileSize);
             }
 
 
@@ -202,7 +205,7 @@ namespace Tower_Defense
                 switch (Type)
                 {
                     case MapTileType.EmptyTile:
-                        d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
+                        //d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
                         break;
                     case MapTileType.TowerHere:
                         d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
@@ -213,6 +216,28 @@ namespace Tower_Defense
                         d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
                         break;
                       
+                }
+            }
+
+            internal void Draw(GameForm gameForm)
+            {
+                switch (Type)
+                {
+                    case MapTileType.EmptyTile:
+                        //d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
+                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[0],ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
+                        break;
+                    case MapTileType.TowerHere:
+                        //d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
+                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[0], ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
+                        break;
+                    default:
+                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[1], ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
+                        //var rect = new RectangleF(ViewX + 0.2f, ViewY + 0.2f, ViewX + TileSize - 0.2f, ViewY + TileSize - 0.2f);
+                        //d2dRenderTarget.FillRectangle(rect, new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget, Colors.Red));
+                        //d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
+                        break;
+
                 }
             }
         }

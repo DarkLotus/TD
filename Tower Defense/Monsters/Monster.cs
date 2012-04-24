@@ -41,17 +41,23 @@ namespace Tower_Defense
                 return (Width *x); 
             } 
         }
-        public Monster(Level map, int width = 0, int height = 0)
-            : base(map.Start.X + (float)(Helper.random.NextDouble()), map.Start.Y, width, height)
+        AnimatedTexture tex;
+        public Monster(short TextureIndex,Level map, int width = 0, int height = 0)
+            : base(TextureIndex,map.Start.X/*(float)(Helper.random.NextDouble())*/, map.Start.Y, width, height)
         {
+            
             Type = ObjectType.Monster;
             path = map.Path;
             Map = map;
         }
         double _lastMove = 0;
         double _slowEffect = 0;
+        byte framenum = 0;
+        public int MoveDelay = 30;
+
+
         public virtual Monster Clone()
-        { return new Monster(Map, Width, Height); }
+        { return new Monster(TextureIndex,Map, Width, Height); }
 
         public override void Update(World world, double curTime)
         {
@@ -67,7 +73,9 @@ namespace Tower_Defense
             if (path.Count > 0 && curTime > _lastMove)
             {
                 Move(_velocity);
-                _lastMove = curTime + 30;
+                _lastMove = curTime + MoveDelay;
+                if (_slowEffect != 0)
+                    _lastMove += MoveDelay;
             }
             else if(path.Count == 0)
             {
@@ -80,8 +88,24 @@ namespace Tower_Defense
                 this._velModifier = 0;
                 this._slowEffect = 0;
             }
-                
+            if (curTime > nextanim)
+            {
+                framenum++;
+                if (framenum >= (Direction + 1) * 19)
+                    framenum = (byte)(Direction * 19);
+                nextanim = curTime + 50;
+            }
+            
             base.Update(world,curTime);
+        }
+        double nextanim = 0;
+        public override void Draw(GameForm gf)
+        {
+
+            gf.MonsterModels[TextureIndex].SetVisibleFrame(framenum);
+            gf.d2dRenderTarget.DrawBitmap(gf.MonsterModels[TextureIndex].Texture, this.ScreenSprite, 1f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear, gf.MonsterModels[TextureIndex].DrawRegion);
+            //base.Draw(gf);
+           
         }
 
         public void DoDamage(float damage)
@@ -97,24 +121,58 @@ namespace Tower_Defense
         public void SlowMe(float SlowVal,double DurationMS)
         {
             _slowEffect = DurationMS;
-            _velModifier = SlowVal;
+            //_velModifier = SlowVal;
             this.color.Blue += 50;
         }
+        internal byte Direction = 1;
         private void Move(float _velocity)
         {
             var nextpath = path.Last();
             if (this.WorldX < nextpath.X)
-             WorldX += _velocity;
-            else if (this.WorldX > nextpath.X + 1)
-             WorldX -= _velocity;
+            {
+                WorldX += _velocity;
+                Direction = 2;
+            }
+            else if (this.WorldX > nextpath.X)
+            {
+                WorldX -= _velocity;
+                Direction = 1;
+            }
             else if (this.WorldY < nextpath.Y)
-             WorldY += _velocity;
+            {
+                WorldY += _velocity;
+                Direction = 0;
+            }
             else if (this.WorldY > nextpath.Y + 1)
-             WorldY -= _velocity;
+                WorldY -= _velocity;
+
+            
+            /*if (this.WorldX < nextpath.X)
+            {
+                WorldX += _velocity;
+                Direction = 2;
+            }
+            else if (this.WorldX > nextpath.X + 1)
+            {
+                WorldX -= _velocity;
+                Direction = 1;
+            }
+            else if (this.WorldY < nextpath.Y)
+            {
+                WorldY += _velocity;
+                Direction = 0;
+            }
+            else if (this.WorldY > nextpath.Y + 1)
+                WorldY -= _velocity;*/
+
             if (GetDistance(WorldX, WorldY, nextpath.X, nextpath.Y) < 0.5f)
                 path.RemoveAt(path.Count - 1);
             else if(new System.Drawing.Rectangle(nextpath.X,nextpath.Y,1,1).Contains((int)WorldX,(int)WorldY))
                 path.RemoveAt(path.Count - 1);
+
+           
+
+            this.ScreenSprite = new SharpDX.RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height);
         }
         private float GetDistance(float x, float y, float destx, float desty)
         {

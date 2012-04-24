@@ -27,7 +27,7 @@ namespace Tower_Defense.Monsters
     internal class Tank : Monster
     {
         internal Tank(Level map)
-            : base(map, 15, 15)
+            : base(0,map, 40, 32)
         {
             this._baseVelocity = 0.05f;
             this._hits = 100f;
@@ -40,8 +40,7 @@ namespace Tower_Defense.Monsters
         public override void Update(World world, double curTime)
         {
             base.Update(world,curTime);
-            //if (ScreenSprite == null)
-                this.ScreenSprite = new RectangleGeometry(world.Gameform.d2dFactory, new RectangleF(ViewX, ViewY, ViewX + _size, ViewY + _size));
+
         }
         public override Monster Clone()
         {

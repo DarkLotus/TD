@@ -22,12 +22,14 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpDX;
 
 namespace Tower_Defense
 {
     public class World
     {
         public List<DrawnObject> DrawableObjects = new List<DrawnObject>();
+        public List<Button> UIElements = new List<Button>();
         public Level Map;
         public Player Player;
         public GameForm Gameform;
@@ -39,11 +41,15 @@ namespace Tower_Defense
         /// <summary>
         /// Called when New Game is clicked
         /// </summary>
-        public World(GameForm gf)
+        public World(GameForm gf,string mapname)
         {
             Player = new Tower_Defense.Player();
             Gameform = gf;
-            Map = new Level("map");
+            Map = new Level(mapname);
+            UIElements.Add(new Button("Next Wave", gf.Width - 425, 5,150,50));
+            UIElements.Add(new Button("Pause Game", gf.Width - 275, 5,150,50));
+            UIElements.Add(new Button("Exit", gf.Width - 125, 5, 100, 50));
+            
             //MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
 
         }
@@ -54,23 +60,30 @@ namespace Tower_Defense
         Queue<Monster> CurrentWave = new Queue<Monster>();
         public int Wave = 0;
         public int MobsRemaining { get { return CurrentWave.Count; } }
+
+        public void Draw(GameForm gf)
+        {
+            foreach (var x in Map.Map)
+            {
+                if (GameForm.Contains(GameForm.ViewPort, x.ScreenSprite))
+                    x.Draw(gf);
+            }
+            foreach (var o in UIElements) // TODO THREAD SAFE
+            {
+                    o.Draw(gf);
+            }
+            BuildMenu.Draw(gf);
+            ParticleMan.Draw(gf.d2dRenderTarget);
+            gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2, 0, gf.Width, 225), GameForm.solidColorBrush);
+        
+        }
         public void Update(double curTime)
         {
             if (curTime > spawntimer)
-            {
-                //DrawableObjects.Add(new Monsters.Runner(Gameform.d2dFactory, Map));
-                if (CurrentWave.Count == 0)
-                {
-                    if (Map.Waves.Count > 0)
-                    {
-                        CurrentWave = Map.Waves.Dequeue();
-                        Wave++;
-                    }
-                }
+            {             
                 if(CurrentWave.Count > 0)
                 DrawableObjects.Add(CurrentWave.Dequeue());
                 spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(500);
-
             }
                
 
@@ -89,7 +102,20 @@ namespace Tower_Defense
                 ParticleMan.Update(curTime);
                
             }
-        
+
+
+
+        internal void NextWave()
+        {
+            if (this.MobsRemaining == 0 && this.Map.Waves.Count > 0)
+            {
+                        CurrentWave = Map.Waves.Dequeue();
+                        Wave++;
+            }
+
+
+        }
+
 
     }
 }
