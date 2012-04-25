@@ -33,6 +33,7 @@ namespace Tower_Defense.Towers
             _damage = TowerStats.Light.BaseDamage;
             _fireRateMS = TowerStats.Light.BaseFireRateMS;
             _range = TowerStats.Light.RangeinTiles;
+            Cost = TowerStats.Light.Price;
         }
        
         internal override void LevelUP()

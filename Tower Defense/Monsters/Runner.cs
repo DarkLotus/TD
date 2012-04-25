@@ -24,18 +24,16 @@ using SharpDX;
 using SharpDX.Direct2D1;
 namespace Tower_Defense.Monsters
 {
-    internal class Runner : Monster
+    public class Runner : Monster
     {
-        internal Runner( Level map)
-            : base(0,map, 64, 48)
+        public Runner() : base(0,64,64)
         {
             this._baseVelocity = 0.1f;
-            this._hits = 50f;
-            this._baseHits = 50f;
+            this._baseHits = 5f;
             this.ScoreValue = 10;
-            this.color = Colors.SpringGreen;
-            //this.ScreenSprite = new RectangleGeometry(d2dfactory,new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height));
         }
+
+       
 
         public override void Update(World world, double curTime)
         {
@@ -44,7 +42,8 @@ namespace Tower_Defense.Monsters
         }
         public override Monster Clone()
         {
-            return new Runner(Map);
+            var m = new Runner(); m.initMob(Map); m.SetLevel(this.Level);
+            return m;
         }
     }
 }

@@ -24,15 +24,11 @@ using SharpDX;
 using Algorithms;
 using System.Xml;
 using System.IO;
+using Tower_Defense.Maps;
 
 namespace Tower_Defense
 {
-    public class LevelDefinition
-    {
-        public int WavesCount;
-        public double DelayBetweenWavesMS;
 
-    }
 
     public class Level
     {
@@ -59,20 +55,30 @@ namespace Tower_Defense
             Waves = LoadWaves(levelname + ".xml");
         }
 
-        private Queue<Queue<Monster>> LoadWaves(string p)
+        private Queue<Queue<Monster>> LoadWaves(string path)
         {
+            Maps.LevelDef d = new LevelDef();
+            //d.populate();
+            var st = File.Open("Maps\\" + path,FileMode.Open);
+            //ProtoBuf.Serializer.SerializeWithLengthPrefix<LevelDef>(st, d, ProtoBuf.PrefixStyle.Base128);
+            //st.Close();
+            //st = File.Open("Maps\\" + path, FileMode.Open);
+            d = ProtoBuf.Serializer.DeserializeWithLengthPrefix<LevelDef>(st, ProtoBuf.PrefixStyle.Base128);
+            st.Close();
             Queue<Queue<Monster>> waves = new Queue<Queue<Monster>>();
-            waves.Enqueue(makeawave(new Monsters.Runner(this)));
-            waves.Enqueue(makeawave(new Monsters.Tank(this)));
+            foreach (var w in d.Waves)
+            {
+                waves.Enqueue(makeawave(w.makeMob(this,w.MobLevel), w.NumberOfMobs));
+            }
             return waves;
         }
 
 
-        private Queue<Monster> makeawave(Monster type)
+        private Queue<Monster> makeawave(Monster type,int amount)
         {
 
             Queue<Monster> mobs = new Queue<Monster>();
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < amount; i++)
                 mobs.Enqueue(type.Clone());
             return mobs;
         }

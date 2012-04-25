@@ -94,8 +94,8 @@ namespace Tower_Defense
                
 
                 UpdateTime = (int)(s.Elapsed.Milliseconds);
-                if (UpdateTime > UpdateInterval)
-                    Gameform.Debugger.Debug("GameLoop took " + UpdateTime + "ms");
+                //if (UpdateTime > UpdateInterval)
+                 //   Gameform.Debugger.Debug("GameLoop took " + UpdateTime + "ms");
                 if (s.Elapsed.TotalMilliseconds < UpdateInterval)
                     Thread.Sleep((int)(UpdateInterval - s.Elapsed.Milliseconds));
                 s.Restart();
@@ -148,7 +148,7 @@ namespace Tower_Defense
                 }
             }
         }
-        Type TowerToBuild = null;
+        Tower TowerToBuild = null;
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)
         {
             foreach (var z in this.World.UIElements)
@@ -194,7 +194,7 @@ namespace Tower_Defense
                 if(Contains(o.button,click.Location))
                 {
                     //o.Clicked(this, Gameform);
-                    TowerToBuild = o.towerType;
+                    TowerToBuild = (Tower)Assembly.GetAssembly(o.towerType).CreateInstance(o.towerType.FullName);
                 }
             }
 
@@ -215,9 +215,15 @@ namespace Tower_Defense
                 if (Contains(m.ScreenSprite, click.Location))
                 {
                     if (TowerToBuild != null)
-                    { 
+                    {
+                        if (World.Player.Gold < TowerToBuild.Cost)
+                        {
+                            TowerToBuild = null;
+                            return;
+                        }
+                        World.Player.Gold -= TowerToBuild.Cost;
                         m.Type = Level.MapTileType.TowerHere;
-                        Tower t = (Tower)Assembly.GetAssembly(TowerToBuild).CreateInstance(TowerToBuild.FullName);
+                        Tower t = TowerToBuild;
                         t.WorldX = m.WorldX;
                         t.WorldY = m.WorldY;
                         World.DrawableObjects.Add(t);
@@ -273,10 +279,15 @@ namespace Tower_Defense
                    //this.World = new World(Gameform);
                    this.GameState = Tower_Defense.GameState.LevelSelect;
                }
-               if (Contains(MainMenu.Buttons[1].button, click.Location))
+               if (Contains(MainMenu.Buttons[2].button, click.Location))
                {
                    // exit
                    this.GameState = Tower_Defense.GameState.Exit;
+               }
+               if (Contains(MainMenu.Buttons[1].button, click.Location))
+               {
+                   // exit
+                   this.GameState = Tower_Defense.GameState.About;
                }
                     break;
                 case Tower_Defense.GameState.LevelSelect:
@@ -288,6 +299,10 @@ namespace Tower_Defense
                             this.GameState = Tower_Defense.GameState.InGame;
                         }
                     }
+                    break;
+                case Tower_Defense.GameState.About:
+                    if (Contains(MainMenu.Buttons[0].button, click.Location))
+                        this.GameState = Tower_Defense.GameState.MainMenu;
                     break;
             }
                
@@ -314,7 +329,7 @@ namespace Tower_Defense
         InGame = 0x02,
         EndGame = 0x03,
         Exit = 0x04,
-        LevelSelect = 0x05
-    
+        LevelSelect = 0x05,
+        About = 0x06
     }
 }

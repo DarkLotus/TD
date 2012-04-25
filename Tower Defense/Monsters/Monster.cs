@@ -23,15 +23,17 @@ using System.Threading.Tasks;
 
 namespace Tower_Defense
 {
-    internal class Monster : DrawnObject
+    public class Monster : DrawnObject
     {
         internal float _velocity { get { return this._baseVelocity - _velModifier; } }
         internal float _velModifier;
         internal float _baseVelocity;
         internal float _hits;
         internal float _baseHits;
+        internal float _baseHitsAfterLevel { get { return _baseHits * Level; } }
         internal int ScoreValue;
-        List<Algorithms.PathFinderNode> path;
+        internal int Level = 1;
+        public List<Algorithms.PathFinderNode> path;
         internal Level Map;
         internal float _size 
         { 
@@ -42,19 +44,37 @@ namespace Tower_Defense
             } 
         }
         AnimatedTexture tex;
+        public Monster(short TextureIndex, int width = 0, int height = 0) : base(TextureIndex,0,0,width,height)
+        {
+            Type = ObjectType.Monster;
+            _hits = _baseHitsAfterLevel;
+        }
+        public void initMob(Level map)
+        {
+            this.Map = map;
+            this.path = map.Path;
+            this.WorldX = map.Start.X;
+            this.WorldY = map.Start.Y;
+        }
+
         public Monster(short TextureIndex,Level map, int width = 0, int height = 0)
             : base(TextureIndex,map.Start.X/*(float)(Helper.random.NextDouble())*/, map.Start.Y, width, height)
-        {
-            
+        {          
             Type = ObjectType.Monster;
             path = map.Path;
             Map = map;
+            _hits = _baseHitsAfterLevel;
         }
+
         double _lastMove = 0;
         double _slowEffect = 0;
         byte framenum = 0;
         public int MoveDelay = 30;
-
+        public void SetLevel(int level)
+        {
+            Level = level;
+            _hits = _baseHitsAfterLevel;
+        }
 
         public virtual Monster Clone()
         { return new Monster(TextureIndex,Map, Width, Height); }
@@ -65,10 +85,8 @@ namespace Tower_Defense
                 return;
             if (this._hits <= 0f) 
             {
-                world.ParticleMan.CreateExplosion(ViewX, ViewY);
-                world.Player.Score += this.ScoreValue;
-                world.Player.Gold += (int)(this.ScoreValue * 0.6);
-                this.DeleteMe = true; 
+                this.Die(world);
+               
             }
 
             if (path.Count > 0 && curTime > _lastMove)
@@ -98,6 +116,14 @@ namespace Tower_Defense
             }
             
             base.Update(world,curTime);
+        }
+
+        private void Die(World world)
+        {
+            world.ParticleMan.CreateExplosion(ViewX, ViewY);
+            world.Player.Score += this.ScoreValue;
+            world.Player.Gold += (int)(this.ScoreValue * 0.6);
+            this.DeleteMe = true; 
         }
         double nextanim = 0;
         public override void Draw(GameForm gf)

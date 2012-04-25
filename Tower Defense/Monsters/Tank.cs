@@ -24,18 +24,16 @@ using SharpDX;
 using SharpDX.Direct2D1;
 namespace Tower_Defense.Monsters
 {
-    internal class Tank : Monster
+    public class Tank : Monster
     {
-        internal Tank(Level map)
-            : base(0,map, 40, 32)
+        public Tank()
+            : base(0, 40, 32)
         {
             this._baseVelocity = 0.05f;
-            this._hits = 100f;
-            this._baseHits = 100f;
+            this._baseHits = 10f;
             this.ScoreValue = 15;
-            this.color = Colors.MediumPurple;
-            //this.ScreenSprite = new RectangleGeometry(d2dfactory,new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height));
         }
+      
 
         public override void Update(World world, double curTime)
         {
@@ -44,7 +42,8 @@ namespace Tower_Defense.Monsters
         }
         public override Monster Clone()
         {
-            return new Tank(Map);
+            var m = new Tank(); m.initMob(Map); m.SetLevel(this.Level);
+            return m;
         }
     }
 }

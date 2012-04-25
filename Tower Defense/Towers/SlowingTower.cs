@@ -38,6 +38,7 @@ namespace Tower_Defense.Towers
             _range = TowerStats.Slow.RangeinTiles;
             SlowDurationMS = TowerStats.Slow.SlowDuration;
             SlowEffect = TowerStats.Slow.SlowAmount;
+            Cost = TowerStats.Slow.Price;
         }
 
         /*public SlowingTower(int x, int y)

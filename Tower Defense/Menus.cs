@@ -26,17 +26,40 @@ namespace Tower_Defense
 {
     public class MainMenu
     {
-        public static Button[] Buttons = new Button[2];
+        public static Button[] Buttons = new Button[3];
         static MainMenu()
         {
-            Buttons[0] = new Button("New Game", 0, 3);
-            Buttons[1] = new Button("Exit", 0, 2);
+            Buttons[0] = new Button("New Game", 0, 4);
+            Buttons[1] = new Button("About", 0, 3);
+            Buttons[2] = new Button("Exit", 0, 2);
         }
         internal static void Draw(GameForm gf)
         {
             gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
                 b.Draw(gf);
+        }
+    }
+
+    public class AboutMenu
+    {
+        public static Button[] Buttons = new Button[1];
+        private static string[] about = new string[] {"Code by James Kidd 2012","Thanks to SharpDX an Open Source DX Wrapper","Special thanks to CGTextures.com for their amazing Textures."};
+        
+        static AboutMenu()
+        {
+            Buttons[0] = new Button("Main Menu", 0, -2);
+        }
+        internal static void Draw(GameForm gf)
+        {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
+            foreach (var b in Buttons)
+                b.Draw(gf);
+            for (int i = 0; i < about.Count(); i++)
+            {
+                gf.d2dRenderTarget.DrawText(about[i], new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 20.0f), new RectangleF(gf.Width * 0.2f, (gf.Height * 0.3f) + (i*22), gf.Width * 0.8f, gf.Height * 0.9f), GameForm.solidColorBrush);
+            }
+                
         }
     }
 

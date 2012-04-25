@@ -25,6 +25,17 @@ namespace Tower_Defense
 {
     public static class Helper
     {
+        public class Location
+        {
+            public float WorldX, WorldY;
+            public float ViewX, ViewY;
+            public Location(int x, int y)
+            {
+                WorldX = x;
+                WorldY = y;
+
+            }
+        }
         public static float GetDistance(float x1, float y1, float x2, float y2)
         {
             double part1 = Math.Pow((x2 - x1), 2);
