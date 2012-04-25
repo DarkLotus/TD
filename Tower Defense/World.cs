@@ -74,7 +74,7 @@ namespace Tower_Defense
             }
             BuildMenu.Draw(gf);
             ParticleMan.Draw(gf.d2dRenderTarget);
-            gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2, 0, gf.Width, 225), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Gold: " + Player.Gold + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2, 0, gf.Width, 225), GameForm.solidColorBrush);
             if (this.ShowUpgradeMenu)
                 UpgradeMenu.Draw(gf);
         }

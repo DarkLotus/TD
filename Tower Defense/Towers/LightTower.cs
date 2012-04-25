@@ -25,27 +25,21 @@ using SharpDX.Direct2D1;
 
 namespace Tower_Defense.Towers
 {
-    public class BasicTower : Tower
+    public class LightTower : Tower
     {
-        public BasicTower()
-            : base(100, 0, 0, 24, 24)
+        public LightTower()
+            : base(102, 0, 0, 24, 24)
         {
-            _damage = TowerStats.Basic.BaseDamage;
-            _fireRateMS = TowerStats.Basic.BaseFireRateMS;
-            _range = TowerStats.Basic.RangeinTiles;
+            _damage = TowerStats.Light.BaseDamage;
+            _fireRateMS = TowerStats.Light.BaseFireRateMS;
+            _range = TowerStats.Light.RangeinTiles;
         }
-        public BasicTower(int x, int y)
-            : base(100,x, y, 24, 24)
-        {
-            _damage = TowerStats.Basic.BaseDamage;
-            _fireRateMS = TowerStats.Basic.BaseFireRateMS;
-            _range = TowerStats.Basic.RangeinTiles;
-        }
-
+       
         internal override void LevelUP()
         {
             base.LevelUP();
         }
+
         public override void Update(World world, double curTime)
         {
            

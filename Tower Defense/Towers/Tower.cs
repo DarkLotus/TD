@@ -39,12 +39,48 @@ namespace Tower_Defense
 
         }
 
-        internal void LevelUP()
+        internal  virtual void LevelUP()
         {
             this.Level++;
             this._damage *= 1.2f;
             this._range *= 1.2f;
             this._fireRateMS = (int)(_fireRateMS * 1.2);
+        }
+    }
+
+    public static class TowerStats
+    {
+        //TODO add level up data to towers, Level Cap?
+        public static class Basic
+        {
+            public static int Price = 10;
+            public static float BaseDamage = 8f;
+            public static int BaseFireRateMS = 800;
+            public static float RangeinTiles = 2f;
+        }
+        public static class Cannon
+        {
+            public static int Price = 25;
+            public static float BaseDamage = 25f;
+            public static int BaseFireRateMS = 2000;
+            public static float RangeinTiles = 4f;
+        }
+        public static class Light
+        {
+            public static int Price = 50;
+            public static float BaseDamage = 8f;
+            public static int BaseFireRateMS = 2000;
+            public static float RangeinTiles = 3f;
+        }
+        public static class Slow
+        {
+            public static int Price = 50;
+            public static float BaseDamage = 3f;
+            public static int BaseFireRateMS = 2500;
+            public static float RangeinTiles = 2f;
+
+            public static double SlowDuration = 4000;
+            public static float SlowAmount = 0.08f;
         }
     }
 }

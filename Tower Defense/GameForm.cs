@@ -116,6 +116,7 @@ namespace Tower_Defense
             MapTiles.Add(100, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_basic.png")));
             MapTiles.Add(101, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_slow.png")));
             MapTiles.Add(102, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_light.png")));
+            MapTiles.Add(103, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_cannon.png")));
 
             MapTiles.Add(51, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\bg.png")));
             MapTiles.Add(50, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\blue_button.png")));

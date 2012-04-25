@@ -28,28 +28,31 @@ namespace Tower_Defense.Towers
     public class SlowingTower : Tower
     {
 
-        private double SlowDurationMS = 4000;
-        private float SlowEffect = 0.08f;
+        private double SlowDurationMS;
+        private float SlowEffect;
         public SlowingTower()
             : base(101, 0, 0, 24, 24)
         {
-            _damage = 3f;
-            _fireRateMS = 2500;
-            _range = 3f;
-            color = Colors.LightBlue;
-
+            _damage = TowerStats.Slow.BaseDamage;
+            _fireRateMS = TowerStats.Slow.BaseFireRateMS;
+            _range = TowerStats.Slow.RangeinTiles;
+            SlowDurationMS = TowerStats.Slow.SlowDuration;
+            SlowEffect = TowerStats.Slow.SlowAmount;
         }
 
-        public SlowingTower(int x, int y)
-            : base(99,x, y, 24, 24)
+        /*public SlowingTower(int x, int y)
+            : base(101,x, y, 24, 24)
         {
             _damage = 1f;
             _fireRateMS = 1500;
             _range = 3f;
             color = Colors.LightBlue;
             
+        }*/
+        internal override void LevelUP()
+        {
+            base.LevelUP();
         }
-
         public override void Update(World world, double curTime)
         {
                         if (curTime > _fireTimer)

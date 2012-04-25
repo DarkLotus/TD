@@ -88,7 +88,7 @@ namespace Tower_Defense
 
             X = x; Y = y;
             Buttons[0] = new TowerBuildButton(typeof(Towers.BasicTower),"Basic Tower", 10,8,"800ms",X, Y,width,height);
-            Buttons[1] = new TowerBuildButton(typeof(Towers.BasicTower),"Cannon Tower", 25, 25, "2000ms", X, Y + height, width, height);
+            Buttons[1] = new TowerBuildButton(typeof(Towers.CannonTower),"Cannon Tower", 25, 25, "2000ms", X, Y + height, width, height);
             Buttons[2] = new TowerBuildButton(typeof(Towers.SlowingTower),"Slowing Tower", 50, 3, "1500ms", X, Y + height * 2, width, height);
             Buttons[3] = new TowerBuildButton(typeof(Towers.LightTower),"Lightning Tower", 50, 6, "2000ms", X, Y + height * 3, width, height);
         }
