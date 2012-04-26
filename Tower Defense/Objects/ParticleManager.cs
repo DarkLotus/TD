@@ -28,8 +28,8 @@ namespace Tower_Defense.Objects
     internal class ParticleManager
     {
         List<Particle> Particles = new List<Particle>();
-
-        List<Particle> DrawnParticles = new List<Particle>();
+        
+        //List<Particle> DrawnParticles = new List<Particle>();
         Random rand = new Random();
         public ParticleManager()
         { }
@@ -50,6 +50,12 @@ namespace Tower_Defense.Objects
                     lock (Particles)
                         foreach (var p in _delme)
                             Particles.Remove(p);
+
+                if (lightdelay == 0)
+                    lightdelay = curMS + 200;
+                if (lightdelay > 0 && lightdelay < curMS)
+                    lock(Lines)
+                        Lines.Clear();
         }
 
         public void CreateExplosion(int x, int y)
@@ -62,6 +68,7 @@ namespace Tower_Defense.Objects
 
         }
 
+        
         public void CreatePulse(int x, int y)
         {
             for (int i = 0; i < 100; i++)
@@ -77,10 +84,9 @@ namespace Tower_Defense.Objects
             var vec = new Vector2(m.ViewX - t.ViewX, m.ViewY - t.ViewY);
             vec.Normalize();
             vec += vec;
-
-
-        Particles.Add(new Particle(t.ViewX,t.ViewY,vec,500){ Color = Colors.Blue});
+            Particles.Add(new Particle(t.ViewX,t.ViewY,vec,500){ Color = Colors.Blue});
         }
+       
 
         private float getrandFloat()
         {
@@ -89,19 +95,34 @@ namespace Tower_Defense.Objects
         }
         public void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
         {
-            if (DrawnParticles == null)
-                return;
+            //if (DrawnParticles == null)
+            //    return;
             GameForm.solidColorBrush.Color = Colors.AliceBlue;
             for (int i = 0; i < Particles.Count; i++)
             {
                 Particles[i].Draw(d2dRenderTarget);
             }
+            var x = Lines.ToArray();
+            GameForm.solidColorBrush.Color = Colors.Yellow;
+            for (int i = 0; i < x.Count() - 1; i++)
+                d2dRenderTarget.DrawLine(x[i], x[i + 1], GameForm.solidColorBrush);
+
                 
             
         }
+        public List<DrawingPointF> Lines = new List<DrawingPointF>();
+        double lightdelay;
+        public void CreateLightning(Tower t, Monster m, List<DrawnObject> mobs)
+        {
+            Lines.Add(new DrawingPointF(t.ViewX,t.ViewY));
+            Lines.Add(new DrawingPointF(m.ViewX,m.ViewY));
+            foreach(var x in mobs)
+                Lines.Add(new DrawingPointF(x.ViewX, x.ViewY));
+            lightdelay = 0;
+        }
 
 
-        public int ParticleCount { get { return DrawnParticles.Count; } }
+       // public int ParticleCount { get { return DrawnParticles.Count; } }
     }
 
     internal class Particle
@@ -137,7 +158,7 @@ namespace Tower_Defense.Objects
             LifeSpanMS = lifeSpan;
             Velocity = velocity;
 
-            el = new SharpDX.Direct2D1.Ellipse(Location, 1, 1);
+            el = new SharpDX.Direct2D1.Ellipse(Location, 0.5f, 0.5f);
 
         }
     }

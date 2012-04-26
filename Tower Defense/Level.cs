@@ -58,11 +58,7 @@ namespace Tower_Defense
         private Queue<Queue<Monster>> LoadWaves(string path)
         {
             Maps.LevelDef d = new LevelDef();
-            //d.populate();
             var st = File.Open("Maps\\" + path,FileMode.Open);
-            //ProtoBuf.Serializer.SerializeWithLengthPrefix<LevelDef>(st, d, ProtoBuf.PrefixStyle.Base128);
-            //st.Close();
-            //st = File.Open("Maps\\" + path, FileMode.Open);
             d = ProtoBuf.Serializer.DeserializeWithLengthPrefix<LevelDef>(st, ProtoBuf.PrefixStyle.Base128);
             st.Close();
             Queue<Queue<Monster>> waves = new Queue<Queue<Monster>>();

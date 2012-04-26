@@ -71,7 +71,7 @@ namespace Tower_Defense
         {
             public static int Price = 50;
             public static float BaseDamage = 8f;
-            public static int BaseFireRateMS = 2000;
+            public static int BaseFireRateMS = 500000;
             public static float RangeinTiles = 3f;
         }
         public static class Slow

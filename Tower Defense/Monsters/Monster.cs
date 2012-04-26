@@ -126,9 +126,26 @@ namespace Tower_Defense
             this.DeleteMe = true; 
         }
         double nextanim = 0;
+        SharpDX.RectangleF HPoutline { get { return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 6, this.ViewX + 30, this.ViewY - 2); } }
+
+        SharpDX.RectangleF HPRect
+        {
+            get
+            {
+                float x = _hits / _baseHits; // = .50
+                if (x > 1.0f) { x = 1; }
+                return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 5, (this.ViewX + 30) * x, this.ViewY -3 );
+            }
+        }
         public override void Draw(GameForm gf)
         {
-
+            if (_hits > 0)
+            {
+                GameForm.solidColorBrush.Color = SharpDX.Colors.Black;
+                gf.d2dRenderTarget.DrawRectangle(HPoutline, GameForm.solidColorBrush);
+                GameForm.solidColorBrush.Color = SharpDX.Colors.Green;
+                gf.d2dRenderTarget.FillRectangle(HPRect, GameForm.solidColorBrush);
+            }
             gf.MonsterModels[TextureIndex].SetVisibleFrame(framenum);
             gf.d2dRenderTarget.DrawBitmap(gf.MonsterModels[TextureIndex].Texture, this.ScreenSprite, 1f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear, gf.MonsterModels[TextureIndex].DrawRegion);
             //base.Draw(gf);
@@ -155,23 +172,28 @@ namespace Tower_Defense
         private void Move(float _velocity)
         {
             var nextpath = path.Last();
+            Vector3D dest = new Vector3D(nextpath.X, nextpath.Y,0);
+            Vector3D ourloc = new Vector3D(WorldX, WorldY,0);
+            Vector3D movepos = PowerMath.TranslateDirection2D(ourloc, dest, ourloc, this._velocity);
+            WorldX = movepos.X;
+            WorldY = movepos.Y;
             if (this.WorldX < nextpath.X)
             {
-                WorldX += _velocity;
+                //WorldX += _velocity;
                 Direction = 2;
             }
             else if (this.WorldX > nextpath.X)
             {
-                WorldX -= _velocity;
+                //WorldX -= _velocity;
                 Direction = 1;
             }
             else if (this.WorldY < nextpath.Y)
             {
-                WorldY += _velocity;
+                //WorldY += _velocity;
                 Direction = 0;
             }
-            else if (this.WorldY > nextpath.Y + 1)
-                WorldY -= _velocity;
+            //else if (this.WorldY > nextpath.Y)
+                //WorldY -= _velocity;
 
             
             /*if (this.WorldX < nextpath.X)
@@ -192,7 +214,7 @@ namespace Tower_Defense
             else if (this.WorldY > nextpath.Y + 1)
                 WorldY -= _velocity;*/
 
-            if (GetDistance(WorldX, WorldY, nextpath.X, nextpath.Y) < 0.5f)
+            if (GetDistance(WorldX, WorldY, nextpath.X, nextpath.Y) < 0.3f)
                 path.RemoveAt(path.Count - 1);
             else if(new System.Drawing.Rectangle(nextpath.X,nextpath.Y,1,1).Contains((int)WorldX,(int)WorldY))
                 path.RemoveAt(path.Count - 1);

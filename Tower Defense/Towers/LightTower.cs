@@ -48,18 +48,29 @@ namespace Tower_Defense.Towers
             {
                 try
                 {
-                    Monster target = (Monster)world.DrawableObjects.First(x => x.Type == ObjectType.Monster && Helper.GetDistance(x.WorldX, x.WorldY, this.WorldX, this.WorldY) < _range);
+                    Monster target = (Monster)world.DrawableObjects.First(x => x.Type == ObjectType.Monster && Helper.GetDistance(x.WorldX, x.WorldY, this.WorldX, this.WorldY) < _range); 
                     if (target != null)
                     {
+                        List<DrawnObject> chainTargets = world.DrawableObjects.FindAll(x => x.Type == ObjectType.Monster && Helper.GetDistance(x.WorldX, x.WorldY, target.WorldX, target.WorldY) < _range);
+                        int chainCnt = 0;
+                        target.DoDamage(_damage);
+                        world.ParticleMan.CreateLightning(this, target, chainTargets);
+                        _fireTimer = curTime + _fireRateMS; // Damages first target, now check for chains.
                         Fired = true;
                         Target = target;
-                        var debug = Helper.GetDistance(target.WorldX, target.WorldY, this.WorldX, this.WorldY);
-                        target.DoDamage(_damage);
-                        world.ParticleMan.CreateBullet(this, target);
                         _fireTimer = curTime + _fireRateMS;
+                        while (chainCnt < 4 && chainCnt < chainTargets.Count())
+                        {
+                            if (chainTargets[chainCnt] != null)
+                            {
+                                (chainTargets[chainCnt] as Monster).DoDamage(_damage);
+                                //world.ParticleMan.CreateBullet(this, (chainTargets[chainCnt] as Monster));
+
+                            }
+                            chainCnt++;
+                        }
                     }
-                    Fired = false;
-                    
+                    Fired = false;         
                 }
                 catch { }
             }
