@@ -39,7 +39,7 @@ namespace Tower_Defense
         { 
             get 
             {
-                float x = _hits / _baseHits; // = .50
+                float x = _hits / _baseHitsAfterLevel; // = .50
                 return (Width *x); 
             } 
         }
@@ -132,14 +132,16 @@ namespace Tower_Defense
         {
             get
             {
-                float x = _hits / _baseHits; // = .50
-                if (x > 1.0f) { x = 1; }
-                return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 5, (this.ViewX + 30) * x, this.ViewY -3 );
+                float x = _hits / _baseHitsAfterLevel; // = .50
+                float viewx = (this.ViewX + 10) + (20 * x);
+                if (viewx < this.ViewX + 10) { viewx = this.ViewX + 11; }
+                //if (x < 0.1f) { x = 0.1f; }
+                return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 5, viewx, this.ViewY - 3);
             }
         }
         public override void Draw(GameForm gf)
         {
-            if (_hits > 0)
+            if (_hits > 1)
             {
                 GameForm.solidColorBrush.Color = SharpDX.Colors.Black;
                 gf.d2dRenderTarget.DrawRectangle(HPoutline, GameForm.solidColorBrush);
