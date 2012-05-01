@@ -26,11 +26,11 @@ namespace Tower_Defense.Monsters
 {
     public class Runner : Monster
     {
-        public Runner() : base(0,64,64)
+        public Runner() : base(0,32,32)
         {
-            this._baseVelocity = 0.1f;
-            this._baseHits = 5f;
-            this.ScoreValue = 10;
+            this._baseVelocity = 0.14f;
+            this._baseHits = 8f;
+            this.ScoreValue = 5;
         }
 
        

@@ -35,14 +35,7 @@ namespace Tower_Defense.Towers
             _range = TowerStats.Cannon.RangeinTiles;
             Cost = TowerStats.Cannon.Price;
         }
-        public CannonTower(int x, int y)
-            : base(103,x, y, 24, 24)
-        {
-            _damage = 5f;
-            _fireRateMS = 300;
-            _range = 2f;
-            color = Colors.Red;
-        }
+       
 
         internal override void LevelUP()
         {

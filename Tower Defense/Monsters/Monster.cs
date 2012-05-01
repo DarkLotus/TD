@@ -133,7 +133,7 @@ namespace Tower_Defense
             get
             {
                 float x = _hits / _baseHitsAfterLevel; // = .50
-                float viewx = (this.ViewX + 10) + (20 * x);
+                float viewx = (this.ViewX + 10) + (20 * x); // lefthand side + length * x gives us bar percent long
                 if (viewx < this.ViewX + 10) { viewx = this.ViewX + 11; }
                 //if (x < 0.1f) { x = 0.1f; }
                 return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 5, viewx, this.ViewY - 3);

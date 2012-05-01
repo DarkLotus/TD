@@ -121,6 +121,8 @@ namespace Tower_Defense
             MapTiles.Add(51, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\bg.png")));
             MapTiles.Add(50, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\blue_button.png")));
             MonsterModels.Add(0, new AnimatedTexture("impnew", 128, 128, 60, device, d2dRenderTarget));
+            MonsterModels.Add(1, new AnimatedTexture("spider_128", 128, 128, 60, device, d2dRenderTarget));
+            MonsterModels.Add(2, new AnimatedTexture("bird_128", 128, 128, 60, device, d2dRenderTarget));
         }
 
         public System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]> Buffer = new System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]>();

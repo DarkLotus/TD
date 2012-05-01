@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tower_Defense</RootNamespace>
     <AssemblyName>Tower Defense</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -76,7 +77,8 @@
   <ItemGroup>
     <Compile Include="AnimatedTexture.cs" />
     <Compile Include="Maps\DemoLevel.cs" />
-    <Compile Include="Monsters\Tank.cs" />
+    <Compile Include="Monsters\bird.cs" />
+    <Compile Include="Monsters\spider.cs" />
     <Compile Include="Objects\DrawnObject.cs" />
     <Compile Include="Debugger.cs">
       <SubType>Form</SubType>
@@ -92,7 +94,7 @@
     <Compile Include="Menus.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Monsters\Monster.cs" />
-    <Compile Include="Monsters\Runner.cs" />
+    <Compile Include="Monsters\imp.cs" />
     <Compile Include="Objects\ParticleManager.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Maps\DemoLevel.tmx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -135,6 +138,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Art\bird_128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Art\spider_128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Art\tower_basic.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

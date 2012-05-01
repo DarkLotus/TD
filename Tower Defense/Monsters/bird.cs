@@ -24,14 +24,14 @@ using SharpDX;
 using SharpDX.Direct2D1;
 namespace Tower_Defense.Monsters
 {
-    public class Tank : Monster
+    public class Flyer : Monster
     {
-        public Tank()
-            : base(0, 40, 32)
+        public Flyer()
+            : base(2, 32, 32)
         {
-            this._baseVelocity = 0.05f;
-            this._baseHits = 10f;
-            this.ScoreValue = 15;
+            this._baseVelocity = 0.04f;
+            this._baseHits = 15f;
+            this.ScoreValue = 9;
         }
       
 
@@ -42,7 +42,7 @@ namespace Tower_Defense.Monsters
         }
         public override Monster Clone()
         {
-            var m = new Tank(); m.initMob(Map); m.SetLevel(this.Level);
+            var m = new Flyer(); m.initMob(Map); m.SetLevel(this.Level);
             return m;
         }
     }

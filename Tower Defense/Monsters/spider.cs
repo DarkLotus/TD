@@ -18,38 +18,32 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Tower_Defense
+using SharpDX;
+using SharpDX.Direct2D1;
+namespace Tower_Defense.Monsters
 {
-    static class Program
+    public class Tank : Monster
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        public Tank()
+            : base(1, 32, 32)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            
-            Game game = new Game();
-            GameForm gf;
-            gf = new GameForm(game);
-            Thread t = new Thread(new ParameterizedThreadStart(game.Start));
-            t.Name = "GameLoop";
-            t.IsBackground = true;
-            t.Start(gf);
+            this._baseVelocity = 0.04f;
+            this._baseHits = 15f;
+            this.ScoreValue = 9;
+        }
+      
 
-            //Thread tt = new Thread(new ThreadStart(gf.Show2));
-            //tt.Start();
-            gf.Show2();
-            //if (t.ThreadState == ThreadState.Running)
-             //   t.Abort();
+        public override void Update(World world, double curTime)
+        {
+            base.Update(world,curTime);
 
-            //Application.Run(new GameForm());
+        }
+        public override Monster Clone()
+        {
+            var m = new Tank(); m.initMob(Map); m.SetLevel(this.Level);
+            return m;
         }
     }
 }
