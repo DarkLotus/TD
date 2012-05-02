@@ -30,7 +30,7 @@ namespace Tower_Defense.Towers
         public BasicTower()
             : base(100, 0, 0, 24, 24)
         {
-            _damage = TowerStats.Basic.BaseDamage;
+            _baseDamage = TowerStats.Basic.BaseDamage;
             _fireRateMS = TowerStats.Basic.BaseFireRateMS;
             _range = TowerStats.Basic.RangeinTiles;
             Cost = TowerStats.Basic.Price;
@@ -38,7 +38,7 @@ namespace Tower_Defense.Towers
         public BasicTower(int x, int y)
             : base(100,x, y, 24, 24)
         {
-            _damage = TowerStats.Basic.BaseDamage;
+            _baseDamage = TowerStats.Basic.BaseDamage;
             _fireRateMS = TowerStats.Basic.BaseFireRateMS;
             _range = TowerStats.Basic.RangeinTiles;
         }

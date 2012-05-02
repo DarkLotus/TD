@@ -25,6 +25,7 @@ namespace Tower_Defense
 {
     public class Tower : DrawnObject
     {
+        internal float _baseDamage;
         internal float _damage;
         internal float _range;
         internal int _fireRateMS;
@@ -44,9 +45,9 @@ namespace Tower_Defense
         internal  virtual void LevelUP()
         {
             this.Level++;
-            this._damage *= 1.2f;
+            this._damage = _baseDamage * Level;
             this._range *= 1.2f;
-            this._fireRateMS = (int)(_fireRateMS * 1.2);
+            this._fireRateMS = (int)(_fireRateMS * 1.1);
         }
     }
 

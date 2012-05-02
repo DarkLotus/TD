@@ -139,6 +139,8 @@ namespace Tower_Defense
             foreach (var b in Buttons)
                 b.Draw(gf);
             gf.d2dRenderTarget.DrawText("Level" + Tower.Level, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 25, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("Cost" + (UpgradeMenu.Tower.Cost * (UpgradeMenu.Tower.Level + 1)), new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 40, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("Dmg:" + Tower._damage + "Rng" + Tower._range, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 55, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
         }
 
         internal static void Update(Tower tower)

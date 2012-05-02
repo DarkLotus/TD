@@ -33,7 +33,7 @@ namespace Tower_Defense.Towers
         public SlowingTower()
             : base(101, 0, 0, 24, 24)
         {
-            _damage = TowerStats.Slow.BaseDamage;
+            _baseDamage = TowerStats.Slow.BaseDamage;
             _fireRateMS = TowerStats.Slow.BaseFireRateMS;
             _range = TowerStats.Slow.RangeinTiles;
             SlowDurationMS = TowerStats.Slow.SlowDuration;

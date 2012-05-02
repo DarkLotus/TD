@@ -30,7 +30,7 @@ namespace Tower_Defense.Towers
         public LightTower()
             : base(102, 0, 0, 24, 24)
         {
-            _damage = TowerStats.Light.BaseDamage;
+            _baseDamage = TowerStats.Light.BaseDamage;
             _fireRateMS = TowerStats.Light.BaseFireRateMS;
             _range = TowerStats.Light.RangeinTiles;
             Cost = TowerStats.Light.Price;

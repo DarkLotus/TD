@@ -30,7 +30,7 @@ namespace Tower_Defense.Towers
         public CannonTower()
             : base(103, 0, 0, 24, 24)
         {
-            _damage = TowerStats.Cannon.BaseDamage;
+            _baseDamage = TowerStats.Cannon.BaseDamage;
             _fireRateMS = TowerStats.Cannon.BaseFireRateMS;
             _range = TowerStats.Cannon.RangeinTiles;
             Cost = TowerStats.Cannon.Price;
