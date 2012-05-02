@@ -50,9 +50,7 @@ namespace Tower_Defense
         public static Dictionary<int, Bitmap> LandBitmaps = new Dictionary<int, Bitmap>();
         public static Dictionary<int, Bitmap> StaticBitmaps = new Dictionary<int, Bitmap>();
         public RenderTarget d2dRenderTarget;
-        int[,] StaticsToDraw = new int[41, 41];
-        int[,] TilesToDraw = new int[41, 41];
-        int charposx = 1424, charposy = 2549;
+
         public int _drawXoffset = 0;
         public int _drawYoffset = 20;
         public SharpDX.Direct2D1.Factory d2dFactory;
@@ -240,47 +238,15 @@ namespace Tower_Defense
 
 
 
-        private int mousex, mousey;
        
         private Game g;
 
 
        
 
-        void myform_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.W)
-            {
-                charposx++;
-            }
-            if (e.KeyCode == Keys.S)
-            {
-                charposx--;
-            }
-            if (e.KeyCode == Keys.D)
-            {
-                charposy++;
-            }
-            if (e.KeyCode == Keys.A)
-            {
-                charposy--;
-            }
-            if (e.KeyCode == Keys.V)
-            {
-                _drawXoffset++;
-            }
-            if (e.KeyCode == Keys.C)
-            {
-                _drawYoffset++;
-            }
-        }
-        public GameForm()
-            : base("test")
-        {
-            //this.Show2();
-        }
 
-        public GameForm(Game g)
+
+        public GameForm(Game g) : base("Project Majestic")
         {
             // TODO: Complete member initialization
             this.Game = g;

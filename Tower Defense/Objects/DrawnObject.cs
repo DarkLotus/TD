@@ -34,16 +34,15 @@ namespace Tower_Defense
     {
         public ObjectType Type;
         private float wx, wy;
-        public float WorldX { get { return wx; } set { wx = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40); } }
-        public float WorldY { get { return wy; } set { wy = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40); } }
+        public float WorldX { get { return wx; } set { wx = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height); } }
+        public float WorldY { get { return wy; } set { wy = value; screenspr = new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height); } }
         public short TextureIndex;
         public int Width;
         public int Height;
-        public int ViewX { get { return (int)(WorldX * 40) + GameForm.ViewPort.Left; } } // TODO convert world to view world * TileSize
-        public int ViewY { get { return (int)(WorldY * 40) + GameForm.ViewPort.Top; } }
+        public int ViewX { get { return (int)(WorldX * Level.TileSize) + GameForm.ViewPort.Left; } }
+        public int ViewY { get { return (int)(WorldY * Level.TileSize) + GameForm.ViewPort.Top; } }
         public byte ViewZ;
         public bool DeleteMe = false;
-        internal SharpDX.Color4 color;
         private RectangleF screenspr;
         public RectangleF ScreenSprite { get { return screenspr;} set { screenspr = value; } }
         public DrawnObject(short TextureIndex,float worldX,float worldY, int width = 0,int height = 0)
@@ -53,11 +52,10 @@ namespace Tower_Defense
             this.WorldY = worldY;
             if (width == 0 && height == 0)
             {
-                this.Width = (int)GameForm.StaticBitmaps[TextureIndex].Size.Width;
-                this.Height = (int)GameForm.StaticBitmaps[TextureIndex].Size.Height;
+                throw new Exception("width not set");
             }
             else { this.Width = width; this.Height = height; }
-            ScreenSprite = new RectangleF(ViewX, ViewY, ViewX + 40, ViewY + 40);
+            ScreenSprite = new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height);
         }
             
         

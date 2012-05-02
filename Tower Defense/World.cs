@@ -61,6 +61,7 @@ namespace Tower_Defense
         public int Wave = 0;
         public int MobsRemaining { get { return CurrentWave.Count; } }
 
+
         public void Draw(GameForm gf)
         {
             foreach (var x in Map.Map)
@@ -74,7 +75,7 @@ namespace Tower_Defense
             }
             BuildMenu.Draw(gf);
             ParticleMan.Draw(gf.d2dRenderTarget);
-            gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Gold: " + Player.Gold + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2, 0, gf.Width, 225), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Gold: " + Player.Gold + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2 - 100, 0, gf.Width, 225), GameForm.solidColorBrush);
             if (this.ShowUpgradeMenu)
                 UpgradeMenu.Draw(gf);
         }
@@ -101,7 +102,9 @@ namespace Tower_Defense
                         DrawableObjects.Remove(o);
 
                 ParticleMan.Update(curTime);
-               
+
+                if (Gameform.Buffer.Count < 3)
+                    Gameform.Buffer.Enqueue(DrawableObjects.ToArray());
             }
 
 

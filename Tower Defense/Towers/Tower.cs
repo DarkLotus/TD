@@ -55,6 +55,7 @@ namespace Tower_Defense
         //TODO add level up data to towers, Level Cap?
         public static class Basic
         {
+            public static string Name = "Arrow Tower";
             public static int Price = 25;
             public static float BaseDamage = 8f;
             public static int BaseFireRateMS = 1000;
@@ -62,6 +63,7 @@ namespace Tower_Defense
         }
         public static class Cannon
         {
+            public static string Name = "Cannon Tower";
             public static int Price = 50;
             public static float BaseDamage = 20f;
             public static int BaseFireRateMS = 1800;
@@ -69,6 +71,7 @@ namespace Tower_Defense
         }
         public static class Light
         {
+            public static string Name = "Lightning Tower";
             public static int Price = 100;
             public static float BaseDamage = 8f;
             public static int BaseFireRateMS = 5000;
@@ -76,6 +79,7 @@ namespace Tower_Defense
         }
         public static class Slow
         {
+            public static string Name = "Slowing Tower";
             public static int Price = 100;
             public static float BaseDamage = 3f;
             public static int BaseFireRateMS = 4500;

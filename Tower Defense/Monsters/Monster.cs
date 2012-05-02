@@ -103,7 +103,6 @@ namespace Tower_Defense
             }
             if (_slowEffect < curTime && _slowEffect != 0)
             {
-                this.color.Blue -= 50;
                 this._velModifier = 0;
                 this._slowEffect = 0;
             }
@@ -168,7 +167,6 @@ namespace Tower_Defense
         {
             _slowEffect = DurationMS;
             //_velModifier = SlowVal;
-            this.color.Blue += 50;
         }
         internal byte Direction = 1;
         private void Move(float _velocity)

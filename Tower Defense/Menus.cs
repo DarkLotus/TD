@@ -106,14 +106,14 @@ namespace Tower_Defense
         }
         public static void initMenu(int x,int y,GameForm gf)
         {
-            var height = (int)((gf.Height - 75) / 4.2);
+            var height = (int)((gf.Height - 75) / 5);
             var width = (int)(gf.Width - (gf.Width / 1.3));
 
             X = x; Y = y;
-            Buttons[0] = new TowerBuildButton(typeof(Towers.BasicTower),"Basic Tower", 10,8,"800ms",X, Y,width,height);
-            Buttons[1] = new TowerBuildButton(typeof(Towers.CannonTower),"Cannon Tower", 25, 25, "2000ms", X, Y + height, width, height);
-            Buttons[2] = new TowerBuildButton(typeof(Towers.SlowingTower),"Slowing Tower", 50, 3, "1500ms", X, Y + height * 2, width, height);
-            Buttons[3] = new TowerBuildButton(typeof(Towers.LightTower),"Lightning Tower", 50, 6, "2000ms", X, Y + height * 3, width, height);
+            Buttons[0] = new TowerBuildButton(typeof(Towers.BasicTower),TowerStats.Basic.Name,TowerStats.Basic.Price,TowerStats.Basic.BaseDamage,TowerStats.Basic.BaseFireRateMS,X, Y,width,height);
+            Buttons[1] = new TowerBuildButton(typeof(Towers.CannonTower), TowerStats.Cannon.Name, TowerStats.Cannon.Price, TowerStats.Cannon.BaseDamage, TowerStats.Cannon.BaseFireRateMS, X, Y + height, width, height);
+            Buttons[2] = new TowerBuildButton(typeof(Towers.SlowingTower), TowerStats.Slow.Name, TowerStats.Slow.Price, TowerStats.Slow.BaseDamage, TowerStats.Slow.BaseFireRateMS, X, Y + height * 2, width, height);
+            Buttons[3] = new TowerBuildButton(typeof(Towers.LightTower), TowerStats.Light.Name, TowerStats.Light.Price, TowerStats.Light.BaseDamage, TowerStats.Light.BaseFireRateMS, X, Y + height * 3, width, height);
         }
 
         internal static void Draw(GameForm gf)
@@ -156,19 +156,19 @@ namespace Tower_Defense
 
         public int dmg { get; set; }
         public Type towerType;
-        public string firerate { get; set; }
+        public int firerate { get; set; }
         /*public TowerBuildButton(int x, int y, int width, int height)
             : base("", x, y, width, height)
         { }*/
 
-        public TowerBuildButton(Type towerType,string name, int cost, int dmg, string firerate, int x, int y, int width, int height)
+        public TowerBuildButton(Type towerType,string name, int cost, float dmg, int firerate, int x, int y, int width, int height)
             : base("", x, y, width, height)
         {
             // TODO: Complete member initialization
             this.towerType = towerType;
             this.name = name;
             this.cost = cost;
-            this.dmg = dmg;
+            this.dmg = (int)dmg;
             this.firerate = firerate;
 
         }

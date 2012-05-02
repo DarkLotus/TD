@@ -26,6 +26,16 @@ using SharpDX;
 using System.Reflection;
 namespace Tower_Defense
 {
+    public enum GameState
+    {
+        MainMenu = 0x00,
+        InGamePause = 0x01,
+        InGame = 0x02,
+        EndGame = 0x03,
+        Exit = 0x04,
+        LevelSelect = 0x05,
+        About = 0x06
+    }
     /// <summary>
     /// Game base class, responsible for handling game stat
     /// </summary>
@@ -78,8 +88,7 @@ namespace Tower_Defense
                 if (GameState == Tower_Defense.GameState.InGame)
                 {
                     World.Update(TotalTimer.Elapsed.TotalMilliseconds);
-                    if (Gameform.Buffer.Count < 3)
-                        Gameform.Buffer.Enqueue(World.DrawableObjects.ToArray());
+                   
                     if (World.Player.Lives <= 0)
                     {
                         GameState = Tower_Defense.GameState.MainMenu;
@@ -322,14 +331,5 @@ namespace Tower_Defense
 
 
 
-    public enum GameState
-    {
-        MainMenu = 0x00,
-        InGamePause = 0x01,
-        InGame = 0x02,
-        EndGame = 0x03,
-        Exit = 0x04,
-        LevelSelect = 0x05,
-        About = 0x06
-    }
+   
 }
