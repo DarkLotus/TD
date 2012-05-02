@@ -34,10 +34,15 @@ namespace Tower_Defense
         public Player Player;
         public GameForm Gameform;
         // need a player object
-        public int Lives = 20;
-
+        double spawntimer = 0;
+        public bool ShowUpgradeMenu { get; set; }
+        double initalTimeBetweenMobs = 500;
+        Queue<Monster> CurrentWave = new Queue<Monster>();
+        public int Wave = 0;
+        public int MobsRemaining { get { return CurrentWave.Count; } }
         //List<DrawnObject> MobsToSpawn = new List<DrawnObject>();
         internal Objects.ParticleManager ParticleMan = new Objects.ParticleManager();
+
         /// <summary>
         /// Called when New Game is clicked
         /// </summary>
@@ -49,17 +54,9 @@ namespace Tower_Defense
             UIElements.Add(new Button("Next Wave", gf.Width - 425, 5,150,50));
             UIElements.Add(new Button("Pause Game", gf.Width - 275, 5,150,50));
             UIElements.Add(new Button("Exit", gf.Width - 125, 5, 100, 50));
-            
-            //MobsToSpawn.Add(new Monsters.Runner(gf.d2dFactory, Map));
-
         }
 
-        double spawntimer = 0;
-        public bool ShowUpgradeMenu { get; set; }
-        double initalTimeBetweenMobs = 500;
-        Queue<Monster> CurrentWave = new Queue<Monster>();
-        public int Wave = 0;
-        public int MobsRemaining { get { return CurrentWave.Count; } }
+
 
 
         public void Draw(GameForm gf)

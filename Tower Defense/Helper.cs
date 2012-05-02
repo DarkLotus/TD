@@ -20,9 +20,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpDX;
 
 namespace Tower_Defense
 {
+
     public class Vector3D
     {
         public float X;
@@ -169,17 +171,21 @@ namespace Tower_Defense
 
     public static class Helper
     {
-        public class Location
+        public static bool Contains(System.Drawing.Rectangle rect, System.Drawing.Point point)
         {
-            public float WorldX, WorldY;
-            public float ViewX, ViewY;
-            public Location(int x, int y)
-            {
-                WorldX = x;
-                WorldY = y;
-
-            }
+            if (rect.Top < point.Y && rect.Bottom > point.Y && rect.Left < point.X && rect.Right > point.X)
+                return true;
+            return false;
         }
+
+
+        public static bool Contains(RectangleF rect, System.Drawing.Point point)
+        {
+            if (rect.Top < point.Y && rect.Bottom > point.Y && rect.Left < point.X && rect.Right > point.X)
+                return true;
+            return false;
+        }
+       
         public static float GetDistance(float x1, float y1, float x2, float y2)
         {
             double part1 = Math.Pow((x2 - x1), 2);

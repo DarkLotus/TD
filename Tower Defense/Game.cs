@@ -47,6 +47,9 @@ namespace Tower_Defense
         public bool Debug = true;
         GameForm Gameform;
         public int UpdateTime = 0;
+        private List<System.Windows.Forms.KeyEventArgs> Keys = new List<System.Windows.Forms.KeyEventArgs>();
+        private List<System.Windows.Forms.MouseEventArgs> Clicks = new List<System.Windows.Forms.MouseEventArgs>();
+        Tower TowerToBuild = null;
         public Game()
         {
             
@@ -65,17 +68,6 @@ namespace Tower_Defense
             Update();
         }
 
-        void Gameform_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
-        {
-            Keys.Add(e);
-        }
-
-        private List<System.Windows.Forms.KeyEventArgs> Keys = new List<System.Windows.Forms.KeyEventArgs>();
-        private List<System.Windows.Forms.MouseEventArgs> Clicks = new List<System.Windows.Forms.MouseEventArgs>();
-        void Gameform_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            Clicks.Add(e);
-        }
 
         private void Update()
         {
@@ -112,6 +104,17 @@ namespace Tower_Defense
             
 
         }
+        #region Input
+
+        void Gameform_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            Keys.Add(e);
+        }
+
+        void Gameform_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            Clicks.Add(e);
+        }
 
         private void HandleUserInput()
         {
@@ -120,7 +123,7 @@ namespace Tower_Defense
                 var click = Clicks[0]; Clicks.RemoveAt(0);
                 /*if (click.Button != System.Windows.Forms.MouseButtons.Left)
                     continue;*/
-                switch(GameState)
+                switch (GameState)
                 {
                     case Tower_Defense.GameState.MainMenu:
                         handleMenuInput(click);
@@ -153,16 +156,16 @@ namespace Tower_Defense
                         if (key.KeyData == System.Windows.Forms.Keys.Escape)
                             GameState = Tower_Defense.GameState.Exit;
                         break;
-                
+
                 }
             }
         }
-        Tower TowerToBuild = null;
+
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)
         {
             foreach (var z in this.World.UIElements)
             {
-                if (Contains(z.button, click.Location))
+                if (Helper.Contains(z.button, click.Location))
                 {
                     if (z.Text == "Pause Game")
                     {
@@ -186,7 +189,7 @@ namespace Tower_Defense
             {
                 if (this.World.ShowUpgradeMenu)
                 {
-                    if (Contains(UpgradeMenu.Buttons[0].button, click.Location))
+                    if (Helper.Contains(UpgradeMenu.Buttons[0].button, click.Location))
                     {
                         UpgradeMenu.Tower.LevelUP();
                         this.World.ShowUpgradeMenu = false;
@@ -200,17 +203,17 @@ namespace Tower_Defense
             }
             foreach (TowerBuildButton o in BuildMenu.Buttons)
             {
-                if(Contains(o.button,click.Location))
+                if (Helper.Contains(o.button, click.Location))
                 {
                     //o.Clicked(this, Gameform);
                     TowerToBuild = (Tower)Assembly.GetAssembly(o.towerType).CreateInstance(o.towerType.FullName);
                 }
             }
 
-            if (!Contains(GameForm.ViewPort, click.Location))
+            if (!Helper.Contains(GameForm.ViewPort, click.Location))
                 return;
             foreach (var o in this.World.DrawableObjects)
-                if (Contains(o.ScreenSprite, click.Location))
+                if (Helper.Contains(o.ScreenSprite, click.Location))
                 {
                     if (o.Type == ObjectType.Tower)
                     {
@@ -218,10 +221,10 @@ namespace Tower_Defense
                         this.World.ShowUpgradeMenu = true;
                     }
                 }
-                    //return;
+            //return;
 
             foreach (var m in this.World.Map.Map)
-                if (Contains(m.ScreenSprite, click.Location))
+                if (Helper.Contains(m.ScreenSprite, click.Location))
                 {
                     if (TowerToBuild != null)
                     {
@@ -252,25 +255,17 @@ namespace Tower_Defense
                 World.Map.Map[total].Type = Level.MapTileType.TowerHere;
                 World.DrawableObjects.Add(new Towers.BasicTower(tile.WorldX, tile.WorldY));
             }
-            
-        }
 
-        private bool Contains(System.Drawing.Rectangle rect, System.Drawing.Point point)
-        {
-            if (rect.Top < point.Y && rect.Bottom > point.Y && rect.Left < point.X && rect.Right > point.X)
-                return true;
-            return false;
         }
-
         private void handleMenuInputPauseMenuInput(System.Windows.Forms.MouseEventArgs click)
         {
-            if (Contains(PauseMenu.Buttons[0].button, click.Location))
+            if (Helper.Contains(PauseMenu.Buttons[0].button, click.Location))
             {
                 // continue
-                
+
                 this.GameState = Tower_Defense.GameState.InGame;
             }
-            if (Contains(PauseMenu.Buttons[1].button, click.Location))
+            if (Helper.Contains(PauseMenu.Buttons[1].button, click.Location))
             {
                 // exit
                 this.GameState = Tower_Defense.GameState.MainMenu;
@@ -282,27 +277,27 @@ namespace Tower_Defense
             switch (GameState)
             {
                 case Tower_Defense.GameState.MainMenu:
-                    if (Contains(MainMenu.Buttons[0].button, click.Location))
-               {
-                    // new game
-                   //this.World = new World(Gameform);
-                   this.GameState = Tower_Defense.GameState.LevelSelect;
-               }
-               if (Contains(MainMenu.Buttons[2].button, click.Location))
-               {
-                   // exit
-                   this.GameState = Tower_Defense.GameState.Exit;
-               }
-               if (Contains(MainMenu.Buttons[1].button, click.Location))
-               {
-                   // exit
-                   this.GameState = Tower_Defense.GameState.About;
-               }
+                    if (Helper.Contains(MainMenu.Buttons[0].button, click.Location))
+                    {
+                        // new game
+                        //this.World = new World(Gameform);
+                        this.GameState = Tower_Defense.GameState.LevelSelect;
+                    }
+                    if (Helper.Contains(MainMenu.Buttons[2].button, click.Location))
+                    {
+                        // exit
+                        this.GameState = Tower_Defense.GameState.Exit;
+                    }
+                    if (Helper.Contains(MainMenu.Buttons[1].button, click.Location))
+                    {
+                        // exit
+                        this.GameState = Tower_Defense.GameState.About;
+                    }
                     break;
                 case Tower_Defense.GameState.LevelSelect:
                     foreach (var b in LevelSelect.Buttons)
                     {
-                        if (Contains(b.button, click.Location))
+                        if (Helper.Contains(b.button, click.Location))
                         {
                             this.World = new World(Gameform, b.Text);
                             this.GameState = Tower_Defense.GameState.InGame;
@@ -310,19 +305,17 @@ namespace Tower_Defense
                     }
                     break;
                 case Tower_Defense.GameState.About:
-                    if (Contains(MainMenu.Buttons[0].button, click.Location))
+                    if (Helper.Contains(MainMenu.Buttons[0].button, click.Location))
                         this.GameState = Tower_Defense.GameState.MainMenu;
                     break;
             }
-               
+
         }
 
-        private bool Contains(RectangleF rect, System.Drawing.Point point)
-        {
-            if (rect.Top < point.Y && rect.Bottom > point.Y && rect.Left < point.X && rect.Right > point.X)
-                return true;
-            return false;
-        }
+        #endregion
+       
+
+        
 
 
 
