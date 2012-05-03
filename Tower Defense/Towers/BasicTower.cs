@@ -28,7 +28,7 @@ namespace Tower_Defense.Towers
     public class BasicTower : Tower
     {
         public BasicTower()
-            : base(100, 0, 0, 24, 24)
+            : base(100, 0, 0, Helper.TowerSize, Helper.TowerSize)
         {
             _baseDamage = TowerStats.Basic.BaseDamage;
             _fireRateMS = TowerStats.Basic.BaseFireRateMS;

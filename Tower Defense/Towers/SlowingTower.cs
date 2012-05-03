@@ -31,7 +31,7 @@ namespace Tower_Defense.Towers
         private double SlowDurationMS;
         private float SlowEffect;
         public SlowingTower()
-            : base(101, 0, 0, 24, 24)
+            : base(101, 0, 0, Helper.TowerSize, Helper.TowerSize)
         {
             _baseDamage = TowerStats.Slow.BaseDamage;
             _fireRateMS = TowerStats.Slow.BaseFireRateMS;

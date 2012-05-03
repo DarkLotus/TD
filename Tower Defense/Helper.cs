@@ -171,6 +171,8 @@ namespace Tower_Defense
 
     public static class Helper
     {
+        public static int TowerSize = 40;
+        public static int MonsterSize = 40;
         public static bool Contains(System.Drawing.Rectangle rect, System.Drawing.Point point)
         {
             if (rect.Top < point.Y && rect.Bottom > point.Y && rect.Left < point.X && rect.Right > point.X)

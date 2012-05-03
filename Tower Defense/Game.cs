@@ -83,7 +83,8 @@ namespace Tower_Defense
                    
                     if (World.Player.Lives <= 0)
                     {
-                        GameState = Tower_Defense.GameState.MainMenu;
+                        ScoreMenu.InitScoreMenu(this.World.Player);
+                        GameState = Tower_Defense.GameState.EndGame;
                         World = null;
                     }
                 }
@@ -129,6 +130,9 @@ namespace Tower_Defense
                         handleMenuInput(click);
                         break;
                     case Tower_Defense.GameState.LevelSelect:
+                        handleMenuInput(click);
+                        break;
+                    case Tower_Defense.GameState.EndGame:
                         handleMenuInput(click);
                         break;
                     case Tower_Defense.GameState.InGamePause:
@@ -300,7 +304,7 @@ namespace Tower_Defense
                     }
                     break;
                 case Tower_Defense.GameState.LevelSelect:
-                    foreach (var b in LevelSelect.Buttons)
+                    foreach (var b in LevelSelectMenu.Buttons)
                     {
                         if (Helper.Contains(b.button, click.Location))
                         {
@@ -310,7 +314,11 @@ namespace Tower_Defense
                     }
                     break;
                 case Tower_Defense.GameState.About:
-                    if (Helper.Contains(MainMenu.Buttons[0].button, click.Location))
+                    if (Helper.Contains(AboutMenu.Buttons[0].button, click.Location))
+                        this.GameState = Tower_Defense.GameState.MainMenu;
+                    break;
+                case Tower_Defense.GameState.EndGame:
+                    if (Helper.Contains(ScoreMenu.Buttons[0].button, click.Location))
                         this.GameState = Tower_Defense.GameState.MainMenu;
                     break;
             }

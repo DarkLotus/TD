@@ -162,7 +162,10 @@ namespace Tower_Defense
                         AboutMenu.Draw(this);
                         break;
                     case GameState.LevelSelect:
-                        LevelSelect.Draw(this);
+                        LevelSelectMenu.Draw(this);
+                        break;
+                    case GameState.EndGame:
+                        ScoreMenu.Draw(this);
                         break;
                     case GameState.InGamePause:
                         Game.World.Draw(this); // Draw static map/UI

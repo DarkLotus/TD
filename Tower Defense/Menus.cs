@@ -41,6 +41,32 @@ namespace Tower_Defense
         }
     }
 
+    public class ScoreMenu
+    {
+        public static Button[] Buttons = new Button[1];
+        private static string[] strings = new string[] { "Code by James Kidd 2012", "Thanks to SharpDX an Open Source DX Wrapper", "Special thanks to CGTextures.com for their amazing Textures." };
+
+        static ScoreMenu()
+        {
+            Buttons[0] = new Button("Main Menu", 0, -2);
+        }
+        public static void InitScoreMenu(Player p)
+        {
+            strings = new string[] {"Score:" + p.Score };
+        }
+        internal static void Draw(GameForm gf)
+        {
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
+            foreach (var b in Buttons)
+                b.Draw(gf);
+            for (int i = 0; i < strings.Count(); i++)
+            {
+                gf.d2dRenderTarget.DrawText(strings[i], new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 20.0f), new RectangleF(gf.Width * 0.2f, (gf.Height * 0.3f) + (i * 22), gf.Width * 0.8f, gf.Height * 0.9f), GameForm.solidColorBrush);
+            }
+
+        }
+    }
+
     public class AboutMenu
     {
         public static Button[] Buttons = new Button[1];
@@ -78,10 +104,10 @@ namespace Tower_Defense
         }
     }
 
-    public static class LevelSelect
+    public static class LevelSelectMenu
     {
         public static Button[] Buttons = new Button[1];
-        static LevelSelect()
+        static LevelSelectMenu()
         {
             //TODO Parse list of levels, add buttons for each level.
             Buttons[0] = new Button("DemoLevel", 0, 3);

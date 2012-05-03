@@ -28,7 +28,7 @@ namespace Tower_Defense.Towers
     public class LightTower : Tower
     {
         public LightTower()
-            : base(102, 0, 0, 24, 24)
+            : base(102, 0, 0, Helper.TowerSize, Helper.TowerSize)
         {
             _baseDamage = TowerStats.Light.BaseDamage;
             _fireRateMS = TowerStats.Light.BaseFireRateMS;

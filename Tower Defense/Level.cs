@@ -34,7 +34,7 @@ namespace Tower_Defense
     {
         public MapTile[] Map;
         public int Width, Height;
-        public static int TileSize = 50;
+        public static int TileSize = Helper.TowerSize;
         public int Tilesize { get { return TileSize; } }
         public System.Drawing.Point Start;
         public System.Drawing.Point Dest;

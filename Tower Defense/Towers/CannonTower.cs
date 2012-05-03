@@ -28,7 +28,7 @@ namespace Tower_Defense.Towers
     public class CannonTower : Tower
     {
         public CannonTower()
-            : base(103, 0, 0, 24, 24)
+            : base(103, 0, 0, Helper.TowerSize, Helper.TowerSize)
         {
             _baseDamage = TowerStats.Cannon.BaseDamage;
             _fireRateMS = TowerStats.Cannon.BaseFireRateMS;
