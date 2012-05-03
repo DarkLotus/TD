@@ -207,7 +207,7 @@ namespace Tower_Defense
             gf.d2dRenderTarget.DrawText(name, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(this.button.Left + 15, this.button.Top + 10, this.button.Left + 100, this.button.Top + 20), GameForm.solidColorBrush);
             gf.d2dRenderTarget.DrawText("$" + cost, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(this.button.Left + 15, this.button.Top + 50, this.button.Left + 100, this.button.Top + 70), GameForm.solidColorBrush);
             gf.d2dRenderTarget.DrawText("Damage: " + dmg, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(this.button.Left + 15 + 75, this.button.Top + 50, this.button.Left + 200, this.button.Top + 70), GameForm.solidColorBrush);
-            gf.d2dRenderTarget.DrawText("FireRate: " + firerate, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(this.button.Left + 15, this.button.Top + 80, this.button.Left + 100, this.button.Top + 100), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("FireRate: " + firerate + "ms", new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(this.button.Left + 15, this.button.Top + 80, this.button.Left + 100, this.button.Top + 100), GameForm.solidColorBrush);
         }
 
     }

@@ -14,6 +14,7 @@ namespace Tower_Defense
     {
         //127/95
         public Bitmap Texture;
+        public System.Drawing.Bitmap FakeTex;
         public RectangleF DrawRegion;
         // TODO Add load from sprite sheet.
         private short spriteX, spriteY, count;
@@ -21,6 +22,8 @@ namespace Tower_Defense
         public AnimatedTexture(string texturename, short spriteX,short spriteY,short count,Device device, RenderTarget d2dRender)
         {
             Texture = GameForm.LoadFromFile(d2dRender,File.OpenRead("art\\" + texturename + ".png"));
+            FakeTex = new System.Drawing.Bitmap(File.OpenRead("art\\" + texturename + ".png"));
+            
             width = (int)Texture.Size.Width / spriteX;
             DrawRegion = new RectangleF(0, 0, spriteX, spriteY);
             this.count = count;

@@ -135,6 +135,9 @@ namespace Tower_Defense
                     case Tower_Defense.GameState.EndGame:
                         handleMenuInput(click);
                         break;
+                    case Tower_Defense.GameState.About:
+                        handleMenuInput(click);
+                        break;
                     case Tower_Defense.GameState.InGamePause:
                         handleMenuInputPauseMenuInput(click);
                         break;
@@ -159,6 +162,14 @@ namespace Tower_Defense
                     case Tower_Defense.GameState.MainMenu:
                         if (key.KeyData == System.Windows.Forms.Keys.Escape)
                             GameState = Tower_Defense.GameState.Exit;
+                        break;
+                    case Tower_Defense.GameState.About:
+                        if (key.KeyData == System.Windows.Forms.Keys.Escape)
+                            GameState = Tower_Defense.GameState.MainMenu;
+                        break;
+                    case Tower_Defense.GameState.EndGame:
+                        if (key.KeyData == System.Windows.Forms.Keys.Escape)
+                            GameState = Tower_Defense.GameState.MainMenu;
                         break;
 
                 }
@@ -299,7 +310,7 @@ namespace Tower_Defense
                     }
                     if (Helper.Contains(MainMenu.Buttons[1].button, click.Location))
                     {
-                        // exit
+                        // About
                         this.GameState = Tower_Defense.GameState.About;
                     }
                     break;

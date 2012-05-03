@@ -60,13 +60,34 @@ namespace Tower_Defense.Objects
                         Lines.Clear();
         }
 
-        public void CreateExplosion(int x, int y)
+        public void CreateExplosion(int x, int y,World world,int texindex)
         {
-            for (int i = 0; i < 50; i++)
+            var b = world.Gameform.MonsterModels[(short)texindex];
+            System.Drawing.Color c;
+            for(int xx = 0; xx < 128;xx++)
             {
-                var v = new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f));
-                Particles.Add(new Particle(x, y,v , 500 + rand.Next(2000)) { Color = Colors.WhiteSmoke });
+                for (int yy = 0; yy < 128; yy++)
+            {
+                c = b.FakeTex.GetPixel(xx, yy);
+                if (c.B == 0 && c.G == 0 && c.R == 0)
+                    continue;
+                Vector3D v = new Vector3D(x + rand.Next(200) - 100, y + rand.Next(200) - 100,0);
+                 Particles.Add(new Particle(x + (xx /2),y + (yy /2),v,(float)rand.NextDouble(),500+rand.Next(1500), c));
+                 //y++;
             }
+                //x++;
+            }
+
+            /*b.FakeTex.getp
+            Color4[] colors = new Color4[] { Colors.WhiteSmoke, Colors.Red, Colors.Gray, Colors.DarkRed };
+            for (int i = 0; i < 100; i++)
+            {
+                //var v = new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f));
+                //var v = new Vector2(rand.Next(200) - 100, rand.Next(200) - 100);
+                Vector3D v = new Vector3D(x + rand.Next(200) - 100, y + rand.Next(200) - 100,0);
+                //Particles.Add(new Particle(x, y,v , 500 + rand.Next(2000)) { Color = Colors.WhiteSmoke });
+                Particles.Add(new Particle(x,y,v,(float)rand.NextDouble(),500+rand.Next(1500),colors[rand.Next(3)]));
+            }*/
 
         }
 
@@ -77,7 +98,7 @@ namespace Tower_Defense.Objects
             {
                 var v = new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f));
                 v.Normalize();
-                Particles.Add(new Particle(x+ rand.Next(2), y, v, 2000) { Color = Colors.LightBlue });
+                //Particles.Add(new Particle(x+ rand.Next(2), y, v, 2000) { Color = Colors.LightBlue });
             }
 
         }
@@ -86,7 +107,7 @@ namespace Tower_Defense.Objects
             var vec = new Vector2(m.ViewX - t.ViewX, m.ViewY - t.ViewY);
             vec.Normalize();
             vec += vec;
-            Particles.Add(new Particle(t.ViewX,t.ViewY,vec,500){ Color = Colors.Blue});
+            //Particles.Add(new Particle(t.ViewX,t.ViewY,vec,500){ Color = Colors.Blue});
         }
        
 
@@ -129,6 +150,46 @@ namespace Tower_Defense.Objects
     internal class Particle
     {
         public Color4 Color;
+        Vector3D Location;
+        Vector3D Dest;
+        float Velocity;
+        public bool DeleteMe = false;
+        double LifeSpan, tickToDieAt;
+
+        SharpDX.Direct2D1.Ellipse el;
+        public Particle(float x, float y, Vector3D dest,float vel, int lifeSpan,Color4 color)
+        {
+            Location = new Vector3D(x, y, 0);
+            Velocity = vel;
+            LifeSpan = lifeSpan;
+            Color = color;
+            Dest = dest;
+            el = new SharpDX.Direct2D1.Ellipse(new DrawingPointF(x, y), 0.5f, 0.5f);
+
+        }
+
+        internal void Update(double curMS)
+        {
+            if (tickToDieAt == 0.0)
+                tickToDieAt = curMS + LifeSpan;
+            var dest =PowerMath.TranslateDirection2D(Location, Dest, Location, Velocity);
+            this.Location = dest;
+            el.Point = new DrawingPointF(Location.X, Location.Y);
+            if (curMS > tickToDieAt)
+                this.DeleteMe = true;
+
+        }
+        internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
+        {
+            if (Color != null)
+                GameForm.solidColorBrush.Color = Color;
+            d2dRenderTarget.FillEllipse(el, GameForm.solidColorBrush);
+        }
+    }
+
+    internal class Particle2
+    {
+        public Color4 Color;
         DrawingPointF Location;
         Vector2 Location2, Velocity;
         int LifeSpanMS;
@@ -141,6 +202,7 @@ namespace Tower_Defense.Objects
                 GameForm.solidColorBrush.Color = Color;
             d2dRenderTarget.FillEllipse(el, GameForm.solidColorBrush);
         }
+
         internal void Update(double curMS) 
         {
             if (tickToDieAt == 0.0)
@@ -152,7 +214,7 @@ namespace Tower_Defense.Objects
             if (curMS > tickToDieAt)
                 this.DeleteMe = true;
         }
-        public Particle(float x, float y, Vector2 velocity,int lifeSpan)
+        public Particle2(float x, float y, Vector2 velocity,int lifeSpan)
         {
             Location = new DrawingPointF(x, y);
             Location2 = new Vector2(x, y);

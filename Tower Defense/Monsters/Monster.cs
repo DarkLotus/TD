@@ -43,7 +43,7 @@ namespace Tower_Defense
                 return (Width *x); 
             } 
         }
-        AnimatedTexture tex;
+       
         public Monster(short TextureIndex, int width = 0, int height = 0) : base(TextureIndex,0,0,width,height)
         {
             Type = ObjectType.Monster;
@@ -119,7 +119,7 @@ namespace Tower_Defense
 
         private void Die(World world)
         {
-            world.ParticleMan.CreateExplosion(ViewX, ViewY);
+            world.ParticleMan.CreateExplosion(ViewX, ViewY,world,TextureIndex);
             world.Player.Score += this.ScoreValue;
             world.Player.Gold += (int)(this.ScoreValue * 0.6);
             this.DeleteMe = true; 
