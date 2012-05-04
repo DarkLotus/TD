@@ -22,6 +22,9 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct2D1;
+using Amazon;
+using ProtoBuf;
+using System.Net.Sockets;
 namespace Tower_Defense
 {
     public class MainMenu
@@ -41,6 +44,24 @@ namespace Tower_Defense
         }
     }
 
+    [ProtoContract]
+    public class SubmitScore
+    {
+        [ProtoMember(1)]
+        public string Name {get;set;}
+        [ProtoMember(2)]
+        public Int64 Score {get;set;}
+
+
+    }
+    [ProtoContract]
+    public class HighScores
+    {
+        [ProtoMember(1)]
+        public List<SubmitScore> TopTen = new List<SubmitScore>();
+
+
+    }
     public class ScoreMenu
     {
         public static Button[] Buttons = new Button[1];
@@ -52,7 +73,38 @@ namespace Tower_Defense
         }
         public static void InitScoreMenu(Player p)
         {
-            strings = new string[] {"Score:" + p.Score };
+            SubmitScore s = new SubmitScore() { Name = p.Name, Score = p.Score };
+            try
+            {
+                TcpClient server = new TcpClient("ec2-107-20-58-57.compute-1.amazonaws.com", 2593);
+                Serializer.SerializeWithLengthPrefix<SubmitScore>(server.GetStream(), s, PrefixStyle.Base128);
+                server.GetStream().Flush();
+                var scores = Serializer.DeserializeWithLengthPrefix<HighScores>(server.GetStream(), PrefixStyle.Base128);
+                strings = new string[scores.TopTen.Count];
+                int i = 0;
+                bool topten = false;
+                foreach (var str in scores.TopTen)
+                {
+                    if (s.Name == str.Name)
+                        topten = true;
+                    strings[i++] = str.Name + " " + str.Score;
+                }
+                if (!topten)
+                    strings[i++] = s.Name + " " + s.Score;
+                server.Close();
+            }
+            catch {
+                strings = new string[] { "LoadFailed", s.Name + " " + s.Score };
+            }
+            
+            /*string accesskey = "";
+            string secretkey = "";
+            
+            Amazon.SimpleDB.AmazonSimpleDB sdb = AWSClientFactory.CreateAmazonSimpleDBClient(accesskey, secretkey);
+            Amazon.SimpleDB.Model.CreateDomainRequest cdr = new Amazon.SimpleDB.Model.CreateDomainRequest();
+            cdr.DomainName = "High_SCORE_DOMAIN";
+            sdb.CreateDomain(cdr);*/
+            
         }
         internal static void Draw(GameForm gf)
         {

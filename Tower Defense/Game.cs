@@ -52,7 +52,7 @@ namespace Tower_Defense
         Tower TowerToBuild = null;
         public Game()
         {
-            
+            ScoreMenu.InitScoreMenu(new Player() { Score = Helper.random.Next(10000), Name = "Lotus" + Helper.random.Next(100) });
         }
 
         /// <summary>

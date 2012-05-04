@@ -15,9 +15,13 @@ namespace Tower_Defense
         // hold level here?
 
         public Player()
-        { }
+        {
+            Name = "Lotus" + Helper.random.Next(100);
+        }
 
-        
 
+
+
+        public string Name { get; set; }
     }
 }
