@@ -74,7 +74,7 @@ namespace Tower_Defense.Towers
                                 Target.DoDamage(_damage);
                                 Target.SlowMe(SlowEffect, curTime + SlowDurationMS);
 
-                                _fireTimer = curTime + _fireRateMS;
+                                _fireTimer = curTime + (_fireRateMS / Helper.GameSpeed);
                             }
                             
                         }

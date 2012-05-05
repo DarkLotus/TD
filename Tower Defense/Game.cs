@@ -41,9 +41,10 @@ namespace Tower_Defense
     /// </summary>
     public class Game
     {
-        public GameState GameState;// // 00 MainMenu, 01 Pause, 02 Ingame
+        public GameState GameState;
         public World World;
         public const double UpdateInterval = 16; // Milliseconds
+        
         public bool Debug = true;
         GameForm Gameform;
         public int UpdateTime = 0;
@@ -52,7 +53,8 @@ namespace Tower_Defense
         Tower TowerToBuild = null;
         public Game()
         {
-            ScoreMenu.InitScoreMenu(new Player() { Score = Helper.random.Next(10000), Name = "Lotus" + Helper.random.Next(100) });
+            //ScoreMenu.InitScoreMenu(new Player() { Score = Helper.random.Next(10000), Name = "Lotus" + Helper.random.Next(100) },"Test".GetHashCode());
+
         }
 
         /// <summary>
@@ -83,7 +85,7 @@ namespace Tower_Defense
                    
                     if (World.Player.Lives <= 0)
                     {
-                        ScoreMenu.InitScoreMenu(this.World.Player);
+                        ScoreMenu.InitScoreMenu(this.World.Player,this.World.Map.Name.GetHashCode());
                         GameState = Tower_Defense.GameState.EndGame;
                         World = null;
                     }

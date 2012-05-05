@@ -43,10 +43,36 @@ namespace Tower_Defense
                 return (Width *x); 
             } 
         }
-       
+        double nextanim = 0;
+        double _lastMove = 0;
+        double _slowEffect = 0;
+        byte framenum = 0;
+        public int MoveDelay = 30;
+        SharpDX.RectangleF HPoutline { get { return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 6, this.ViewX + 30, this.ViewY - 2); } }
+
+        SharpDX.RectangleF HPRect
+        {
+            get
+            {
+                float x = _hits / _baseHitsAfterLevel; // = .50
+                float viewx = (this.ViewX + 10) + (20 * x); // lefthand side + length * x gives us bar percent long
+                if (viewx < this.ViewX + 10) { viewx = this.ViewX + 11; }
+                //if (x < 0.1f) { x = 0.1f; }
+                return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 5, viewx, this.ViewY - 3);
+            }
+        }
+
         public Monster(short TextureIndex, int width = 0, int height = 0) : base(TextureIndex,0,0,width,height)
         {
             Type = ObjectType.Monster;
+            _hits = _baseHitsAfterLevel;
+        }
+        public Monster(short TextureIndex, Level map, int width = 0, int height = 0)
+            : base(TextureIndex, map.Start.X/*(float)(Helper.random.NextDouble())*/, map.Start.Y, width, height)
+        {
+            Type = ObjectType.Monster;
+            path = map.Path;
+            Map = map;
             _hits = _baseHitsAfterLevel;
         }
         public void initMob(Level map)
@@ -57,19 +83,9 @@ namespace Tower_Defense
             this.WorldY = map.Start.Y;
         }
 
-        public Monster(short TextureIndex,Level map, int width = 0, int height = 0)
-            : base(TextureIndex,map.Start.X/*(float)(Helper.random.NextDouble())*/, map.Start.Y, width, height)
-        {          
-            Type = ObjectType.Monster;
-            path = map.Path;
-            Map = map;
-            _hits = _baseHitsAfterLevel;
-        }
+      
 
-        double _lastMove = 0;
-        double _slowEffect = 0;
-        byte framenum = 0;
-        public int MoveDelay = 30;
+       
         public void SetLevel(int level)
         {
             Level = level;
@@ -92,9 +108,9 @@ namespace Tower_Defense
             if (path.Count > 0 && curTime > _lastMove)
             {
                 Move(_velocity);
-                _lastMove = curTime + MoveDelay;
+                _lastMove = curTime + (MoveDelay / Helper.GameSpeed);
                 if (_slowEffect != 0)
-                    _lastMove += MoveDelay;
+                    _lastMove += (MoveDelay / Helper.GameSpeed);
             }
             else if(path.Count == 0)
             {
@@ -112,6 +128,7 @@ namespace Tower_Defense
                 if (framenum >= (Direction + 1) * 19)
                     framenum = (byte)(Direction * 19);
                 nextanim = curTime + 50;
+                //TODO MAYBE FIX THIS? Should be MoveDelay time? or be changed to fps
             }
             
             base.Update(world,curTime);
@@ -124,20 +141,7 @@ namespace Tower_Defense
             world.Player.Gold += (int)(this.ScoreValue * 0.6);
             this.DeleteMe = true; 
         }
-        double nextanim = 0;
-        SharpDX.RectangleF HPoutline { get { return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 6, this.ViewX + 30, this.ViewY - 2); } }
-
-        SharpDX.RectangleF HPRect
-        {
-            get
-            {
-                float x = _hits / _baseHitsAfterLevel; // = .50
-                float viewx = (this.ViewX + 10) + (20 * x); // lefthand side + length * x gives us bar percent long
-                if (viewx < this.ViewX + 10) { viewx = this.ViewX + 11; }
-                //if (x < 0.1f) { x = 0.1f; }
-                return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 5, viewx, this.ViewY - 3);
-            }
-        }
+        
         public override void Draw(GameForm gf)
         {
             if (_hits > 1)

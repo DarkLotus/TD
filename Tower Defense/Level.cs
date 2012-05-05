@@ -32,6 +32,7 @@ namespace Tower_Defense
 
     public class Level
     {
+        public string Name;
         public MapTile[] Map;
         public int Width, Height;
         public static int TileSize = Helper.TowerSize;
@@ -49,11 +50,23 @@ namespace Tower_Defense
         // Load all variables from Level file.
         public Level(string levelname)
         {
+            Name = levelname;
             Width = 16; Height = 16;
             Map = LoadMap(levelname + ".tmx");
             grid = BuildNavMesh();
             Waves = LoadWaves(levelname + ".xml");
         }
+        public Type[] Types = new Type[] { typeof(Tower_Defense.Monsters.Runner), typeof(Tower_Defense.Monsters.Flyer), typeof(Tower_Defense.Monsters.Tank) };
+        internal Queue<Monster> MakeWave(int Wave)
+        {
+            var mob = Types[Helper.random.Next(2)];
+            Monster m = (Monster)mob.Assembly.CreateInstance(mob.FullName);
+            m.initMob(this);
+            m.SetLevel(Wave + 1);
+            return makeawave(m,20);
+        }
+
+
 
         private Queue<Queue<Monster>> LoadWaves(string path)
         {
@@ -252,6 +265,8 @@ namespace Tower_Defense
             Start = 5,
             Dest = 3
         }
+
+
 
 
     }

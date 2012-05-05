@@ -55,10 +55,9 @@ namespace Tower_Defense.Towers
                         int chainCnt = 0;
                         target.DoDamage(_damage);
                         world.ParticleMan.CreateLightning(this, target, chainTargets);
-                        _fireTimer = curTime + _fireRateMS; // Damages first target, now check for chains.
                         Fired = true;
                         Target = target;
-                        _fireTimer = curTime + _fireRateMS;
+                        _fireTimer = curTime + (_fireRateMS / Helper.GameSpeed);
                         while (chainCnt < 4 && chainCnt < chainTargets.Count())
                         {
                             if (chainTargets[chainCnt] != null)

@@ -62,7 +62,7 @@ namespace Tower_Defense.Towers
                         var debug = Helper.GetDistance(target.WorldX, target.WorldY, this.WorldX, this.WorldY);
                         target.DoDamage(_damage);
                         world.ParticleMan.CreateBullet(this, target);
-                        _fireTimer = curTime + _fireRateMS;
+                        _fireTimer = curTime + (_fireRateMS / Helper.GameSpeed);
                     }
                     Fired = false;
                     

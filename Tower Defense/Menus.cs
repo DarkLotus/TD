@@ -45,20 +45,33 @@ namespace Tower_Defense
     }
 
     [ProtoContract]
-    public class SubmitScore
+    public class SubmitScore : IComparable
     {
         [ProtoMember(1)]
-        public string Name {get;set;}
+        public string Name { get; set; }
         [ProtoMember(2)]
-        public Int64 Score {get;set;}
+        public Int64 Score { get; set; }
+        [ProtoMember(3)]
+        public Int32 LevelHashCode { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            SubmitScore s = (SubmitScore)obj;
+            return this.Score == s.Score;
+        }
 
 
+        public int CompareTo(object obj)
+        {
+            SubmitScore s = (SubmitScore)obj;
+            return s.Score.CompareTo(this.Score);
+        }
     }
     [ProtoContract]
     public class HighScores
     {
         [ProtoMember(1)]
-        public List<SubmitScore> TopTen = new List<SubmitScore>();
+        public List<SubmitScore> TopTen = new List<SubmitScore>();//scores
 
 
     }
@@ -71,12 +84,14 @@ namespace Tower_Defense
         {
             Buttons[0] = new Button("Main Menu", 0, -2);
         }
-        public static void InitScoreMenu(Player p)
+        public static string serverAddress = "ec2-107-20-58-57.compute-1.amazonaws.com";
+        //public static string serverAddress = "localhost";
+        public static void InitScoreMenu(Player p,int LevelHash)
         {
-            SubmitScore s = new SubmitScore() { Name = p.Name, Score = p.Score };
+            SubmitScore s = new SubmitScore() { Name = p.Name, Score = p.Score, LevelHashCode = LevelHash };
             try
             {
-                TcpClient server = new TcpClient("ec2-107-20-58-57.compute-1.amazonaws.com", 2593);
+                TcpClient server = new TcpClient(serverAddress, 2593);
                 Serializer.SerializeWithLengthPrefix<SubmitScore>(server.GetStream(), s, PrefixStyle.Base128);
                 server.GetStream().Flush();
                 var scores = Serializer.DeserializeWithLengthPrefix<HighScores>(server.GetStream(), PrefixStyle.Base128);
