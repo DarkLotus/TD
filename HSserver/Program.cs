@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using ProtoBuf;
-
+using System.Linq;
 
 namespace HSserver
 {
@@ -18,6 +19,9 @@ namespace HSserver
             public string Name { get; set; }
             [ProtoMember(2)]
             public Int64 Score { get; set; }
+            [ProtoMember(3)]
+            public Int32 LevelHashCode { get; set; }
+
             public override bool Equals(object obj)
             {
                 SubmitScore s = (SubmitScore)obj;
@@ -35,23 +39,89 @@ namespace HSserver
         public class HighScores
         {
             [ProtoMember(1)]
-            public List<SubmitScore> TopTen = new List<SubmitScore>();
+            public List<SubmitScore> TopTen = new List<SubmitScore>();//scores
 
 
         }
         public static TcpListener tcpListener;
 
-        public static List<SubmitScore> MyScores;
+        public static HighScores MyScores;
+        static DateTime lastCommit;
+
         static void Main(string[] args)
         {
-            MyScores = new List<SubmitScore>();
+            MyScores = LoadScores();
+
             Program p = new Program();
             tcpListener = new TcpListener(IPAddress.Any, 2593);
             tcpListener.Start();
             
             tcpListener.BeginAcceptTcpClient(new AsyncCallback(p.AcceptClientConnection), tcpListener);
             while (true)
-                Thread.Sleep(50);
+            {
+                Thread.Sleep(5000);
+                SaveScores();
+            }
+        }
+
+        private static string data = "Data.dat";
+
+        private static void SaveScores()
+        {
+
+            if (MyScores.TopTen.Count == 0)
+                return;
+            if ((DateTime.Now - lastCommit).TotalHours < 10)
+                return;
+            
+            try
+            {
+                lock (MyScores.TopTen)
+                {
+                    using (var fs = File.Create(data))
+                        Serializer.SerializeWithLengthPrefix<HighScores>(fs, MyScores, PrefixStyle.Base128);
+
+                    using (var fs = File.Open(data, FileMode.Open))
+                    {
+                        var x = Serializer.DeserializeWithLengthPrefix<HighScores>(fs, PrefixStyle.Base128);
+                        if (x.TopTen.Count > 0)
+                            using (var ws = File.Open(data + ".bak", FileMode.Create))
+                                Serializer.SerializeWithLengthPrefix<HighScores>(ws, MyScores, PrefixStyle.Base128);
+                    }
+                }
+            }
+            catch(Exception e){
+                Console.WriteLine(e.Message);
+            }
+            lastCommit = DateTime.Now;
+
+        }
+        private static HighScores LoadScores()
+        {
+            lastCommit = DateTime.Now;
+            if (File.Exists(data))
+            {
+                try
+                {
+                    using(var fs = File.OpenRead(data))
+                    return Serializer.DeserializeWithLengthPrefix<HighScores>(fs, PrefixStyle.Base128);
+                }
+                catch {
+                    try
+                    {
+                        File.Delete(data);
+                        File.Copy(data + ".bak", data);
+                        using (var fs = File.OpenRead(data))
+                            return Serializer.DeserializeWithLengthPrefix<HighScores>(fs, PrefixStyle.Base128);
+                    }
+                    catch { return new HighScores(); }
+                    
+                }
+            }
+            else {
+                return new HighScores();
+            }
+
         }
 
 
@@ -68,28 +138,36 @@ namespace HSserver
         {
             TcpClient client = (TcpClient)obj;
             NetworkStream ClientStream = client.GetStream();
+            System.Diagnostics.Stopwatch st = new System.Diagnostics.Stopwatch();
+            Console.WriteLine("Client Connected, Awaiting Data");
             while (client.Connected)
             {
-                Thread.Sleep(25);
+                Thread.Sleep(100);
                 if(client.Available > 0)
                 {
                     var score = Serializer.DeserializeWithLengthPrefix<SubmitScore>(client.GetStream(),PrefixStyle.Base128);
-                    MyScores.Add(score);
-                    MyScores.Sort();
+                    Console.WriteLine(score.Name + " Submitted " + score.Score);
+                    MyScores.TopTen.Add(score);
+                    
                     HighScores hs = new HighScores();
-                    hs.TopTen.AddRange(GetTopTen());
+                    hs.TopTen.AddRange(GetTopTen(score.LevelHashCode));
                     Serializer.SerializeWithLengthPrefix<HighScores>(client.GetStream(), hs, PrefixStyle.Base128);
                 }
+                if (st.ElapsedMilliseconds > 25000)
+                    break;
             }
         }
 
-        private SubmitScore[] GetTopTen()
+        private IEnumerable<SubmitScore> GetTopTen(int p)
         {
-            SubmitScore[] ar = new SubmitScore[Math.Min(MyScores.Count, 10)];
-            MyScores.Sort();
-            for (int i = 0; i < Math.Min(MyScores.Count,11); i++)
-                ar[i] = MyScores[i];
+            SubmitScore[] ar = new SubmitScore[Math.Min(MyScores.TopTen.Count, 10)];
+            var x = MyScores.TopTen.Where(a => a.LevelHashCode == p).ToList();
+            x.Sort();
+            for (int i = 0; i < Math.Min(x.Count(), 10); i++)
+                ar[i] = x[i];//ar[i] = MyScores.TopTen[i];
             return ar;
         }
+
+        
     }
 }
