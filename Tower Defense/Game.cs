@@ -154,8 +154,8 @@ namespace Tower_Defense
                 switch (GameState)
                 {
                     case Tower_Defense.GameState.InGame:
-                        if (key.KeyData == System.Windows.Forms.Keys.Escape)
-                            GameState = Tower_Defense.GameState.InGamePause;
+                        HandleIngameKey(key);
+                        
                         break;
                     case Tower_Defense.GameState.InGamePause:
                         if (key.KeyData == System.Windows.Forms.Keys.Escape)
@@ -177,6 +177,23 @@ namespace Tower_Defense
                 }
             }
         }
+
+        private void HandleIngameKey(System.Windows.Forms.KeyEventArgs key)
+        {
+            if (key.KeyData == System.Windows.Forms.Keys.Escape)
+                GameState = Tower_Defense.GameState.InGamePause;
+            if (key.KeyData == System.Windows.Forms.Keys.Right)
+                GameForm._drawXoffset+=10;
+            if (key.KeyData == System.Windows.Forms.Keys.Left)
+                GameForm._drawXoffset-=10;
+            if (key.KeyData == System.Windows.Forms.Keys.Up)
+                GameForm._drawYoffset+=10;
+            if (key.KeyData == System.Windows.Forms.Keys.Down)
+                GameForm._drawYoffset-=10;
+            //if (GameForm._drawXoffset < 0) { GameForm._drawXoffset = 0; } if (GameForm._drawYoffset < 0) { GameForm._drawYoffset = 0; }
+        }
+
+
 
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)
         {

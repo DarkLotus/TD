@@ -25,6 +25,7 @@ using SharpDX.Direct2D1;
 using Amazon;
 using ProtoBuf;
 using System.Net.Sockets;
+using System.Windows.Forms;
 namespace Tower_Defense
 {
     public class MainMenu
@@ -84,11 +85,14 @@ namespace Tower_Defense
         {
             Buttons[0] = new Button("Main Menu", 0, -2);
         }
-        public static string serverAddress = "ec2-107-20-58-57.compute-1.amazonaws.com";
+        public static string serverAddress = "ec2-23-20-45-228.compute-1.amazonaws.com";
         //public static string serverAddress = "localhost";
         public static void InitScoreMenu(Player p,int LevelHash)
         {
             SubmitScore s = new SubmitScore() { Name = p.Name, Score = p.Score, LevelHashCode = LevelHash };
+            string name = Microsoft.VisualBasic.Interaction.InputBox("Enter your Name", "Score Entry Dialog");
+            if (!string.IsNullOrWhiteSpace(name))
+                s.Name = name;
             try
             {
                 TcpClient server = new TcpClient(serverAddress, 2593);
@@ -173,11 +177,13 @@ namespace Tower_Defense
 
     public static class LevelSelectMenu
     {
-        public static Button[] Buttons = new Button[1];
+        public static Button[] Buttons = new Button[3];
         static LevelSelectMenu()
         {
             //TODO Parse list of levels, add buttons for each level.
             Buttons[0] = new Button("DemoLevel", 0, 3);
+            Buttons[1] = new Button("DemoMultiBranch", 0, 4);
+            Buttons[2] = new Button("DemoMultiPath", 0, 5);
         }
         internal static void Draw(GameForm gf)
         {

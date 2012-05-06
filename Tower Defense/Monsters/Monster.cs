@@ -68,19 +68,18 @@ namespace Tower_Defense
             _hits = _baseHitsAfterLevel;
         }
         public Monster(short TextureIndex, Level map, int width = 0, int height = 0)
-            : base(TextureIndex, map.Start.X/*(float)(Helper.random.NextDouble())*/, map.Start.Y, width, height)
+            : base(TextureIndex, 0, 0, width, height)
         {
             Type = ObjectType.Monster;
-            path = map.Path;
-            Map = map;
             _hits = _baseHitsAfterLevel;
         }
         public void initMob(Level map)
         {
             this.Map = map;
-            this.path = map.Path;
-            this.WorldX = map.Start.X;
-            this.WorldY = map.Start.Y;
+            var pathnum = Helper.random.Next(map.Starts.Count());
+            this.WorldX = map.Starts[pathnum].X;
+            this.WorldY = map.Starts[pathnum].Y;
+            this.path = map.buildPath(map.Starts[pathnum]);
         }
 
       
@@ -93,7 +92,12 @@ namespace Tower_Defense
         }
 
         public virtual Monster Clone()
-        { return new Monster(TextureIndex,Map, Width, Height); }
+        { 
+            var m = new Monster(TextureIndex, Width, Height);
+            m.initMob(Map);
+            m.SetLevel(Level);
+            return m;
+        }
 
         public override void Update(World world, double curTime)
         {

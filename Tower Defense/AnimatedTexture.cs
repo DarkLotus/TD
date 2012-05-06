@@ -21,8 +21,8 @@ namespace Tower_Defense
         int width;
         public AnimatedTexture(string texturename, short spriteX,short spriteY,short count,Device device, RenderTarget d2dRender)
         {
-            Texture = GameForm.LoadFromFile(d2dRender,File.OpenRead("art\\" + texturename + ".png"));
-            FakeTex = new System.Drawing.Bitmap(File.OpenRead("art\\" + texturename + ".png"));
+            Texture = GameForm.LoadFromFile(d2dRender,GameForm.GetFile(texturename + ".png"));
+            FakeTex = new System.Drawing.Bitmap(GameForm.GetFile(texturename + ".png"));
             
             width = (int)Texture.Size.Width / spriteX;
             DrawRegion = new RectangleF(0, 0, spriteX, spriteY);

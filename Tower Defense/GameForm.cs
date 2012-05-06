@@ -51,8 +51,8 @@ namespace Tower_Defense
         public static Dictionary<int, Bitmap> StaticBitmaps = new Dictionary<int, Bitmap>();
         public RenderTarget d2dRenderTarget;
 
-        public int _drawXoffset = 0;
-        public int _drawYoffset = 20;
+        public static int _drawXoffset = 0;
+        public static int _drawYoffset = 0;
         public SharpDX.Direct2D1.Factory d2dFactory;
         public SharpDX.DirectWrite.Factory fontFactory;
         Device1 device;
@@ -109,24 +109,42 @@ namespace Tower_Defense
         public Dictionary<short, AnimatedTexture> MonsterModels = new Dictionary<short, AnimatedTexture>();
         private void LoadTexs()
         {
-            MapTiles.Add(0,LoadFromFile(d2dRenderTarget,File.OpenRead("Art\\Grass.jpg")));
-            MapTiles.Add(1, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\Soil.jpg")));
-            MapTiles.Add(100, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_basic.png")));
-            MapTiles.Add(101, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_slow.png")));
-            MapTiles.Add(102, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_light.png")));
-            MapTiles.Add(103, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\tower_cannon.png")));
+            try
+            {
+                Data = Ionic.Zip.ZipFile.Read("Art\\art.dat");
+                MapTiles.Add(0, LoadFromFile(d2dRenderTarget, GetFile("Grass.jpg")));
+                MapTiles.Add(1, LoadFromFile(d2dRenderTarget, GetFile("Soil.jpg")));
+                MapTiles.Add(100, LoadFromFile(d2dRenderTarget, GetFile("tower_basic.png")));
+                MapTiles.Add(101, LoadFromFile(d2dRenderTarget, GetFile("tower_slow.png")));
+                MapTiles.Add(102, LoadFromFile(d2dRenderTarget, GetFile("tower_light.png")));
+                MapTiles.Add(103, LoadFromFile(d2dRenderTarget, GetFile("tower_cannon.png")));
 
-            MapTiles.Add(51, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\bg.png")));
-            MapTiles.Add(50, LoadFromFile(d2dRenderTarget, File.OpenRead("Art\\blue_button.png")));
-            MonsterModels.Add(0, new AnimatedTexture("impnew", 128, 128, 60, device, d2dRenderTarget));
-            MonsterModels.Add(1, new AnimatedTexture("spider_128", 128, 128, 60, device, d2dRenderTarget));
-            MonsterModels.Add(2, new AnimatedTexture("bird_128", 128, 128, 60, device, d2dRenderTarget));
+                MapTiles.Add(51, LoadFromFile(d2dRenderTarget, GetFile("bg.png")));
+                MapTiles.Add(50, LoadFromFile(d2dRenderTarget, GetFile("blue_button.png")));
+                //Animated textures must be PNG.
+                MonsterModels.Add(0, new AnimatedTexture("impnew", 128, 128, 60, device, d2dRenderTarget));
+                MonsterModels.Add(1, new AnimatedTexture("spider_128", 128, 128, 60, device, d2dRenderTarget));
+                MonsterModels.Add(2, new AnimatedTexture("bird_128", 128, 128, 60, device, d2dRenderTarget));
+                Data.Dispose();
+                Data = null;
+            }
+            catch(Exception e) {
+                MessageBox.Show(e.Message);
+            }
         }
 
         public System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]> Buffer = new System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]>();
         DrawnObject[] _buffer;
+        static Ionic.Zip.ZipFile Data;
+        public static MemoryStream GetFile(string path)
+        {
 
+                MemoryStream ms = new MemoryStream();
+                Data[path].Extract(ms);
+                ms.Position = 0;
+                return ms;
 
+        }
         public void callback()
         {
             if (Game.GameState == GameState.Exit)
@@ -202,7 +220,7 @@ namespace Tower_Defense
         {
             //Debugger.Show();
             this.Size = new System.Drawing.Size(1440, 900);
-            ViewPort = new System.Drawing.Rectangle(0, 50, this.Size.Width - 200, this.Size.Height - 80);
+            ViewPort = new System.Drawing.Rectangle(-40, 50, (int)(this.Width / 1.31), this.Size.Height);
             BuildMenu.initMenu((int)(this.Width / 1.31),75,this);
 
             SetupDX();

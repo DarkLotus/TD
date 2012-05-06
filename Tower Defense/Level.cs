@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using SharpDX;
 using Algorithms;
 using System.Xml;
@@ -37,9 +36,12 @@ namespace Tower_Defense
         public int Width, Height;
         public static int TileSize = Helper.TowerSize;
         public int Tilesize { get { return TileSize; } }
-        public System.Drawing.Point Start;
-        public System.Drawing.Point Dest;
-        public List<PathFinderNode> Path { get { if (_path == null) { _path = buildPath(); } return _path.ToList(); } }
+        //public System.Drawing.Point Start;
+        //public System.Drawing.Point Dest;
+
+        public List<System.Drawing.Point> Starts = new List<System.Drawing.Point>();
+        public List<System.Drawing.Point> Dests = new List<System.Drawing.Point>();
+        //public List<PathFinderNode> Path { get { if (_path == null) { _path = buildPath(); } return buildPath(); return _path.ToList(); } }
 
         internal Queue<Queue<Monster>> Waves = new Queue<Queue<Monster>>();
         
@@ -51,10 +53,10 @@ namespace Tower_Defense
         public Level(string levelname)
         {
             Name = levelname;
-            Width = 16; Height = 16;
+
             Map = LoadMap(levelname + ".tmx");
             grid = BuildNavMesh();
-            Waves = LoadWaves(levelname + ".xml");
+            //Waves = LoadWaves(levelname + ".xml");
         }
         public Type[] Types = new Type[] { typeof(Tower_Defense.Monsters.Runner), typeof(Tower_Defense.Monsters.Flyer), typeof(Tower_Defense.Monsters.Tank) };
         internal Queue<Monster> MakeWave(int Wave)
@@ -96,63 +98,81 @@ namespace Tower_Defense
 
         public MapTile[] LoadMap(string MapName)
         {
-            string mapdata = "";
-            MapTile[] tiles = new MapTile[Width * Height];
+            string mapdata = "";           
             var a = File.Open("Maps\\" + MapName, FileMode.Open);
             XmlReader xr = XmlReader.Create(a);
             while (xr.Read())
             {
+                if (xr.Name == "layer")
+                {
+                    Width = Convert.ToInt32(xr.GetAttribute("width"));
+                    Height = Convert.ToInt32(xr.GetAttribute("height"));
+                }
             if(xr.Name == "data")
             {
-                xr.Read();
-                mapdata = xr.Value.ToString();
+                mapdata = xr.ReadElementContentAsString();
+                //xr.Read();
+                //mapdata = xr.Value.ToString();
                 break;
             }
             
             }
             string[] values = mapdata.Split(new string[] {","},StringSplitOptions.RemoveEmptyEntries);
+            MapTile[] tiles = new MapTile[Width * Height];
             for (int i = 0; i < values.Length; i++)
             {
                 if (values[i].Contains("\n"))
                     values[i] = values[i].Replace("\n", "");
                 var tiletype = Convert.ToInt16(values[i]);
                 tiletype--;
-                if (tiletype < 10)
-                    tiles[i] = new MapTile(i % Width, i / Height, (MapTileType)tiletype);
-                if((MapTileType)tiletype == MapTileType.Start)
-                    this.Start = new System.Drawing.Point(i % Width, i / Height);
+                    tiles[i] = new MapTile(i % Width, i / Width, (MapTileType)tiletype);
+                if ((MapTileType)tiletype == MapTileType.Start)
+                    this.Starts.Add(new System.Drawing.Point(i % Width, i / Width));
+                    //this.Start = new System.Drawing.Point(i % Width, i / Height);
                 if ((MapTileType)tiletype == MapTileType.Dest)
-                    this.Dest = new System.Drawing.Point(i % Width, i / Height);
+                    this.Dests.Add(new System.Drawing.Point(i % Width, i / Width));
+                    //this.Dest = new System.Drawing.Point(i % Width, i / Height);
             }
             a.Close();
             
             return tiles;
             
         }
-        private List<PathFinderNode> buildPath()
+        public List<PathFinderNode> buildPath(System.Drawing.Point Start)
         {
+            List<PathFinderNode> path;
             var pather = new PathFinderFast(grid);
             pather.Diagonals = false;
-            var path = pather.FindPath(Start, Dest);
-            if (path == null)
-                return new List<PathFinderNode>();
-            return path;
+            foreach (var dest in this.Dests)
+            {
+                path = pather.FindPath(Start, dest);
+                if (path != null)
+                    return path;
+            }
+
+            return null;
         }
 
-
+        bool IsPowerOfTwo(int x)
+        {
+            return (x != 0) && ((x & (x - 1)) == 0);
+        }
 
         private byte[,] BuildNavMesh()
         {
-            var grid = new byte[Width, Height];
+            var gridsize = Math.Max(Width, Height);
+            if (!IsPowerOfTwo(gridsize))
+                gridsize = (gridsize | (1));
+            var grid = new byte[gridsize, gridsize];
             for (int i = 0; i < Map.Length; i++)
-                grid[i % Height, i / Width] = (byte)(Map[i].Type & MapTileType.Path);
+                grid[i % Width, i / Width] = (byte)(Map[i].Type & MapTileType.Path);
             return grid;
         }
         /// <summary>
         /// Replace with load from file/ random gen
         /// </summary>
         /// <returns></returns>
-        public MapTile[] BuildDummyMap()
+        /*public MapTile[] BuildDummyMap()
         {
             Start = new System.Drawing.Point(5, 0);
             Dest = new System.Drawing.Point(6, 31);
@@ -197,25 +217,25 @@ namespace Tower_Defense
             }
             return tiles;
 
-        }
+        }*/
         public class MapTile
         {
             public int WorldX,WorldY;
-            public RectangleF ScreenSprite;
+            public RectangleF ScreenSprite { get { return new RectangleF(ViewX, ViewY, ViewX + TileSize, ViewY + TileSize); } }
             public MapTileType Type;
-            public int ViewX { get { return (WorldX * TileSize) + GameForm.ViewPort.Left;  } }
-            public int ViewY { get { return (WorldY * TileSize) + GameForm.ViewPort.Top ; } }
+            public int ViewX { get { return (WorldX * TileSize) + GameForm.ViewPort.Left + GameForm._drawXoffset;  } }
+            public int ViewY { get { return (WorldY * TileSize) + GameForm.ViewPort.Top + GameForm._drawYoffset; } }
             public DrawingPoint ViewCentre { get { return new DrawingPoint(ViewX + TileSize / 2, ViewY + TileSize / 2); } }
             public MapTile(int worldx,int worldy,MapTileType type)
             {
                 this.WorldX = worldx;
                 this.WorldY = worldy;
                 this.Type = type;
-                this.ScreenSprite = new RectangleF(ViewX, ViewY, ViewX + TileSize, ViewY + TileSize);
+                //this.ScreenSprite = new RectangleF(ViewX, ViewY, ViewX + TileSize, ViewY + TileSize);
             }
 
 
-            internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
+            /*internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget)
             {
                 switch (Type)
                 {
@@ -232,7 +252,7 @@ namespace Tower_Defense
                         break;
                       
                 }
-            }
+            }*/
 
             internal void Draw(GameForm gameForm)
             {

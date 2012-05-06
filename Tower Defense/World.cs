@@ -82,12 +82,13 @@ namespace Tower_Defense
             {
                 if (CurrentWave.Count > 0)
                 {
+
+                    DrawableObjects.Add(CurrentWave.Dequeue());
                     spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(500);
-                    if(DrawableObjects.First().GetType() == typeof(Monsters.Tank))
+                    if (DrawableObjects.First().GetType() == typeof(Monsters.Tank))
                         spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(1500);
                     //if (DrawableObjects.First().GetType() == typeof(Monsters.Runner))
-                     //   spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(500);
-                    DrawableObjects.Add(CurrentWave.Dequeue());
+                    //   spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(500);
                 }
                
             }
@@ -115,7 +116,7 @@ namespace Tower_Defense
 
         internal void NextWave()
         {
-            if (this.MobsRemaining == 0 && this.Map.Waves.Count > 0)
+            if (this.MobsRemaining == 0)// && this.Map.Waves.Count > 0)
             {
                 CurrentWave = Map.MakeWave(Wave);
                         //CurrentWave = Map.Waves.Dequeue();

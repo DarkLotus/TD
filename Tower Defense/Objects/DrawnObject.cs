@@ -39,8 +39,8 @@ namespace Tower_Defense
         public short TextureIndex;
         public int Width;
         public int Height;
-        public int ViewX { get { return (int)(WorldX * Level.TileSize) + GameForm.ViewPort.Left; } }
-        public int ViewY { get { return (int)(WorldY * Level.TileSize) + GameForm.ViewPort.Top; } }
+        public int ViewX { get { return (int)(WorldX * Level.TileSize) + GameForm.ViewPort.Left + GameForm._drawXoffset; ; } }
+        public int ViewY { get { return (int)(WorldY * Level.TileSize) + GameForm.ViewPort.Top + GameForm._drawYoffset; ; } }
         public byte ViewZ;
         public bool DeleteMe = false;
         private RectangleF screenspr;

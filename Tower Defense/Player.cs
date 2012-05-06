@@ -16,7 +16,7 @@ namespace Tower_Defense
 
         public Player()
         {
-            Name = "Lotus" + Helper.random.Next(100);
+            Name = "DemoUser" + Helper.random.Next(100);
         }
 
 
