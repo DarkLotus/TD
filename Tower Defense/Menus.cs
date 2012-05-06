@@ -22,7 +22,6 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct2D1;
-using Amazon;
 using ProtoBuf;
 using System.Net.Sockets;
 using System.Windows.Forms;
