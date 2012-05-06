@@ -32,20 +32,25 @@ namespace Tower_Defense
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            
-            Game game = new Game();
-            GameForm gf;
-            gf = new GameForm(game);
-            Thread t = new Thread(new ParameterizedThreadStart(game.Start));
-            t.Name = "GameLoop";
-            t.IsBackground = true;
-            t.Start(gf);
-
-            //Thread tt = new Thread(new ThreadStart(gf.Show2));
-            //tt.Start();
-            gf.Show2();
+           // Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            try
+            {
+                Game game = new Game();
+                GameForm gf;
+                gf = new GameForm(game);
+                Thread t = new Thread(new ParameterizedThreadStart(game.Start));
+                t.Name = "GameLoop";
+                t.IsBackground = true;
+                t.TrySetApartmentState(ApartmentState.STA);
+                t.Start(gf);
+                
+                //Thread tt = new Thread(new ThreadStart(gf.Show2));
+                //tt.Start();
+                gf.Show2();
+            }
+            catch (Exception e) { MessageBox.Show(e.Message + e.InnerException + e.Source + e.StackTrace); }
+          
             //if (t.ThreadState == ThreadState.Running)
              //   t.Abort();
 

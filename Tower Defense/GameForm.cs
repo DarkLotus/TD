@@ -63,41 +63,49 @@ namespace Tower_Defense
         public static System.Drawing.Rectangle ViewPort;
         private void SetupDX()
         {
-            var desc = new SwapChainDescription()
+           // MessageBox.Show(this.ClientSize.Width +"   "+ this.ClientSize.Height);
+           /* var desc = new SwapChainDescription()
             {
                 BufferCount = 1,
                 ModeDescription =
                     new ModeDescription(this.ClientSize.Width, this.ClientSize.Height,
-                                        new Rational(60, 1), Format.R8G8B8A8_UNorm),
+                                        new Rational(60, 1), Format.B8G8R8A8_UNorm),
                 IsWindowed = true,
                 OutputHandle = this.Handle,
                 SampleDescription = new SampleDescription(1, 0),
                 SwapEffect = SwapEffect.Discard,
                 Usage = Usage.RenderTargetOutput
 
-            };
+            };*/
+            
+
 
             // Create Device and SwapChain 
-            Device1.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded, desc, out device, out swapChain);
+            //Device1.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded, desc, out device, out swapChain);
 
             d2dFactory = new SharpDX.Direct2D1.Factory();
             fontFactory = new SharpDX.DirectWrite.Factory();
-            int width = this.ClientSize.Width;
-            int height = this.ClientSize.Height;
+            //int width = this.ClientSize.Width;
+            //int height = this.ClientSize.Height;
 
-            var rectangleGeometry = new RoundedRectangleGeometry(d2dFactory, new RoundedRect() { RadiusX = 32, RadiusY = 32, Rect = new SharpDX.RectangleF(128, 128, width - 128, height - 128) });
+            //var rectangleGeometry = new RoundedRectangleGeometry(d2dFactory, new RoundedRect() { RadiusX = 32, RadiusY = 32, Rect = new SharpDX.RectangleF(128, 128, width - 128, height - 128) });
 
             // Ignore all windows events
-            factory = swapChain.GetParent<Factory>();
-            factory.MakeWindowAssociation(this.Handle, WindowAssociationFlags.IgnoreAll);
+            //factory = swapChain.GetParent<Factory>();
+            //factory.MakeWindowAssociation(this.Handle, WindowAssociationFlags.IgnoreAll);
 
             // New RenderTargetView from the backbuffer
-            backBuffer = Texture2D.FromSwapChain<Texture2D>(swapChain, 0);
-            renderView = new RenderTargetView(device, backBuffer);
+            //backBuffer = Texture2D.FromSwapChain<Texture2D>(swapChain, 0);
+            //renderView = new RenderTargetView(device, backBuffer);
 
-            Surface surface = backBuffer.QueryInterface<Surface>();
-            d2dRenderTarget = new RenderTarget(d2dFactory, surface, new RenderTargetProperties(new PixelFormat(Format.Unknown, AlphaMode.Premultiplied)));
-
+            //Surface surface = backBuffer.QueryInterface<Surface>();
+            HwndRenderTargetProperties properties = new HwndRenderTargetProperties();
+            properties.Hwnd = this.Handle;
+            properties.PixelSize = new System.Drawing.Size(this.Width, this.Height);
+            properties.PresentOptions = PresentOptions.None;
+            
+            d2dRenderTarget = new WindowRenderTarget(d2dFactory, new RenderTargetProperties(new PixelFormat(Format.Unknown, AlphaMode.Premultiplied)),properties);
+            d2dRenderTarget.AntialiasMode = AntialiasMode.Aliased;
             EmptyTileBrush = new SolidColorBrush(d2dRenderTarget, Colors.Aquamarine);
             solidColorBrush = new SolidColorBrush(d2dRenderTarget, Colors.White);
             MonsterBrush = new SolidColorBrush(d2dRenderTarget, Colors.Wheat);
@@ -109,8 +117,7 @@ namespace Tower_Defense
         public Dictionary<short, AnimatedTexture> MonsterModels = new Dictionary<short, AnimatedTexture>();
         private void LoadTexs()
         {
-            try
-            {
+            //try{
                 Data = Ionic.Zip.ZipFile.Read("Art\\art.dat");
                 MapTiles.Add(0, LoadFromFile(d2dRenderTarget, GetFile("Grass.jpg")));
                 MapTiles.Add(1, LoadFromFile(d2dRenderTarget, GetFile("Soil.jpg")));
@@ -127,10 +134,7 @@ namespace Tower_Defense
                 MonsterModels.Add(2, new AnimatedTexture("bird_128", 128, 128, 60, device, d2dRenderTarget));
                 Data.Dispose();
                 Data = null;
-            }
-            catch(Exception e) {
-                MessageBox.Show(e.Message);
-            }
+            //} catch(Exception e) {MessageBox.Show(e.Message);}
         }
 
         public System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]> Buffer = new System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]>();
@@ -206,9 +210,12 @@ namespace Tower_Defense
                 d2dRenderTarget.EndDraw();
                 d2dRenderTarget.SaveDrawingState(myblock);
             }
-            swapChain.Present(1, PresentFlags.None);
-            //if (stopwatch.Elapsed.Ticks < 16600000)
-            //    Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
+            
+           // swapChain.Present(1, PresentFlags.None);
+            stopwatch.Stop();
+            if (stopwatch.Elapsed.Ticks < 16600000)
+                Thread.Sleep((int)((15600000 - stopwatch.Elapsed.Ticks) / 1000000));
+            //Thread.Sleep(4);
             fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);
             stopwatch.Restart();       
         }
@@ -228,12 +235,12 @@ namespace Tower_Defense
             myblock = new DrawingStateBlock(d2dFactory); stopwatch.Start();
             RenderLoop.Run(this,new RenderLoop.RenderCallback(callback));
             // Release all resources
-            renderView.Dispose();
-            backBuffer.Dispose();
+            //renderView.Dispose();
+            //backBuffer.Dispose();
             
-            device.Dispose();
-            swapChain.Dispose();
-            factory.Dispose();
+            //device.Dispose();
+            //swapChain.Dispose();
+            //factory.Dispose();
         }
 
         public static bool Contains(System.Drawing.Rectangle ViewPort, RectangleF rectangleF)
@@ -286,7 +293,7 @@ namespace Tower_Defense
             using (var bitmap = (System.Drawing.Bitmap)System.Drawing.Image.FromStream(file))
             {
                 var sourceArea = new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height);
-                var bitmapProperties = new BitmapProperties(new PixelFormat(Format.R8G8B8A8_UNorm, AlphaMode.Premultiplied));
+                var bitmapProperties = new BitmapProperties(new PixelFormat(Format.B8G8R8A8_UNorm, AlphaMode.Premultiplied));
                 var size = new System.Drawing.Size(bitmap.Width, bitmap.Height);
 
                 // Transform pixels from BGRA to RGBA
@@ -307,7 +314,7 @@ namespace Tower_Defense
                             byte G = Marshal.ReadByte(bitmapData.Scan0, offset++);
                             byte R = Marshal.ReadByte(bitmapData.Scan0, offset++);
                             byte A = Marshal.ReadByte(bitmapData.Scan0, offset++);
-                            int rgba = R | (G << 8) | (B << 16) | (A << 24);
+                            int rgba = B | (G << 8) | (R << 16) | (A << 24);
                             tempStream.Write(rgba);
                         }
 
