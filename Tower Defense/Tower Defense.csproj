@@ -153,18 +153,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Art\bird_128.png" />
-    <Content Include="Art\spider_128.png" />
-    <Content Include="Art\tower_basic.png" />
-    <Content Include="Art\bg.png" />
-    <Content Include="Art\blue_button.png" />
-    <Content Include="Art\Grass.jpg" />
-    <Content Include="Art\imp.png" />
-    <Content Include="Art\impnew.png" />
-    <Content Include="Art\tower_cannon.png" />
-    <Content Include="Art\tower_light.png" />
-    <Content Include="Art\tower_slow.png" />
-    <Content Include="Art\Soil.jpg" />
     <Content Include="Ionic.Zlib.dll" />
     <Content Include="Maps\DemoLevel.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
