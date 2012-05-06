@@ -44,7 +44,7 @@ namespace Tower_Defense
         public byte ViewZ;
         public bool DeleteMe = false;
         private RectangleF screenspr;
-        public RectangleF ScreenSprite { get { return screenspr;} set { screenspr = value; } }
+        public RectangleF ScreenSprite { get { return new RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height); } set { screenspr = value; } }
         public DrawnObject(short TextureIndex,float worldX,float worldY, int width = 0,int height = 0)
         {
             this.TextureIndex = TextureIndex;
