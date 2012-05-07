@@ -225,9 +225,9 @@ namespace Tower_Defense
                 {
                     if (Helper.Contains(UpgradeMenu.Buttons[0].button, click.Location))
                     {
-                        if (World.Player.Gold < UpgradeMenu.Tower.Cost * (UpgradeMenu.Tower.Level + 1))
+                        if (World.Player.Gold < UpgradeMenu.Tower.UpgradeCost)
                         {
-                            World.Player.Gold -= UpgradeMenu.Tower.Cost * (UpgradeMenu.Tower.Level + 1);
+                            World.Player.Gold -= UpgradeMenu.Tower.UpgradeCost;
                             UpgradeMenu.Tower.LevelUP();
                         }
                         
@@ -267,7 +267,7 @@ namespace Tower_Defense
                 {
                     if (TowerToBuild != null)
                     {
-                        if (World.Player.Gold < TowerToBuild.Cost)
+                        if (World.Player.Gold < TowerToBuild.Cost || m.Type != Level.MapTileType.EmptyTile)
                         {
                             TowerToBuild = null;
                             return;
@@ -282,7 +282,7 @@ namespace Tower_Defense
                     }
                 }
             return;
-            var x = click.X - GameForm.ViewPort.Left;
+            /*var x = click.X - GameForm.ViewPort.Left;
             var y = click.Y - GameForm.ViewPort.Top;
             x = x / this.World.Map.Width;
             y = y / this.World.Map.Height;
@@ -293,7 +293,7 @@ namespace Tower_Defense
             {
                 World.Map.Map[total].Type = Level.MapTileType.TowerHere;
                 World.DrawableObjects.Add(new Towers.BasicTower(tile.WorldX, tile.WorldY));
-            }
+            }*/
 
         }
         private void handleMenuInputPauseMenuInput(System.Windows.Forms.MouseEventArgs click)

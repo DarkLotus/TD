@@ -34,6 +34,7 @@ namespace Tower_Defense
         internal int Level = 1;
 
         public int Cost;
+        public int UpgradeCost { get { return (int)(this.Cost * (1 + (this.Level / 10))); } }
         internal Monster Target;
         public Tower(short TextureIndex,int worldX, int worldY, int width = 0, int height = 0)
             : base(TextureIndex,worldX, worldY, width, height)
@@ -60,7 +61,7 @@ namespace Tower_Defense
             public static int Price = 25;
             public static float BaseDamage = 8f;
             public static int BaseFireRateMS = 1000;
-            public static float RangeinTiles = 2f;
+            public static float RangeinTiles = 3f;
         }
         public static class Cannon
         {
@@ -82,12 +83,12 @@ namespace Tower_Defense
         {
             public static string Name = "Slowing Tower";
             public static int Price = 100;
-            public static float BaseDamage = 3f;
+            public static float BaseDamage = 8f;
             public static int BaseFireRateMS = 4500;
-            public static float RangeinTiles = 2f;
+            public static float RangeinTiles = 3f;
 
-            public static double SlowDuration = 4000;
-            public static float SlowAmount = 0.06f;
+            public static double SlowDuration = 7000;
+            public static float SlowAmount = 0.10f;
         }
     }
 }
