@@ -30,7 +30,7 @@ namespace Tower_Defense.Monsters
         {
             this._baseVelocity = 0.14f;
             this._baseHits = 8f;
-            this.ScoreValue = 5;
+            this.ScoreValue = 6;
         }
 
        

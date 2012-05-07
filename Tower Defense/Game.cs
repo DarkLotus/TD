@@ -67,7 +67,13 @@ namespace Tower_Defense
             GameState = Tower_Defense.GameState.MainMenu;
             Gameform.MouseClick += Gameform_MouseClick;
             Gameform.KeyUp += Gameform_KeyUp;
+            Gameform.KeyDown += Gameform_KeyDown;
             Update();
+        }
+        System.Windows.Forms.KeyEventArgs _curKey;
+        void Gameform_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            _curKey = e;
         }
 
 
@@ -94,7 +100,11 @@ namespace Tower_Defense
                     break;
                 
                 HandleUserInput();
-
+                if (_curKey != null)
+                {
+                    var x = _curKey.KeyCode;
+                    HandleIngameKey(x);
+                }
                
 
                 UpdateTime = (int)(s.Elapsed.Milliseconds);
@@ -107,11 +117,14 @@ namespace Tower_Defense
             
 
         }
+
+       
         #region Input
 
         void Gameform_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             Keys.Add(e);
+            _curKey = null;
         }
 
         void Gameform_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -182,17 +195,28 @@ namespace Tower_Defense
         {
             if (key.KeyData == System.Windows.Forms.Keys.Escape)
                 GameState = Tower_Defense.GameState.InGamePause;
-            if (key.KeyData == System.Windows.Forms.Keys.Right)
+            /*if (key.KeyData == System.Windows.Forms.Keys.Right)
                 GameForm._drawXoffset+=10;
             if (key.KeyData == System.Windows.Forms.Keys.Left)
                 GameForm._drawXoffset-=10;
             if (key.KeyData == System.Windows.Forms.Keys.Up)
                 GameForm._drawYoffset+=10;
             if (key.KeyData == System.Windows.Forms.Keys.Down)
-                GameForm._drawYoffset-=10;
+                GameForm._drawYoffset-=10;*/
             //if (GameForm._drawXoffset < 0) { GameForm._drawXoffset = 0; } if (GameForm._drawYoffset < 0) { GameForm._drawYoffset = 0; }
         }
+        private void HandleIngameKey(System.Windows.Forms.Keys x)
+        {
 
+            if (x == System.Windows.Forms.Keys.Right)
+                GameForm._drawXoffset += 2;
+            if (x == System.Windows.Forms.Keys.Left)
+                GameForm._drawXoffset -= 2;
+            if (x == System.Windows.Forms.Keys.Up)
+                GameForm._drawYoffset += 2;
+            if (x == System.Windows.Forms.Keys.Down)
+                GameForm._drawYoffset -= 2;
+        }
 
 
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)

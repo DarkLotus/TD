@@ -72,7 +72,8 @@ namespace Tower_Defense.Objects
                 if (c.B == 0 && c.G == 0 && c.R == 0)
                     continue;
                 Vector3D v = new Vector3D(x + rand.Next(200) - 100, y + rand.Next(200) - 100,0);
-                 Particles.Add(new Particle(x + (xx /2),y + (yy /2),v,(float)rand.NextDouble(),500+rand.Next(1500), c));
+                //var v = new Vector3D(x, y, 0);
+                 Particles.Add(new Particle(x + (xx /2),y + (yy /2),v,(float)rand.NextDouble() - 0.1f,500+rand.Next(1500), c));
                  //y++;
             }
                 //x++;
@@ -96,18 +97,19 @@ namespace Tower_Defense.Objects
         {
             for (int i = 0; i < 100; i++)
             {
-                var v = new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f));
-                v.Normalize();
-                //Particles.Add(new Particle(x+ rand.Next(2), y, v, 2000) { Color = Colors.LightBlue });
+                //var v = new Vector2(2 * ((float)getrandFloat() - 0.5f), 2 * ((float)getrandFloat() - 0.5f));
+                //v.Normalize();
+                Vector3D v = new Vector3D(x + rand.Next(200) - 100, y + rand.Next(200) - 100, 0);
+                //var v = new Vector3D(x, y, 0);
+                Particles.Add(new Particle(x, y, v, (float)0.5f, 1500 + rand.Next(200),Colors.Blue));
             }
 
         }
         public void CreateBullet(Tower t, Monster m)
         {
-            var vec = new Vector2(m.ViewX - t.ViewX, m.ViewY - t.ViewY);
-            vec.Normalize();
-            vec += vec;
-            //Particles.Add(new Particle(t.ViewX,t.ViewY,vec,500){ Color = Colors.Blue});
+            //Vector3D v = new Vector3D(m.ViewX - t.ViewX, m.ViewY - t.ViewY, 0);
+            Vector3D v = new Vector3D(m.ViewX, m.ViewY, 0);
+            Particles.Add(new Particle(t.ViewX, t.ViewY, v, 1f, 1500, Colors.Red));
         }
        
 
