@@ -26,6 +26,7 @@ using SharpDX.Windows;
 using AlphaMode = SharpDX.Direct2D1.AlphaMode;
 using Bitmap = SharpDX.Direct2D1.Bitmap;
 using PixelFormat = SharpDX.Direct2D1.PixelFormat;
+using Device1 = SharpDX.Direct3D11.Device;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
 using System.Threading;
@@ -33,6 +34,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using SharpDX.DXGI;
+using SharpDX.Direct3D11;
 
 namespace Tower_Defense
 {
@@ -51,16 +53,44 @@ namespace Tower_Defense
         public static int _drawYoffset = 0;
         public SharpDX.Direct2D1.Factory d2dFactory;
         public SharpDX.DirectWrite.Factory fontFactory;
-
+        Device1 device;
+        SwapChain swapChain;
         public static System.Drawing.Rectangle ViewPort;
         private void SetupDX()
         {
+            /*var desc = new SwapChainDescription()
+            {
+                BufferCount = 1,
+                ModeDescription =
+                    new ModeDescription(this.ClientSize.Width, this.ClientSize.Height,
+                                        new Rational(60, 1), Format.B8G8R8A8_UNorm),
+                IsWindowed = true,
+                OutputHandle = this.Handle,
+                SampleDescription = new SampleDescription(1, 0),
+                SwapEffect = SwapEffect.Discard,
+                Usage = Usage.RenderTargetOutput
+
+            };
+
+
+            Device1.CreateWithSwapChain(SharpDX.Direct3D.DriverType.Hardware, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded, desc, out device, out swapChain);
+            // Create Device and SwapChain 
+            var back = Texture2D.FromSwapChain<Texture2D>(swapChain, 0);          
+            Surface surface = back.QueryInterface<Surface>();
+            */
             d2dFactory = new SharpDX.Direct2D1.Factory();
             fontFactory = new SharpDX.DirectWrite.Factory();
+
+           /* RenderTargetProperties renderprops = new RenderTargetProperties(new PixelFormat(SharpDX.DXGI.Format.B8G8R8A8_UNorm, AlphaMode.Ignore));
+            d2dRenderTarget = new RenderTarget(d2dFactory, surface, renderprops);
+            */
+
+
             HwndRenderTargetProperties properties = new HwndRenderTargetProperties();
             properties.Hwnd = this.Handle;
             properties.PixelSize = new System.Drawing.Size(this.Width, this.Height);
-            properties.PresentOptions = PresentOptions.Immediately;
+            properties.PresentOptions = PresentOptions.None;
+
             d2dRenderTarget = new WindowRenderTarget(d2dFactory, new RenderTargetProperties(new PixelFormat(SharpDX.DXGI.Format.B8G8R8A8_UNorm, AlphaMode.Ignore)), properties);
             d2dRenderTarget.AntialiasMode = AntialiasMode.Aliased;
             d2dRenderTarget.TextAntialiasMode = TextAntialiasMode.Cleartype;
@@ -147,8 +177,8 @@ namespace Tower_Defense
 
             //swapChain.Present(1, PresentFlags.None);
                 stopwatch.Stop();
-            if (stopwatch.Elapsed.Ticks < 16600000)
-                Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
+            //if (stopwatch.Elapsed.Ticks < 16600000)
+            //    Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
             //Thread.Sleep(4);
             fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);
             stopwatch.Restart();

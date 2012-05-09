@@ -34,8 +34,8 @@ namespace Tower_Defense
         {
            // Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
-            try
-            {
+            //try
+            //{
                 Game game = new Game();
                 GameForm gf;
                 gf = new GameForm(game);
@@ -48,8 +48,8 @@ namespace Tower_Defense
                 //Thread tt = new Thread(new ThreadStart(gf.Show2));
                 //tt.Start();
                 gf.Show2();
-            }
-            catch (Exception e) { MessageBox.Show(e.Message + e.InnerException + e.Source + e.StackTrace); }
+            //}
+            //catch (Exception e) { MessageBox.Show(e.Message + e.InnerException + e.Source + e.StackTrace); }
           
             //if (t.ThreadState == ThreadState.Running)
              //   t.Abort();
