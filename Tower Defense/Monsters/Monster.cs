@@ -142,7 +142,7 @@ namespace Tower_Defense
         {
             world.ParticleMan.CreateExplosion(ViewX, ViewY,world,TextureIndex);
             world.Player.Score += this.ScoreValue;
-            world.Player.Gold += (int)(this.ScoreValue * 0.9);
+            world.Player.Gold += (int)(this.ScoreValue * 0.7);
             this.DeleteMe = true; 
         }
         

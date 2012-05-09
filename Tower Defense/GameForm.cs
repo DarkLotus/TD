@@ -22,14 +22,8 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 using SharpDX.Direct2D1;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using SharpDX.Windows;
 using AlphaMode = SharpDX.Direct2D1.AlphaMode;
-using Device1 = SharpDX.Direct3D11.Device;
-using Factory = SharpDX.DXGI.Factory;
-using FeatureLevel = SharpDX.Direct3D11.DebugFeatureFlags;
 using Bitmap = SharpDX.Direct2D1.Bitmap;
 using PixelFormat = SharpDX.Direct2D1.PixelFormat;
 using System.Runtime.InteropServices;
@@ -38,6 +32,8 @@ using System.Threading;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
+using SharpDX.DXGI;
+
 namespace Tower_Defense
 {
     public class GameForm : SharpDX.Windows.RenderForm
@@ -55,57 +51,19 @@ namespace Tower_Defense
         public static int _drawYoffset = 0;
         public SharpDX.Direct2D1.Factory d2dFactory;
         public SharpDX.DirectWrite.Factory fontFactory;
-        Device1 device;
-        SwapChain swapChain;
-        Factory factory;
-        Texture2D backBuffer;
-        RenderTargetView renderView;
+
         public static System.Drawing.Rectangle ViewPort;
         private void SetupDX()
         {
-           // MessageBox.Show(this.ClientSize.Width +"   "+ this.ClientSize.Height);
-           /* var desc = new SwapChainDescription()
-            {
-                BufferCount = 1,
-                ModeDescription =
-                    new ModeDescription(this.ClientSize.Width, this.ClientSize.Height,
-                                        new Rational(60, 1), Format.B8G8R8A8_UNorm),
-                IsWindowed = true,
-                OutputHandle = this.Handle,
-                SampleDescription = new SampleDescription(1, 0),
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput
-
-            };*/
-            
-
-
-            // Create Device and SwapChain 
-            //Device1.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded, desc, out device, out swapChain);
-
             d2dFactory = new SharpDX.Direct2D1.Factory();
             fontFactory = new SharpDX.DirectWrite.Factory();
-            //int width = this.ClientSize.Width;
-            //int height = this.ClientSize.Height;
-
-            //var rectangleGeometry = new RoundedRectangleGeometry(d2dFactory, new RoundedRect() { RadiusX = 32, RadiusY = 32, Rect = new SharpDX.RectangleF(128, 128, width - 128, height - 128) });
-
-            // Ignore all windows events
-            //factory = swapChain.GetParent<Factory>();
-            //factory.MakeWindowAssociation(this.Handle, WindowAssociationFlags.IgnoreAll);
-
-            // New RenderTargetView from the backbuffer
-            //backBuffer = Texture2D.FromSwapChain<Texture2D>(swapChain, 0);
-            //renderView = new RenderTargetView(device, backBuffer);
-
-            //Surface surface = backBuffer.QueryInterface<Surface>();
             HwndRenderTargetProperties properties = new HwndRenderTargetProperties();
             properties.Hwnd = this.Handle;
             properties.PixelSize = new System.Drawing.Size(this.Width, this.Height);
-            properties.PresentOptions = PresentOptions.None;
-            
-            d2dRenderTarget = new WindowRenderTarget(d2dFactory, new RenderTargetProperties(new PixelFormat(Format.Unknown, AlphaMode.Premultiplied)),properties);
+            properties.PresentOptions = PresentOptions.Immediately;
+            d2dRenderTarget = new WindowRenderTarget(d2dFactory, new RenderTargetProperties(new PixelFormat(SharpDX.DXGI.Format.B8G8R8A8_UNorm, AlphaMode.Ignore)), properties);
             d2dRenderTarget.AntialiasMode = AntialiasMode.Aliased;
+            d2dRenderTarget.TextAntialiasMode = TextAntialiasMode.Cleartype;
             EmptyTileBrush = new SolidColorBrush(d2dRenderTarget, Colors.Aquamarine);
             solidColorBrush = new SolidColorBrush(d2dRenderTarget, Colors.White);
             MonsterBrush = new SolidColorBrush(d2dRenderTarget, Colors.Wheat);
@@ -118,22 +76,22 @@ namespace Tower_Defense
         private void LoadTexs()
         {
             //try{
-                Data = Ionic.Zip.ZipFile.Read("Art\\art.dat");
-                MapTiles.Add(0, LoadFromFile(d2dRenderTarget, GetFile("Grass.jpg")));
-                MapTiles.Add(1, LoadFromFile(d2dRenderTarget, GetFile("Soil.jpg")));
-                MapTiles.Add(100, LoadFromFile(d2dRenderTarget, GetFile("tower_basic.png")));
-                MapTiles.Add(101, LoadFromFile(d2dRenderTarget, GetFile("tower_slow.png")));
-                MapTiles.Add(102, LoadFromFile(d2dRenderTarget, GetFile("tower_light.png")));
-                MapTiles.Add(103, LoadFromFile(d2dRenderTarget, GetFile("tower_cannon.png")));
+            Data = Ionic.Zip.ZipFile.Read("Art\\art.dat");
+            MapTiles.Add(0, LoadFromFile(d2dRenderTarget, GetFile("Grass.jpg")));
+            MapTiles.Add(1, LoadFromFile(d2dRenderTarget, GetFile("Soil.jpg")));
+            MapTiles.Add(100, LoadFromFile(d2dRenderTarget, GetFile("tower_basic.png")));
+            MapTiles.Add(101, LoadFromFile(d2dRenderTarget, GetFile("tower_slow.png")));
+            MapTiles.Add(102, LoadFromFile(d2dRenderTarget, GetFile("tower_light.png")));
+            MapTiles.Add(103, LoadFromFile(d2dRenderTarget, GetFile("tower_cannon.png")));
 
-                MapTiles.Add(51, LoadFromFile(d2dRenderTarget, GetFile("bg.png")));
-                MapTiles.Add(50, LoadFromFile(d2dRenderTarget, GetFile("blue_button.png")));
-                //Animated textures must be PNG.
-                MonsterModels.Add(0, new AnimatedTexture("impnew", 128, 128, 60, device, d2dRenderTarget));
-                MonsterModels.Add(1, new AnimatedTexture("spider_128", 128, 128, 60, device, d2dRenderTarget));
-                MonsterModels.Add(2, new AnimatedTexture("bird_128", 128, 128, 60, device, d2dRenderTarget));
-                Data.Dispose();
-                Data = null;
+            MapTiles.Add(51, LoadFromFile(d2dRenderTarget, GetFile("bg.png")));
+            MapTiles.Add(50, LoadFromFile(d2dRenderTarget, GetFile("blue_button.png")));
+            //Animated textures must be PNG.
+            MonsterModels.Add(0, new AnimatedTexture("impnew", 128, 128, 60, d2dRenderTarget));
+            MonsterModels.Add(1, new AnimatedTexture("spider_128", 128, 128, 60, d2dRenderTarget));
+            MonsterModels.Add(2, new AnimatedTexture("bird_128", 128, 128, 60, d2dRenderTarget));
+            Data.Dispose();
+            Data = null;
             //} catch(Exception e) {MessageBox.Show(e.Message);}
         }
 
@@ -143,40 +101,23 @@ namespace Tower_Defense
         public static MemoryStream GetFile(string path)
         {
 
-                MemoryStream ms = new MemoryStream();
-                Data[path].Extract(ms);
-                ms.Position = 0;
-                return ms;
+            MemoryStream ms = new MemoryStream();
+            Data[path].Extract(ms);
+            ms.Position = 0;
+            return ms;
 
         }
         public void callback()
         {
             if (Game.GameState == GameState.Exit)
                 this.Close();
-            if (Buffer.Count == 0 && Game.GameState == GameState.InGame)
-            {
-                //Debugger.Debug("Buffer empty using Previous draw state");
-                d2dRenderTarget.RestoreDrawingState(myblock);
-            }
-            else
-            {
                 d2dRenderTarget.BeginDraw();
                 d2dRenderTarget.Clear(Colors.Black);
                 switch (Game.GameState)
                 {
                     case GameState.InGame:
                         Game.World.Draw(this); // Draw static map/UI
-                        if (Buffer.TryDequeue(out _buffer)) // Get buffer of dynamic objects and draw.
-                        {
-                            foreach (var vv in _buffer)
-                            {
-                                if (Contains(ViewPort, vv))
-                                    vv.Draw(this);
-                            }
-                        }
-                        solidColorBrush.Color = Colors.White;
-
-                        break;
+                                            break;
                     case GameState.MainMenu:
                         MainMenu.Draw(this);
                         break;
@@ -191,12 +132,7 @@ namespace Tower_Defense
                         break;
                     case GameState.InGamePause:
                         Game.World.Draw(this); // Draw static map/UI
-                        foreach (var o in Game.World.DrawableObjects) // FIX ME, should be safe though as game is paused.
-                        {
-                            o.Draw(this);
-                        }
                         PauseMenu.Draw(this);
-
                         break;
 
                 }
@@ -206,18 +142,16 @@ namespace Tower_Defense
                     d2dRenderTarget.DrawText("FPS: " + fps + "UPS:" + Game.UpdateTime, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new SharpDX.RectangleF(0, 0, 500, 25), solidColorBrush);
                 //if (Game.Debug)
                 //    d2dRenderTarget.DrawText("MX " + mousex + " MY " + mousey, new SharpDX.DirectWrite.TextFormat(fontFactory, "Arial", 15.0f), new RectangleF(0, 25, 500, 225), solidColorBrush);
-
                 d2dRenderTarget.EndDraw();
-                d2dRenderTarget.SaveDrawingState(myblock);
-            }
-            
-           // swapChain.Present(1, PresentFlags.None);
-            stopwatch.Stop();
+         
+
+            //swapChain.Present(1, PresentFlags.None);
+                stopwatch.Stop();
             if (stopwatch.Elapsed.Ticks < 16600000)
-                Thread.Sleep((int)((15600000 - stopwatch.Elapsed.Ticks) / 1000000));
+                Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
             //Thread.Sleep(4);
             fps = (int)(1000 / stopwatch.Elapsed.TotalMilliseconds);
-            stopwatch.Restart();       
+            stopwatch.Restart();
         }
 
         Stopwatch stopwatch = new Stopwatch();
@@ -228,16 +162,16 @@ namespace Tower_Defense
             //Debugger.Show();
             this.Size = new System.Drawing.Size(1440, 900);
             ViewPort = new System.Drawing.Rectangle(-40, 50, (int)(this.Width / 1.31), this.Size.Height);
-            BuildMenu.initMenu((int)(this.Width / 1.31),75,this);
+            BuildMenu.initMenu((int)(this.Width / 1.31), 75, this);
 
             SetupDX();
             LoadTexs();
             myblock = new DrawingStateBlock(d2dFactory); stopwatch.Start();
-            RenderLoop.Run(this,new RenderLoop.RenderCallback(callback));
+            RenderLoop.Run(this, new RenderLoop.RenderCallback(callback));
             // Release all resources
             //renderView.Dispose();
             //backBuffer.Dispose();
-            
+
             //device.Dispose();
             //swapChain.Dispose();
             //factory.Dispose();
@@ -245,7 +179,7 @@ namespace Tower_Defense
 
         public static bool Contains(System.Drawing.Rectangle ViewPort, RectangleF rectangleF)
         {
-            if (ViewPort.Contains((int)rectangleF.Left,(int)rectangleF.Right))
+            if (ViewPort.Contains((int)rectangleF.Left, (int)rectangleF.Right))
                 return true;
             return false;
         }
@@ -266,15 +200,16 @@ namespace Tower_Defense
 
 
 
-       
+
         private Game g;
 
 
-       
 
 
 
-        public GameForm(Game g) : base("Project Majestic")
+
+        public GameForm(Game g)
+            : base("Project Majestic")
         {
             // TODO: Complete member initialization
             this.Game = g;
@@ -314,6 +249,7 @@ namespace Tower_Defense
                             byte G = Marshal.ReadByte(bitmapData.Scan0, offset++);
                             byte R = Marshal.ReadByte(bitmapData.Scan0, offset++);
                             byte A = Marshal.ReadByte(bitmapData.Scan0, offset++);
+                            //int rgba = R | (G << 8) | (B << 16) | (A << 24);
                             int rgba = B | (G << 8) | (R << 16) | (A << 24);
                             tempStream.Write(rgba);
                         }

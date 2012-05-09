@@ -260,14 +260,14 @@ namespace Tower_Defense
                 {
                     case MapTileType.EmptyTile:
                         //d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
-                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[0],ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
+                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[0],ScreenSprite, 1f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
                         break;
                     case MapTileType.TowerHere:
                         //d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);
-                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[0], ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
+                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[0], ScreenSprite, 1f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
                         break;
                     default:
-                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[1], ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
+                        gameForm.d2dRenderTarget.DrawBitmap(gameForm.MapTiles[1], ScreenSprite, 1f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
                         //var rect = new RectangleF(ViewX + 0.2f, ViewY + 0.2f, ViewX + TileSize - 0.2f, ViewY + TileSize - 0.2f);
                         //d2dRenderTarget.FillRectangle(rect, new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget, Colors.Red));
                         //d2dRenderTarget.DrawRectangle(ScreenSprite, GameForm.EmptyTileBrush);

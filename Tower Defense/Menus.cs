@@ -237,14 +237,15 @@ namespace Tower_Defense
             foreach (var b in Buttons)
                 b.Draw(gf);
             gf.d2dRenderTarget.DrawText("Level" + Tower.Level, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 25, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
-            gf.d2dRenderTarget.DrawText("Cost" + UpgradeMenu.Tower.UpgradeCost, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 40, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
+            gf.d2dRenderTarget.DrawText("LvlUpCost" + UpgradeMenu.Tower.UpgradeCost, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 40, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
             gf.d2dRenderTarget.DrawText("Dmg:" + Tower._damage + "Rng" + Tower._range, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 10.0f), new RectangleF(Location.Left + 15, Location.Top + 55, Location.Left + 100, Location.Top + 70), GameForm.solidColorBrush);
         }
 
         internal static void Update(Tower tower)
         {
             Location = new RectangleF(tower.ViewX + 50, tower.ViewY, tower.ViewX + 150, tower.ViewY + 150);
-            Buttons[0] = new Button("Upgrade", (int)(Location.Left + 10), (int)(Location.Top + 70),50,25) { fontsize = 10f};
+            Buttons[0] = new Button("Upgrade", (int)(Location.Left + 10), (int)(Location.Top + 80),50,30) { fontsize = 10f};
+            Tower = null;
             Tower = tower;
         }
     }

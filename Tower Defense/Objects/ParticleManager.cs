@@ -109,7 +109,7 @@ namespace Tower_Defense.Objects
         {
             //Vector3D v = new Vector3D(m.ViewX - t.ViewX, m.ViewY - t.ViewY, 0);
             Vector3D v = new Vector3D(m.ViewX, m.ViewY, 0);
-            Particles.Add(new Particle(t.ViewX, t.ViewY, v, 1f, 1500, Colors.Red));
+            Particles.Add(new Particle(t.ViewX, t.ViewY, v, 1f, 1500, Colors.Red,2f));
         }
        
 
@@ -159,14 +159,14 @@ namespace Tower_Defense.Objects
         double LifeSpan, tickToDieAt;
 
         SharpDX.Direct2D1.Ellipse el;
-        public Particle(float x, float y, Vector3D dest,float vel, int lifeSpan,Color4 color)
+        public Particle(float x, float y, Vector3D dest,float vel, int lifeSpan,Color4 color, float size = 0.5f)
         {
             Location = new Vector3D(x, y, 0);
             Velocity = vel;
             LifeSpan = lifeSpan;
             Color = color;
             Dest = dest;
-            el = new SharpDX.Direct2D1.Ellipse(new DrawingPointF(x, y), 0.5f, 0.5f);
+            el = new SharpDX.Direct2D1.Ellipse(new DrawingPointF(x, y), size, size);
 
         }
 

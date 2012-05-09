@@ -249,7 +249,7 @@ namespace Tower_Defense
                 {
                     if (Helper.Contains(UpgradeMenu.Buttons[0].button, click.Location))
                     {
-                        if (World.Player.Gold < UpgradeMenu.Tower.UpgradeCost)
+                        if (World.Player.Gold > UpgradeMenu.Tower.UpgradeCost)
                         {
                             World.Player.Gold -= UpgradeMenu.Tower.UpgradeCost;
                             UpgradeMenu.Tower.LevelUP();
@@ -260,6 +260,7 @@ namespace Tower_Defense
                     else
                     {
                         this.World.ShowUpgradeMenu = false;
+                        UpgradeMenu.Tower = null;
                         return;
                     }
                 }

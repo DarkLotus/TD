@@ -66,15 +66,21 @@ namespace Tower_Defense
                 if (GameForm.Contains(GameForm.ViewPort, x.ScreenSprite))
                     x.Draw(gf);
             }
+            foreach (var o in DrawableObjects) // FIX ME
+            {
+                if (GameForm.Contains(GameForm.ViewPort, o.ScreenSprite))
+                o.Draw(gf);
+            }
+            ParticleMan.Draw(gf.d2dRenderTarget);
             foreach (var o in UIElements) // TODO THREAD SAFE
             {
                     o.Draw(gf);
             }
             BuildMenu.Draw(gf);
-            ParticleMan.Draw(gf.d2dRenderTarget);
-            gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Gold: " + Player.Gold + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2 - 100, 0, gf.Width, 225), GameForm.solidColorBrush);
-            if (this.ShowUpgradeMenu)
+            if (ShowUpgradeMenu)
                 UpgradeMenu.Draw(gf);
+            gf.d2dRenderTarget.DrawText("Score: " + Player.Score + " Gold: " + Player.Gold + " Lives Left: " + Player.Lives + " Wave #" + Wave + "MobsLeft: " + MobsRemaining, new SharpDX.DirectWrite.TextFormat(gf.fontFactory, "Arial", 15.0f), new RectangleF(gf.Width / 2 - 100, 0, gf.Width, 225), GameForm.solidColorBrush);
+           
         }
         public void Update(double curTime)
         {
@@ -108,14 +114,15 @@ namespace Tower_Defense
 
                 ParticleMan.Update(curTime);
 
-                if (Gameform.Buffer.Count < 3)
-                    Gameform.Buffer.Enqueue(DrawableObjects.ToArray());
+                //if (Gameform.Buffer.Count < 3)
+                //    Gameform.Buffer.Enqueue(DrawableObjects.ToArray());
             }
 
 
 
         internal void NextWave()
         {
+            this.Player.Gold = (int)(Player.Gold * 1.1);
             if (this.MobsRemaining == 0)// && this.Map.Waves.Count > 0)
             {
                 CurrentWave = Map.MakeWave(Wave);

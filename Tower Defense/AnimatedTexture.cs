@@ -19,7 +19,7 @@ namespace Tower_Defense
         // TODO Add load from sprite sheet.
         private short spriteX, spriteY, count;
         int width;
-        public AnimatedTexture(string texturename, short spriteX,short spriteY,short count,Device device, RenderTarget d2dRender)
+        public AnimatedTexture(string texturename, short spriteX,short spriteY,short count, RenderTarget d2dRender)
         {
             Texture = GameForm.LoadFromFile(d2dRender,GameForm.GetFile(texturename + ".png"));
             FakeTex = new System.Drawing.Bitmap(GameForm.GetFile(texturename + ".png"));

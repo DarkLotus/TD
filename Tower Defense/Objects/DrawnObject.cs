@@ -61,7 +61,7 @@ namespace Tower_Defense
         
         public virtual void Draw(GameForm gf)
         {
-            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[TextureIndex], ScreenSprite, 0.8f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[TextureIndex], ScreenSprite, 1f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear);
         }
 
 

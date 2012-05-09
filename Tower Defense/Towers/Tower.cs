@@ -34,7 +34,7 @@ namespace Tower_Defense
         internal int Level = 1;
 
         public int Cost;
-        public int UpgradeCost { get { return (int)(this.Cost * (1 + (this.Level / 10))); } }
+        public int UpgradeCost { get { return (int)(this.Cost * (1 + ((float)this.Level / 5))); } }
         internal Monster Target;
         public Tower(short TextureIndex,int worldX, int worldY, int width = 0, int height = 0)
             : base(TextureIndex,worldX, worldY, width, height)
