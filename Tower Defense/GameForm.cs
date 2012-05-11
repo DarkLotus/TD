@@ -40,51 +40,41 @@ namespace Tower_Defense
 {
     public class GameForm : SharpDX.Windows.RenderForm
     {
-        public Game Game { get; set; }
+
         public static Brush EmptyTileBrush;
         public static SolidColorBrush solidColorBrush;
         public static SolidColorBrush MonsterBrush;
         public static SolidColorBrush TowerBrush;
-        public static Dictionary<int, Bitmap> LandBitmaps = new Dictionary<int, Bitmap>();
-        public static Dictionary<int, Bitmap> StaticBitmaps = new Dictionary<int, Bitmap>();
-        public RenderTarget d2dRenderTarget;
-
         public static int _drawXoffset = 0;
         public static int _drawYoffset = 0;
+        public static System.Drawing.Rectangle ViewPort;
+
+        public Game Game { get; set; }
+
+        public Dictionary<short, Bitmap> MapTiles = new Dictionary<short, Bitmap>();
+        public Dictionary<short, AnimatedTexture> MonsterModels = new Dictionary<short, AnimatedTexture>();
+        public RenderTarget d2dRenderTarget;
         public SharpDX.Direct2D1.Factory d2dFactory;
         public SharpDX.DirectWrite.Factory fontFactory;
-        Device1 device;
-        SwapChain swapChain;
-        public static System.Drawing.Rectangle ViewPort;
+
+        static Ionic.Zip.ZipFile Data;
+        Stopwatch stopwatch = new Stopwatch();
+        int fps = 0;
+
+        public GameForm(Game g)
+            : base("Project Majestic")
+        {
+            // TODO: Complete member initialization
+            this.Game = g;
+            //this.Show2();
+        }
+        /// <summary>
+        /// Setup DirectX Renderer.
+        /// </summary>
         private void SetupDX()
         {
-            /*var desc = new SwapChainDescription()
-            {
-                BufferCount = 1,
-                ModeDescription =
-                    new ModeDescription(this.ClientSize.Width, this.ClientSize.Height,
-                                        new Rational(60, 1), Format.B8G8R8A8_UNorm),
-                IsWindowed = true,
-                OutputHandle = this.Handle,
-                SampleDescription = new SampleDescription(1, 0),
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput
-
-            };
-
-
-            Device1.CreateWithSwapChain(SharpDX.Direct3D.DriverType.Hardware, DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded, desc, out device, out swapChain);
-            // Create Device and SwapChain 
-            var back = Texture2D.FromSwapChain<Texture2D>(swapChain, 0);          
-            Surface surface = back.QueryInterface<Surface>();
-            */
             d2dFactory = new SharpDX.Direct2D1.Factory();
             fontFactory = new SharpDX.DirectWrite.Factory();
-
-           /* RenderTargetProperties renderprops = new RenderTargetProperties(new PixelFormat(SharpDX.DXGI.Format.B8G8R8A8_UNorm, AlphaMode.Ignore));
-            d2dRenderTarget = new RenderTarget(d2dFactory, surface, renderprops);
-            */
-
 
             HwndRenderTargetProperties properties = new HwndRenderTargetProperties();
             properties.Hwnd = this.Handle;
@@ -94,15 +84,16 @@ namespace Tower_Defense
             d2dRenderTarget = new WindowRenderTarget(d2dFactory, new RenderTargetProperties(new PixelFormat(SharpDX.DXGI.Format.B8G8R8A8_UNorm, AlphaMode.Ignore)), properties);
             d2dRenderTarget.AntialiasMode = AntialiasMode.Aliased;
             d2dRenderTarget.TextAntialiasMode = TextAntialiasMode.Cleartype;
+
             EmptyTileBrush = new SolidColorBrush(d2dRenderTarget, Colors.Aquamarine);
             solidColorBrush = new SolidColorBrush(d2dRenderTarget, Colors.White);
             MonsterBrush = new SolidColorBrush(d2dRenderTarget, Colors.Wheat);
             TowerBrush = new SolidColorBrush(d2dRenderTarget, Colors.Purple);
         }
-        //public Debugger Debugger = new Debugger();
-
-        public Dictionary<short, Bitmap> MapTiles = new Dictionary<short, Bitmap>();
-        public Dictionary<short, AnimatedTexture> MonsterModels = new Dictionary<short, AnimatedTexture>();
+   
+        /// <summary>
+        /// Load Textures into memory.
+        /// </summary>
         private void LoadTexs()
         {
             //try{
@@ -124,10 +115,12 @@ namespace Tower_Defense
             Data = null;
             //} catch(Exception e) {MessageBox.Show(e.Message);}
         }
-
-        public System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]> Buffer = new System.Collections.Concurrent.ConcurrentQueue<DrawnObject[]>();
-        DrawnObject[] _buffer;
-        static Ionic.Zip.ZipFile Data;
+  
+        /// <summary>
+        /// Extract texture from compressed data
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static MemoryStream GetFile(string path)
         {
 
@@ -137,19 +130,26 @@ namespace Tower_Defense
             return ms;
 
         }
+
+        /// <summary>
+        /// Render Loop
+        /// </summary>
         public void callback()
         {
+
             if (Game.GameState == GameState.Exit)
                 this.Close();
                 d2dRenderTarget.BeginDraw();
                 d2dRenderTarget.Clear(Colors.Black);
-                switch (Game.GameState)
+                Game.Draw(this);
+                /*switch (Game.GameState)
                 {
                     case GameState.InGame:
                         Game.World.Draw(this); // Draw static map/UI
                                             break;
                     case GameState.MainMenu:
-                        MainMenu.Draw(this);
+                                            Menu.Draw(this);
+                        //MainMenu.Draw(this);
                         break;
                     case GameState.About:
                         AboutMenu.Draw(this);
@@ -165,7 +165,7 @@ namespace Tower_Defense
                         PauseMenu.Draw(this);
                         break;
 
-                }
+                }*/
 
                 //frame++;
                 if (Game.Debug)
@@ -176,7 +176,7 @@ namespace Tower_Defense
          
 
             //swapChain.Present(1, PresentFlags.None);
-                stopwatch.Stop();
+                //stopwatch.Stop();
             //if (stopwatch.Elapsed.Ticks < 16600000)
             //    Thread.Sleep((int)((16600000 - stopwatch.Elapsed.Ticks) / 1000000));
             //Thread.Sleep(4);
@@ -184,19 +184,17 @@ namespace Tower_Defense
             stopwatch.Restart();
         }
 
-        Stopwatch stopwatch = new Stopwatch();
-        int fps = 0;
-        int frame = 0;
-        public void Show2()
+       
+        public void Init()
         {
             //Debugger.Show();
             this.Size = new System.Drawing.Size(1440, 900);
             ViewPort = new System.Drawing.Rectangle(-40, 50, (int)(this.Width / 1.31), this.Size.Height);
-            BuildMenu.initMenu((int)(this.Width / 1.31), 75, this);
+            ;
 
             SetupDX();
             LoadTexs();
-            myblock = new DrawingStateBlock(d2dFactory); stopwatch.Start();
+            //myblock = new DrawingStateBlock(d2dFactory); stopwatch.Start();
             RenderLoop.Run(this, new RenderLoop.RenderCallback(callback));
             // Release all resources
             //renderView.Dispose();
@@ -207,45 +205,7 @@ namespace Tower_Defense
             //factory.Dispose();
         }
 
-        public static bool Contains(System.Drawing.Rectangle ViewPort, RectangleF rectangleF)
-        {
-            if (ViewPort.Contains((int)rectangleF.Left, (int)rectangleF.Right))
-                return true;
-            return false;
-        }
-
-        public static bool Contains(System.Drawing.Rectangle rect, DrawnObject point)
-        {
-            if (rect.Top < point.ViewY && rect.Bottom > point.ViewY + point.Height && rect.Left < point.ViewX && rect.Right > point.ViewX + point.Width)
-                return true;
-            return false;
-        }
-
-        public static bool Contains(System.Drawing.Rectangle rect, Level.MapTile point)
-        {
-            if (rect.Top < point.ScreenSprite.Top && rect.Bottom > point.ScreenSprite.Bottom && rect.Left < point.ScreenSprite.Left && rect.Right > point.ScreenSprite.Right)
-                return true;
-            return false;
-        }
-
-
-
-
-        private Game g;
-
-
-
-
-
-
-        public GameForm(Game g)
-            : base("Project Majestic")
-        {
-            // TODO: Complete member initialization
-            this.Game = g;
-            //this.Show2();
-        }
-
+       
         /// <summary>
         /// Loads a Direct2D Bitmap from a file using System.Drawing.Image.FromFile(...)
         /// </summary>
@@ -293,9 +253,5 @@ namespace Tower_Defense
             }
         }
 
-
-
-
-        public DrawingStateBlock myblock;
     }
 }

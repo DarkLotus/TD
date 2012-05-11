@@ -60,8 +60,12 @@ namespace Tower_Defense.Objects
                         Lines.Clear();
         }
 
-        public void CreateExplosion(int x, int y,World world,int texindex)
+        public void CreateExplosion(int x, int y,World world,Monster mob)
         {
+            int texindex = mob.TextureIndex;
+            int scalar = 2;
+            if (mob.Width == 32)
+                scalar = 4;
             var b = world.Gameform.MonsterModels[(short)texindex];
             System.Drawing.Color c;
             for(int xx = 0; xx < 128;xx++)
@@ -73,7 +77,7 @@ namespace Tower_Defense.Objects
                     continue;
                 Vector3D v = new Vector3D(x + rand.Next(200) - 100, y + rand.Next(200) - 100,0);
                 //var v = new Vector3D(x, y, 0);
-                 Particles.Add(new Particle(x + (xx /2),y + (yy /2),v,(float)rand.NextDouble() - 0.1f,500+rand.Next(1500), c));
+                Particles.Add(new Particle(x + (xx / scalar), y + (yy / scalar), v, (float)rand.NextDouble() - 0.1f, 500 + rand.Next(1500), c));
                  //y++;
             }
                 //x++;
@@ -109,7 +113,7 @@ namespace Tower_Defense.Objects
         {
             //Vector3D v = new Vector3D(m.ViewX - t.ViewX, m.ViewY - t.ViewY, 0);
             Vector3D v = new Vector3D(m.ViewX, m.ViewY, 0);
-            Particles.Add(new Particle(t.ViewX, t.ViewY, v, 1f, 1500, Colors.Red,2f));
+            Particles.Add(new Particle(t.ViewX, t.ViewY, v, 1f, 1200, Colors.Black,1.7f));
         }
        
 
@@ -186,45 +190,6 @@ namespace Tower_Defense.Objects
             if (Color != null)
                 GameForm.solidColorBrush.Color = Color;
             d2dRenderTarget.FillEllipse(el, GameForm.solidColorBrush);
-        }
-    }
-
-    internal class Particle2
-    {
-        public Color4 Color;
-        DrawingPointF Location;
-        Vector2 Location2, Velocity;
-        int LifeSpanMS;
-        public bool DeleteMe = false;
-        private double tickToDieAt;
-        SharpDX.Direct2D1.Ellipse el;
-        internal void Draw(SharpDX.Direct2D1.RenderTarget d2dRenderTarget) 
-        {
-            if (Color != null)
-                GameForm.solidColorBrush.Color = Color;
-            d2dRenderTarget.FillEllipse(el, GameForm.solidColorBrush);
-        }
-
-        internal void Update(double curMS) 
-        {
-            if (tickToDieAt == 0.0)
-                tickToDieAt = curMS + LifeSpanMS;
-            Location2 += Velocity;
-            Location.X = Location2.X;
-            Location.Y = Location2.Y;
-            el.Point = Location;
-            if (curMS > tickToDieAt)
-                this.DeleteMe = true;
-        }
-        public Particle2(float x, float y, Vector2 velocity,int lifeSpan)
-        {
-            Location = new DrawingPointF(x, y);
-            Location2 = new Vector2(x, y);
-            LifeSpanMS = lifeSpan;
-            Velocity = velocity;
-
-            el = new SharpDX.Direct2D1.Ellipse(Location, 0.5f, 0.5f);
-
         }
     }
 

@@ -45,7 +45,20 @@ namespace Tower_Defense
                 return true;
             return false;
         }
-       
+        public static bool Contains(System.Drawing.Rectangle ViewPort, RectangleF rectangleF)
+        {
+            if (ViewPort.Contains((int)rectangleF.Left, (int)rectangleF.Right))
+                return true;
+            return false;
+        }
+
+
+        public static bool Contains(System.Drawing.Rectangle rect, Level.MapTile point)
+        {
+            if (rect.Top < point.ScreenSprite.Top && rect.Bottom > point.ScreenSprite.Bottom && rect.Left < point.ScreenSprite.Left && rect.Right > point.ScreenSprite.Right)
+                return true;
+            return false;
+        }
         public static float GetDistance(float x1, float y1, float x2, float y2)
         {
             double part1 = Math.Pow((x2 - x1), 2);

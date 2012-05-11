@@ -26,7 +26,7 @@ namespace Tower_Defense.Monsters
 {
     public class Runner : Monster
     {
-        public Runner() : base(0,50,50)
+        public Runner() : base(0,32,32)
         {
             this._baseVelocity = 0.14f;
             this._baseHits = 8f;
@@ -44,6 +44,44 @@ namespace Tower_Defense.Monsters
         {
             var m = new Runner(); m.initMob(Map); m.SetLevel(this.Level);
             return m;
+        }
+        internal override int SpawnSpacer
+        {
+            get
+            {
+                return 100;
+            }
+        }
+    }
+
+    public class RunnerBoss : Monster
+    {
+        public RunnerBoss()
+            : base(0, 50, 50)
+        {
+            this._baseVelocity = 0.099f;
+            this._baseHits = 80f;
+            this.ScoreValue = 60;
+        }
+
+
+
+        public override void Update(World world, double curTime)
+        {
+            base.Update(world, curTime);
+
+        }
+        public override Monster Clone()
+        {
+            var m = new RunnerBoss(); m.initMob(Map); m.SetLevel(this.Level);
+            return m;
+        }
+        internal override int SpawnSpacer
+        {
+            get
+            {
+                return 1000;
+            }
         }
     }
 }

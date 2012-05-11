@@ -29,9 +29,9 @@ namespace Tower_Defense.Monsters
         public Tank()
             : base(1, 32, 32)
         {
-            this._baseVelocity = 0.02f;
-            this._baseHits = 15f;
-            this.ScoreValue = 12;
+            this._baseVelocity = 0.04f;
+            this._baseHits = 18f;
+            this.ScoreValue = 8;
         }
       
 
@@ -44,6 +44,43 @@ namespace Tower_Defense.Monsters
         {
             var m = new Tank(); m.initMob(Map); m.SetLevel(this.Level);
             return m;
+        }
+        internal override int SpawnSpacer
+        {
+            get
+            {
+                return 1250;
+            }
+        }
+    }
+
+    public class TankBoss : Monster
+    {
+        public TankBoss()
+            : base(1, 42, 42)
+        {
+            this._baseVelocity = 0.02f;
+            this._baseHits = 150f;
+            this.ScoreValue = 120;
+        }
+
+
+        public override void Update(World world, double curTime)
+        {
+            base.Update(world, curTime);
+
+        }
+        public override Monster Clone()
+        {
+            var m = new TankBoss(); m.initMob(Map); m.SetLevel(this.Level);
+            return m;
+        }
+        internal override int SpawnSpacer
+        {
+            get
+            {
+                return 5000;
+            }
         }
     }
 }

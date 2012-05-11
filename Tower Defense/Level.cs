@@ -42,11 +42,9 @@ namespace Tower_Defense
         public List<System.Drawing.Point> Starts = new List<System.Drawing.Point>();
         public List<System.Drawing.Point> Dests = new List<System.Drawing.Point>();
         //public List<PathFinderNode> Path { get { if (_path == null) { _path = buildPath(); } return buildPath(); return _path.ToList(); } }
-
-        internal Queue<Queue<Monster>> Waves = new Queue<Queue<Monster>>();
-        
+        internal Queue<Queue<Monster>> Waves = new Queue<Queue<Monster>>();       
         byte[,] grid;
-        private List<PathFinderNode> _path;
+
 
         //TODO Level(string levelname)
         // Load all variables from Level file.
@@ -58,14 +56,22 @@ namespace Tower_Defense
             grid = BuildNavMesh();
             //Waves = LoadWaves(levelname + ".xml");
         }
-        public Type[] Types = new Type[] { typeof(Tower_Defense.Monsters.Runner), typeof(Tower_Defense.Monsters.Flyer), typeof(Tower_Defense.Monsters.Tank) };
+        public Type[] Types = new Type[] { typeof(Tower_Defense.Monsters.Runner), typeof(Tower_Defense.Monsters.Flyer), typeof(Tower_Defense.Monsters.Tank), typeof(Monsters.FlyerBoss),typeof(Monsters.RunnerBoss),typeof(Monsters.TankBoss) };
         internal Queue<Monster> MakeWave(int Wave)
         {
-            var mob = Types[Helper.random.Next(2)];
+            Type mob;
+            int NumberOfMobs = 20;
+            if (Wave % 5 == 0)
+            {
+                mob = Types[Helper.random.Next(3, 6)];
+                NumberOfMobs = Helper.random.Next(3);
+            }
+            else
+                mob = Types[Helper.random.Next(3)];
             Monster m = (Monster)mob.Assembly.CreateInstance(mob.FullName);
             m.initMob(this);
-            m.SetLevel(Wave + 1);
-            return makeawave(m,20);
+            m.SetLevel(Wave);
+            return makeawave(m, NumberOfMobs);
         }
 
 

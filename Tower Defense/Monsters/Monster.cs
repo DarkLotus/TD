@@ -23,8 +23,9 @@ using System.Threading.Tasks;
 
 namespace Tower_Defense
 {
-    public class Monster : DrawnObject
+    public abstract class Monster : DrawnObject
     {
+        internal abstract int SpawnSpacer { get;}
         internal float _velocity { get { return this._baseVelocity - _velModifier; } }
         internal float _velModifier;
         internal float _baseVelocity;
@@ -92,11 +93,12 @@ namespace Tower_Defense
         }
 
         public virtual Monster Clone()
-        { 
-            var m = new Monster(TextureIndex, Width, Height);
+        {
+            return null;
+            /*var m = new Monster(TextureIndex, Width, Height);
             m.initMob(Map);
             m.SetLevel(Level);
-            return m;
+            return m;*/
         }
 
         public override void Update(World world, double curTime)
@@ -140,7 +142,7 @@ namespace Tower_Defense
 
         private void Die(World world)
         {
-            world.ParticleMan.CreateExplosion(ViewX, ViewY,world,TextureIndex);
+            world.ParticleMan.CreateExplosion(ViewX, ViewY,world,this);
             world.Player.Score += this.ScoreValue;
             world.Player.Gold += (int)(this.ScoreValue * 0.7);
             this.DeleteMe = true; 

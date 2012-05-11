@@ -43,6 +43,29 @@ namespace Tower_Defense
     {
         public GameState GameState;
         public World World;
+        private Menu Menu;
+        public Menu CrazyMenu { get {
+            switch (GameState)
+            { 
+                case GameState.MainMenu:
+                    if (Menu == null || Menu.GetType() != typeof(MainMenu)) { Menu = new MainMenu(); }
+                    return Menu;
+                case GameState.InGamePause:
+                    if (Menu == null || Menu.GetType() != typeof(PauseMenu)) { Menu = new PauseMenu(); }
+                    return Menu;
+                case GameState.LevelSelect:
+                    if (Menu == null || Menu.GetType() != typeof(LevelSelectMenu)) { Menu = new LevelSelectMenu(); }
+                    return Menu;
+                case GameState.About:
+                    if (Menu == null || Menu.GetType() != typeof(AboutMenu)) { Menu = new AboutMenu(); }
+                    return Menu;
+                case GameState.EndGame:
+                    if (Menu == null || Menu.GetType() != typeof(ScoreMenu)) { Menu = new ScoreMenu(); }
+                    return Menu;
+                default:
+                    return null;
+            }
+        } }
         public const double UpdateInterval = 16; // Milliseconds
         
         public bool Debug = true;
@@ -68,6 +91,8 @@ namespace Tower_Defense
             Gameform.MouseClick += Gameform_MouseClick;
             Gameform.KeyUp += Gameform_KeyUp;
             Gameform.KeyDown += Gameform_KeyDown;
+
+            //Menu = new MainMenu();
             Update();
         }
         System.Windows.Forms.KeyEventArgs _curKey;
@@ -141,23 +166,11 @@ namespace Tower_Defense
                     continue;*/
                 switch (GameState)
                 {
-                    case Tower_Defense.GameState.MainMenu:
-                        handleMenuInput(click);
-                        break;
-                    case Tower_Defense.GameState.LevelSelect:
-                        handleMenuInput(click);
-                        break;
-                    case Tower_Defense.GameState.EndGame:
-                        handleMenuInput(click);
-                        break;
-                    case Tower_Defense.GameState.About:
-                        handleMenuInput(click);
-                        break;
-                    case Tower_Defense.GameState.InGamePause:
-                        handleMenuInputPauseMenuInput(click);
-                        break;
                     case Tower_Defense.GameState.InGame:
                         handleInGameInput(click);
+                        break;
+                    default:
+                        handleMenuInput(click);
                         break;
                 }
             }
@@ -167,7 +180,7 @@ namespace Tower_Defense
                 switch (GameState)
                 {
                     case Tower_Defense.GameState.InGame:
-                        HandleIngameKey(key);
+                        HandleIngameKey(key.KeyCode);
                         
                         break;
                     case Tower_Defense.GameState.InGamePause:
@@ -191,23 +204,18 @@ namespace Tower_Defense
             }
         }
 
-        private void HandleIngameKey(System.Windows.Forms.KeyEventArgs key)
-        {
-            if (key.KeyData == System.Windows.Forms.Keys.Escape)
-                GameState = Tower_Defense.GameState.InGamePause;
-            /*if (key.KeyData == System.Windows.Forms.Keys.Right)
-                GameForm._drawXoffset+=10;
-            if (key.KeyData == System.Windows.Forms.Keys.Left)
-                GameForm._drawXoffset-=10;
-            if (key.KeyData == System.Windows.Forms.Keys.Up)
-                GameForm._drawYoffset+=10;
-            if (key.KeyData == System.Windows.Forms.Keys.Down)
-                GameForm._drawYoffset-=10;*/
-            //if (GameForm._drawXoffset < 0) { GameForm._drawXoffset = 0; } if (GameForm._drawYoffset < 0) { GameForm._drawYoffset = 0; }
-        }
+
         private void HandleIngameKey(System.Windows.Forms.Keys x)
         {
-
+            if (x == System.Windows.Forms.Keys.Escape)
+            {
+                if (GameState == GameState.InGame)
+                {
+                    GameState = Tower_Defense.GameState.InGamePause;
+                    //this.Menu = new PauseMenu();
+                }
+                else { GameState = Tower_Defense.GameState.InGame; }
+            }
             if (x == System.Windows.Forms.Keys.Right)
                 GameForm._drawXoffset += 2;
             if (x == System.Windows.Forms.Keys.Left)
@@ -221,6 +229,7 @@ namespace Tower_Defense
 
         private void handleInGameInput(System.Windows.Forms.MouseEventArgs click)
         {
+
             foreach (var z in this.World.UIElements)
             {
                 if (Helper.Contains(z.button, click.Location))
@@ -228,18 +237,20 @@ namespace Tower_Defense
                     if (z.Text == "Pause Game")
                     {
                         this.GameState = Tower_Defense.GameState.InGamePause;
-                        break;
+                        //this.Menu = new PauseMenu();
+                        return;
                     }
                     if (z.Text == "Next Wave")
                     {
                         this.World.NextWave();
-                        break;
+                        return;
                     }
                     if (z.Text == "Exit")
                     {
                         GameState = Tower_Defense.GameState.MainMenu;
+                        //this.Menu = new MainMenu();
                         World = null;
-                        break;
+                        return;
                     }
                 }
             }
@@ -253,27 +264,24 @@ namespace Tower_Defense
                         {
                             World.Player.Gold -= UpgradeMenu.Tower.UpgradeCost;
                             UpgradeMenu.Tower.LevelUP();
-                        }
-                        
+                        }                       
                         this.World.ShowUpgradeMenu = false;
+                        return;
                     }
                     else
                     {
                         this.World.ShowUpgradeMenu = false;
-                        UpgradeMenu.Tower = null;
                         return;
                     }
                 }
-            }
-            foreach (TowerBuildButton o in BuildMenu.Buttons)
-            {
-                if (Helper.Contains(o.button, click.Location))
+                foreach (TowerBuildButton o in World.BuildMenu.Buttons)
                 {
-                    //o.Clicked(this, Gameform);
-                    TowerToBuild = (Tower)Assembly.GetAssembly(o.towerType).CreateInstance(o.towerType.FullName);
+                    if (Helper.Contains(o.button, click.Location))
+                    {
+                        TowerToBuild = (Tower)Assembly.GetAssembly(o.towerType).CreateInstance(o.towerType.FullName);
+                        return;
+                    }
                 }
-            }
-
             if (!Helper.Contains(GameForm.ViewPort, click.Location))
                 return;
             foreach (var o in this.World.DrawableObjects)
@@ -285,109 +293,129 @@ namespace Tower_Defense
                         this.World.ShowUpgradeMenu = true;
                     }
                 }
-            //return;
 
             foreach (var m in this.World.Map.Map)
                 if (Helper.Contains(m.ScreenSprite, click.Location))
                 {
                     if (TowerToBuild != null)
-                    {
-                        if (World.Player.Gold < TowerToBuild.Cost || m.Type != Level.MapTileType.EmptyTile)
-                        {
-                            TowerToBuild = null;
-                            return;
-                        }
-                        World.Player.Gold -= TowerToBuild.Cost;
-                        m.Type = Level.MapTileType.TowerHere;
-                        Tower t = TowerToBuild;
-                        t.WorldX = m.WorldX;
-                        t.WorldY = m.WorldY;
-                        World.DrawableObjects.Add(t);
-                        TowerToBuild = null;
-                    }
+                        BuildTower(m);
                 }
             return;
-            /*var x = click.X - GameForm.ViewPort.Left;
-            var y = click.Y - GameForm.ViewPort.Top;
-            x = x / this.World.Map.Width;
-            y = y / this.World.Map.Height;
-            var total = (((click.X - GameForm.ViewPort.Left) * this.World.Map.Tilesize) / this.World.Map.Width) + ((click.Y - GameForm.ViewPort.Top) / this.World.Map.Tilesize);
-            total = x + (y * this.World.Map.Height);
-            var tile = World.Map.Map[total];
-            if (tile.Type == Level.MapTileType.EmptyTile)
-            {
-                World.Map.Map[total].Type = Level.MapTileType.TowerHere;
-                World.DrawableObjects.Add(new Towers.BasicTower(tile.WorldX, tile.WorldY));
-            }*/
-
+            }
         }
-        private void handleMenuInputPauseMenuInput(System.Windows.Forms.MouseEventArgs click)
+
+        private void BuildTower(Level.MapTile m)
         {
-            if (Helper.Contains(PauseMenu.Buttons[0].button, click.Location))
+            if (World.Player.Gold < TowerToBuild.Cost || m.Type != Level.MapTileType.EmptyTile)
             {
-                // continue
-
-                this.GameState = Tower_Defense.GameState.InGame;
+                TowerToBuild = null;
+                return;
             }
-            if (Helper.Contains(PauseMenu.Buttons[1].button, click.Location))
-            {
-                // exit
-                this.GameState = Tower_Defense.GameState.MainMenu;
-            }
+            World.Player.Gold -= TowerToBuild.Cost;
+            m.Type = Level.MapTileType.TowerHere;
+            Tower t = TowerToBuild;
+            t.WorldX = m.WorldX;
+            t.WorldY = m.WorldY;
+            World.DrawableObjects.Add(t);
+            TowerToBuild = null;
         }
+
+        
 
         private void handleMenuInput(System.Windows.Forms.MouseEventArgs click)
         {
-            switch (GameState)
+            for (int i = 0; i < CrazyMenu.Buttons.Count(); i++)
             {
-                case Tower_Defense.GameState.MainMenu:
-                    if (Helper.Contains(MainMenu.Buttons[0].button, click.Location))
+                if (Helper.Contains(CrazyMenu.Buttons[i].button, click.Location))
+                {
+                    if (GameState == GameState.MainMenu)
                     {
-                        // new game
-                        //this.World = new World(Gameform);
-                        this.GameState = Tower_Defense.GameState.LevelSelect;
-                    }
-                    if (Helper.Contains(MainMenu.Buttons[2].button, click.Location))
-                    {
-                        // exit
-                        this.GameState = Tower_Defense.GameState.Exit;
-                    }
-                    if (Helper.Contains(MainMenu.Buttons[1].button, click.Location))
-                    {
-                        // About
-                        this.GameState = Tower_Defense.GameState.About;
-                    }
-                    break;
-                case Tower_Defense.GameState.LevelSelect:
-                    foreach (var b in LevelSelectMenu.Buttons)
-                    {
-                        if (Helper.Contains(b.button, click.Location))
+                        switch (i)
                         {
-                            this.World = new World(Gameform, b.Text);
-                            this.GameState = Tower_Defense.GameState.InGame;
+                            case 0:
+                                this.GameState = Tower_Defense.GameState.LevelSelect;
+                            //this.Menu = new LevelSelectMenu();
+                            return;
+                            case 1:
+                                 this.GameState = Tower_Defense.GameState.About;
+                            //this.Menu = new AboutMenu();
+                            return;
+                            case 2:
+                                 this.GameState = Tower_Defense.GameState.Exit;
+                            return;
                         }
                     }
-                    break;
-                case Tower_Defense.GameState.About:
-                    if (Helper.Contains(AboutMenu.Buttons[0].button, click.Location))
+                    if (GameState == GameState.LevelSelect)
+                    {
+                        this.World = new World(Gameform, CrazyMenu.Buttons[i].Text);
+                        this.GameState = Tower_Defense.GameState.InGame;
+                        return;
+                    }
+                    if (GameState == GameState.About)
+                    {
                         this.GameState = Tower_Defense.GameState.MainMenu;
-                    break;
-                case Tower_Defense.GameState.EndGame:
-                    if (Helper.Contains(ScoreMenu.Buttons[0].button, click.Location))
+                        //this.Menu = new MainMenu();
+                        return;
+                    }
+                    if (GameState == GameState.EndGame)
+                    {
                         this.GameState = Tower_Defense.GameState.MainMenu;
-                    break;
-            }
+                        //this.Menu = new MainMenu();
+                        return;
+                    }
+                    if (GameState == GameState.InGamePause)
+                    {
+                        if (i == 0)
+                        {
+                            this.GameState = Tower_Defense.GameState.InGame;
+                        }
+                        else if (i == 1)
+                        {
+                            GameState = Tower_Defense.GameState.MainMenu;
+                            //this.Menu = new MainMenu();
+                            World = null;
+                            return;
+                        }
+                        return;
+                    }
 
+                }
+            }
+       
         }
 
         #endregion
-       
 
-        
+        internal void Draw(GameForm gameForm)
+        {
+            switch (GameState)
+            {
+                case GameState.InGame:
+                    if(World != null)
+                        World.Draw(gameForm); // Draw static map/UI
+                    break;
+                /*case GameState.MainMenu:
+                    Menu.Draw(gameForm);
+                    //MainMenu.Draw(this);
+                    break;
+                case GameState.About:
+                    Menu.Draw(gameForm);
+                    break;
+                case GameState.LevelSelect:
+                    Menu.Draw(gameForm);
+                    break;
+                case GameState.EndGame:
+                    Menu.Draw(gameForm);
+                    break;
+                case GameState.InGamePause:
+                    World.Draw(gameForm); // Draw static map/UI
+                    Menu.Draw(gameForm);
+                    break;*/
 
-
-
-        
+            }
+            if (CrazyMenu != null)
+                CrazyMenu.Draw(gameForm);
+        }
     }
 
 

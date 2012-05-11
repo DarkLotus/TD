@@ -47,7 +47,7 @@ namespace Tower_Defense
                 
                 //Thread tt = new Thread(new ThreadStart(gf.Show2));
                 //tt.Start();
-                gf.Show2();
+                gf.Init();
             //}
             //catch (Exception e) { MessageBox.Show(e.Message + e.InnerException + e.Source + e.StackTrace); }
           

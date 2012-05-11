@@ -36,13 +36,12 @@ namespace Tower_Defense
         // need a player object
         double spawntimer = 0;
         public bool ShowUpgradeMenu { get; set; }
-        double initalTimeBetweenMobs = 500;
         Queue<Monster> CurrentWave = new Queue<Monster>();
-        public int Wave = 0;
+        public int Wave = 1;
         public int MobsRemaining { get { return CurrentWave.Count; } }
         //List<DrawnObject> MobsToSpawn = new List<DrawnObject>();
         internal Objects.ParticleManager ParticleMan = new Objects.ParticleManager();
-
+        public BuildMenu BuildMenu;
         /// <summary>
         /// Called when New Game is clicked
         /// </summary>
@@ -54,6 +53,8 @@ namespace Tower_Defense
             UIElements.Add(new Button("Next Wave", gf.Width - 425, 5,150,50));
             UIElements.Add(new Button("Pause Game", gf.Width - 275, 5,150,50));
             UIElements.Add(new Button("Exit", gf.Width - 125, 5, 100, 50));
+            BuildMenu = new Tower_Defense.BuildMenu();
+            BuildMenu.initMenu((int)(gf.Width / 1.31), 75, gf);
         }
 
 
@@ -63,19 +64,20 @@ namespace Tower_Defense
         {
             foreach (var x in Map.Map)
             {
-                if (GameForm.Contains(GameForm.ViewPort, x.ScreenSprite))
+                if (Helper.Contains(GameForm.ViewPort, x.ScreenSprite))
                     x.Draw(gf);
             }
-            foreach (var o in DrawableObjects) // FIX ME
+            foreach (var o in DrawableObjects.ToArray()) // FIX ME should be safer
             {
-                if (GameForm.Contains(GameForm.ViewPort, o.ScreenSprite))
+                if (Helper.Contains(GameForm.ViewPort, o.ScreenSprite))
                 o.Draw(gf);
             }
             ParticleMan.Draw(gf.d2dRenderTarget);
-            foreach (var o in UIElements) // TODO THREAD SAFE
+            foreach (var o in UIElements) 
             {
                     o.Draw(gf);
             }
+            //
             BuildMenu.Draw(gf);
             if (ShowUpgradeMenu)
                 UpgradeMenu.Draw(gf);
@@ -88,13 +90,9 @@ namespace Tower_Defense
             {
                 if (CurrentWave.Count > 0)
                 {
-
-                    DrawableObjects.Add(CurrentWave.Dequeue());
-                    spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(500);
-                    if (DrawableObjects.First().GetType() == typeof(Monsters.Tank))
-                        spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(1500);
-                    //if (DrawableObjects.First().GetType() == typeof(Monsters.Runner))
-                    //   spawntimer = curTime + initalTimeBetweenMobs + Helper.random.Next(500);
+                    var x = CurrentWave.Dequeue();
+                    DrawableObjects.Add(x);
+                    spawntimer = curTime + x.SpawnSpacer + Helper.random.Next(500);
                 }
                
             }

@@ -29,9 +29,9 @@ namespace Tower_Defense.Monsters
         public Flyer()
             : base(2, 32, 32)
         {
-            this._baseVelocity = 0.04f;
+            this._baseVelocity = 0.09f;
             this._baseHits = 12f;
-            this.ScoreValue = 12;
+            this.ScoreValue = 8;
         }
       
 
@@ -44,6 +44,45 @@ namespace Tower_Defense.Monsters
         {
             var m = new Flyer(); m.initMob(Map); m.SetLevel(this.Level);
             return m;
+        }
+
+        internal override int SpawnSpacer
+        {
+            get
+            {
+                return 500;
+            }   
+        }
+    }
+
+    public class FlyerBoss : Monster
+    {
+        public FlyerBoss()
+            : base(2, 42, 42)
+        {
+            this._baseVelocity = 0.05f;
+            this._baseHits = 120f;
+            this.ScoreValue = 120;
+        }
+
+
+        public override void Update(World world, double curTime)
+        {
+            base.Update(world, curTime);
+
+        }
+        public override Monster Clone()
+        {
+            var m = new FlyerBoss(); m.initMob(Map); m.SetLevel(this.Level);
+            return m;
+        }
+
+        internal override int SpawnSpacer
+        {
+            get
+            {
+                return 3000;
+            }
         }
     }
 }

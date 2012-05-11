@@ -27,21 +27,36 @@ using System.Net.Sockets;
 using System.Windows.Forms;
 namespace Tower_Defense
 {
-    public class MainMenu
+    public abstract class Menu
     {
-        public static Button[] Buttons = new Button[3];
-        static MainMenu()
+        internal Button[] _buttons;
+        public abstract Button[] Buttons {get;set;}
+        public Menu()
+        { }
+        internal abstract void Draw(GameForm gf);
+
+
+
+       
+    }
+    public class MainMenu : Menu
+    {
+        public override Button[] Buttons { get { if (_buttons == null) { _buttons = new Button[3]; }return _buttons;  } set { _buttons = value; } }
+        public MainMenu()
         {
             Buttons[0] = new Button("New Game", 0, 4);
             Buttons[1] = new Button("About", 0, 3);
             Buttons[2] = new Button("Exit", 0, 2);
         }
-        internal static void Draw(GameForm gf)
+        internal override void Draw(GameForm gf)
         {
-            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
+            gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], new RectangleF(0, 0, gf.Width, gf.Height), 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
                 b.Draw(gf);
         }
+        
+
+       
     }
 
     [ProtoContract]
@@ -59,7 +74,10 @@ namespace Tower_Defense
             SubmitScore s = (SubmitScore)obj;
             return this.Score == s.Score;
         }
-
+        public override int GetHashCode()
+        {
+            return Score.GetHashCode();
+        }
 
         public int CompareTo(object obj)
         {
@@ -75,12 +93,12 @@ namespace Tower_Defense
 
 
     }
-    public class ScoreMenu
+    public class ScoreMenu : Menu
     {
-        public static Button[] Buttons = new Button[1];
+        public override Button[] Buttons { get { if (_buttons == null) { _buttons = new Button[1]; } return _buttons; } set { _buttons = value; } }
         private static string[] strings = new string[] { "Code by James Kidd 2012", "Thanks to SharpDX an Open Source DX Wrapper", "Special thanks to CGTextures.com for their amazing Textures." };
 
-        static ScoreMenu()
+        public ScoreMenu()
         {
             Buttons[0] = new Button("Main Menu", 0, -2);
         }
@@ -124,7 +142,7 @@ namespace Tower_Defense
             sdb.CreateDomain(cdr);*/
             
         }
-        internal static void Draw(GameForm gf)
+        internal override void Draw(GameForm gf)
         {
             gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
@@ -137,16 +155,16 @@ namespace Tower_Defense
         }
     }
 
-    public class AboutMenu
+    public class AboutMenu : Menu
     {
-        public static Button[] Buttons = new Button[1];
+        public override Button[] Buttons { get { if (_buttons == null) { _buttons = new Button[1]; } return _buttons; } set { _buttons = value; } }
         private static string[] about = new string[] {"Code by James Kidd 2012","Thanks to SharpDX an Open Source DX Wrapper","Special thanks to CGTextures.com for their amazing Textures."};
         
-        static AboutMenu()
+        public AboutMenu()
         {
             Buttons[0] = new Button("Main Menu", 0, -2);
         }
-        internal static void Draw(GameForm gf)
+        internal override void Draw(GameForm gf)
         {
             gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
@@ -159,32 +177,32 @@ namespace Tower_Defense
         }
     }
 
-    public static class PauseMenu
+    public class PauseMenu : Menu
     {
-        public static Button[] Buttons = new Button[2];
-        static PauseMenu()
+        public override Button[] Buttons { get { if (_buttons == null) { _buttons = new Button[2]; } return _buttons; } set { _buttons = value; } }
+        public PauseMenu()
         {
             Buttons[0] = new Button("Continue", 400, 400);
             Buttons[1] = new Button("Exit", 400, 460);
         }
-        internal static void Draw(GameForm gf)
+        internal override void Draw(GameForm gf)
         {
             foreach (var b in Buttons)
                 b.Draw(gf);
         }
     }
 
-    public static class LevelSelectMenu
+    public class LevelSelectMenu : Menu
     {
-        public static Button[] Buttons = new Button[3];
-        static LevelSelectMenu()
+        public override Button[] Buttons { get { if (_buttons == null) { _buttons = new Button[3]; } return _buttons; } set { _buttons = value; } }
+        public LevelSelectMenu()
         {
             //TODO Parse list of levels, add buttons for each level.
             Buttons[0] = new Button("DemoLevel", 0, 3);
             Buttons[1] = new Button("DemoMultiBranch", 0, 4);
             Buttons[2] = new Button("DemoMultiPath", 0, 5);
         }
-        internal static void Draw(GameForm gf)
+        internal override void Draw(GameForm gf)
         {
             gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[51], 1f, BitmapInterpolationMode.Linear);
             foreach (var b in Buttons)
@@ -194,15 +212,15 @@ namespace Tower_Defense
 
    
  
-    public static class BuildMenu
+    public class BuildMenu : Menu
     {
         public static int X, Y;
-        public static Button[] Buttons = new Button[4];
-        static BuildMenu()
+        public override Button[] Buttons { get { if (_buttons == null) { _buttons = new Button[4]; } return _buttons; } set { _buttons = value; } }
+        public BuildMenu()
         {
 
         }
-        public static void initMenu(int x,int y,GameForm gf)
+        public void initMenu(int x,int y,GameForm gf)
         {
             var height = (int)((gf.Height - 75) / 5);
             var width = (int)(gf.Width - (gf.Width / 1.3));
@@ -214,7 +232,7 @@ namespace Tower_Defense
             Buttons[3] = new TowerBuildButton(typeof(Towers.LightTower), TowerStats.Light.Name, TowerStats.Light.Price, TowerStats.Light.BaseDamage, TowerStats.Light.BaseFireRateMS, X, Y + height * 3, width, height);
         }
 
-        internal static void Draw(GameForm gf)
+        internal override void Draw(GameForm gf)
         {
             foreach (var b in Buttons)
                 b.Draw(gf);
@@ -244,7 +262,7 @@ namespace Tower_Defense
         internal static void Update(Tower tower)
         {
             Location = new RectangleF(tower.ViewX + 50, tower.ViewY, tower.ViewX + 150, tower.ViewY + 150);
-            Buttons[0] = new Button("Upgrade", (int)(Location.Left + 10), (int)(Location.Top + 80),50,30) { fontsize = 10f};
+            Buttons[0] = new Button("Upgrade", (int)(Location.Left + 10), (int)(Location.Top + 80),60,40) { fontsize = 10f};
             Tower = null;
             Tower = tower;
         }
@@ -330,6 +348,7 @@ namespace Tower_Defense
                 ScreenX = (gf.Width / 2) - 150;
                 ScreenY = (int)(gf.Height / 1.5) - (ScreenY * 80);
                 this.button = new RectangleF(ScreenX, ScreenY, ScreenX + 320, ScreenY + 80);
+                
             }
             gf.d2dRenderTarget.DrawBitmap(gf.MapTiles[50], this.button, 1f, BitmapInterpolationMode.Linear);
             GameForm.solidColorBrush.Color = Colors.Red;
@@ -338,6 +357,11 @@ namespace Tower_Defense
 
         public int Height { get; set; }
 
-       
+
+
+        internal void Clicked(Game game)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
