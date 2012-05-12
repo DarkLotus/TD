@@ -53,6 +53,7 @@ namespace Tower_Defense
             UIElements.Add(new Button("Next Wave", gf.Width - 425, 5,150,50));
             UIElements.Add(new Button("Pause Game", gf.Width - 275, 5,150,50));
             UIElements.Add(new Button("Exit", gf.Width - 125, 5, 100, 50));
+            UIElements.Add(new Button("Speed", gf.Width - 575, 5, 150, 50));
             BuildMenu = new Tower_Defense.BuildMenu();
             BuildMenu.initMenu((int)(gf.Width / 1.31), 75, gf);
         }

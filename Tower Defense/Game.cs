@@ -43,25 +43,25 @@ namespace Tower_Defense
     {
         public GameState GameState;
         public World World;
-        private Menu Menu;
-        public Menu CrazyMenu { get {
+        private Menu _menu;
+        public Menu Menu { get {
             switch (GameState)
             { 
                 case GameState.MainMenu:
-                    if (Menu == null || Menu.GetType() != typeof(MainMenu)) { Menu = new MainMenu(); }
-                    return Menu;
+                    if (_menu == null || _menu.GetType() != typeof(MainMenu)) { _menu = new MainMenu(); }
+                    return _menu;
                 case GameState.InGamePause:
-                    if (Menu == null || Menu.GetType() != typeof(PauseMenu)) { Menu = new PauseMenu(); }
-                    return Menu;
+                    if (_menu == null || _menu.GetType() != typeof(PauseMenu)) { _menu = new PauseMenu(); }
+                    return _menu;
                 case GameState.LevelSelect:
-                    if (Menu == null || Menu.GetType() != typeof(LevelSelectMenu)) { Menu = new LevelSelectMenu(); }
-                    return Menu;
+                    if (_menu == null || _menu.GetType() != typeof(LevelSelectMenu)) { _menu = new LevelSelectMenu(); }
+                    return _menu;
                 case GameState.About:
-                    if (Menu == null || Menu.GetType() != typeof(AboutMenu)) { Menu = new AboutMenu(); }
-                    return Menu;
+                    if (_menu == null || _menu.GetType() != typeof(AboutMenu)) { _menu = new AboutMenu(); }
+                    return _menu;
                 case GameState.EndGame:
-                    if (Menu == null || Menu.GetType() != typeof(ScoreMenu)) { Menu = new ScoreMenu(); }
-                    return Menu;
+                    if (_menu == null || _menu.GetType() != typeof(ScoreMenu)) { _menu = new ScoreMenu(); }
+                    return _menu;
                 default:
                     return null;
             }
@@ -252,6 +252,14 @@ namespace Tower_Defense
                         World = null;
                         return;
                     }
+                    if (z.Text == "Speed")
+                    {
+                        if (Helper.GameSpeed == 1)
+                            Helper.GameSpeed = 2;
+                        else
+                            Helper.GameSpeed = 1;
+                        return;
+                    }
                 }
             }
             if (this.World != null)
@@ -324,9 +332,9 @@ namespace Tower_Defense
 
         private void handleMenuInput(System.Windows.Forms.MouseEventArgs click)
         {
-            for (int i = 0; i < CrazyMenu.Buttons.Count(); i++)
+            for (int i = 0; i < Menu.Buttons.Count(); i++)
             {
-                if (Helper.Contains(CrazyMenu.Buttons[i].button, click.Location))
+                if (Helper.Contains(Menu.Buttons[i].button, click.Location))
                 {
                     if (GameState == GameState.MainMenu)
                     {
@@ -347,7 +355,7 @@ namespace Tower_Defense
                     }
                     if (GameState == GameState.LevelSelect)
                     {
-                        this.World = new World(Gameform, CrazyMenu.Buttons[i].Text);
+                        this.World = new World(Gameform, Menu.Buttons[i].Text);
                         this.GameState = Tower_Defense.GameState.InGame;
                         return;
                     }
@@ -413,8 +421,8 @@ namespace Tower_Defense
                     break;*/
 
             }
-            if (CrazyMenu != null)
-                CrazyMenu.Draw(gameForm);
+            if (Menu != null)
+                Menu.Draw(gameForm);
         }
     }
 
