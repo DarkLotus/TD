@@ -29,9 +29,9 @@ namespace Tower_Defense.Monsters
         public Tank()
             : base(1, 32, 32)
         {
-            this._baseVelocity = 0.04f;
-            this._baseHits = 18f;
-            this.ScoreValue = 8;
+            this._baseVelocity = 0.05f;
+            this._baseHits = 20f;
+            this.ScoreValue = 7;
         }
       
 
@@ -59,9 +59,9 @@ namespace Tower_Defense.Monsters
         public TankBoss()
             : base(1, 42, 42)
         {
-            this._baseVelocity = 0.02f;
+            this._baseVelocity = 0.05f;
             this._baseHits = 150f;
-            this.ScoreValue = 120;
+            this.ScoreValue = 25;
         }
 
 

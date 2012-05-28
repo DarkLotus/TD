@@ -113,7 +113,7 @@ namespace Tower_Defense.Objects
         {
             //Vector3D v = new Vector3D(m.ViewX - t.ViewX, m.ViewY - t.ViewY, 0);
             Vector3D v = new Vector3D(m.ViewX, m.ViewY, 0);
-            Particles.Add(new Particle(t.ViewX, t.ViewY, v, 1f, 1200, Colors.Black,1.7f));
+            Particles.Add(new Particle(t.ViewX, t.ViewY, v, 2f, 1200, Colors.Black,1.7f));
         }
        
 

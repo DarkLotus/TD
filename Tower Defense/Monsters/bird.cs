@@ -29,9 +29,9 @@ namespace Tower_Defense.Monsters
         public Flyer()
             : base(2, 32, 32)
         {
-            this._baseVelocity = 0.09f;
-            this._baseHits = 12f;
-            this.ScoreValue = 8;
+            this._baseVelocity = 0.10f;
+            this._baseHits = 12.5f;
+            this.ScoreValue = 6;
         }
       
 
@@ -61,8 +61,8 @@ namespace Tower_Defense.Monsters
             : base(2, 42, 42)
         {
             this._baseVelocity = 0.05f;
-            this._baseHits = 120f;
-            this.ScoreValue = 120;
+            this._baseHits = 100f;
+            this.ScoreValue = 25;
         }
 
 

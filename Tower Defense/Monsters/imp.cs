@@ -28,8 +28,8 @@ namespace Tower_Defense.Monsters
     {
         public Runner() : base(0,32,32)
         {
-            this._baseVelocity = 0.14f;
-            this._baseHits = 8f;
+            this._baseVelocity = 0.15f;
+            this._baseHits = 7.5f;
             this.ScoreValue = 6;
         }
 
@@ -60,8 +60,8 @@ namespace Tower_Defense.Monsters
             : base(0, 50, 50)
         {
             this._baseVelocity = 0.099f;
-            this._baseHits = 80f;
-            this.ScoreValue = 60;
+            this._baseHits = 70f;
+            this.ScoreValue = 25;
         }
 
 

@@ -48,7 +48,7 @@ namespace Tower_Defense
         double _lastMove = 0;
         double _slowEffect = 0;
         byte framenum = 0;
-        public int MoveDelay = 30;
+        public int MoveDelay = 50;
         SharpDX.RectangleF HPoutline { get { return new SharpDX.RectangleF(this.ViewX + 10, this.ViewY - 6, this.ViewX + 30, this.ViewY - 2); } }
 
         SharpDX.RectangleF HPRect
@@ -108,7 +108,6 @@ namespace Tower_Defense
             if (this._hits <= 0f) 
             {
                 this.Die(world);
-               
             }
 
             if (path.Count > 0 && curTime > _lastMove)
@@ -133,8 +132,8 @@ namespace Tower_Defense
                 framenum++;
                 if (framenum >= (Direction + 1) * 19)
                     framenum = (byte)(Direction * 19);
-                nextanim = curTime + 50;
-                //TODO MAYBE FIX THIS? Should be MoveDelay time? or be changed to fps
+                nextanim = curTime + 52;
+                //Currently playing at 19FPS for animations.
             }
             
             base.Update(world,curTime);
@@ -150,7 +149,7 @@ namespace Tower_Defense
         
         public override void Draw(GameForm gf)
         {
-            if (_hits > 1)
+            if (_hits > 1) // HPRect Size will be wrong it HP = 0.
             {
                 GameForm.solidColorBrush.Color = SharpDX.Colors.Black;
                 gf.d2dRenderTarget.DrawRectangle(HPoutline, GameForm.solidColorBrush);
@@ -185,8 +184,7 @@ namespace Tower_Defense
             Vector3D dest = new Vector3D(nextpath.X, nextpath.Y,0);
             Vector3D ourloc = new Vector3D(WorldX, WorldY,0);
             Vector3D movepos = PowerMath.TranslateDirection2D(ourloc, dest, ourloc, this._velocity);
-            WorldX = movepos.X;
-            WorldY = movepos.Y;
+
             if (this.WorldX < nextpath.X)
             {
                 //WorldX += _velocity;
@@ -202,35 +200,13 @@ namespace Tower_Defense
                 //WorldY += _velocity;
                 Direction = 0;
             }
-            //else if (this.WorldY > nextpath.Y)
-                //WorldY -= _velocity;
-
-            
-            /*if (this.WorldX < nextpath.X)
-            {
-                WorldX += _velocity;
-                Direction = 2;
-            }
-            else if (this.WorldX > nextpath.X + 1)
-            {
-                WorldX -= _velocity;
-                Direction = 1;
-            }
-            else if (this.WorldY < nextpath.Y)
-            {
-                WorldY += _velocity;
-                Direction = 0;
-            }
-            else if (this.WorldY > nextpath.Y + 1)
-                WorldY -= _velocity;*/
+            WorldX = movepos.X;
+            WorldY = movepos.Y;
 
             if (GetDistance(WorldX, WorldY, nextpath.X, nextpath.Y) < 0.3f)
                 path.RemoveAt(path.Count - 1);
             else if(new System.Drawing.Rectangle(nextpath.X,nextpath.Y,1,1).Contains((int)WorldX,(int)WorldY))
                 path.RemoveAt(path.Count - 1);
-
-           
-
             this.ScreenSprite = new SharpDX.RectangleF(ViewX, ViewY, ViewX + Width, ViewY + Height);
         }
         private float GetDistance(float x, float y, float destx, float desty)
